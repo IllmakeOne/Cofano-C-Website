@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap core CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/dashboard.css" rel="stylesheet">
+
+    <link rel="apple-touch-icon" sizes="76x76" href="./img/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./img/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./img/favicons/favicon-16x16.png">
+    <link rel="manifest" href="./img/favicons/site.webmanifest">
+    <link rel="mask-icon" href="./img/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="./img/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="msapplication-config" content="./img/favicons/browserconfig.xml">
+
+    <title>Cofano-C - Dashboard</title>
+
+</head>
+<body class="admin">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button class="navbar-toggle pull-left collapse-sidebar" type="button">
+                        <span class="sr-only"><span>Toggle sidebar</span></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="dropdown">
+                        <button id="mobile-settings-dropdown" class="navbar-toggle dropdown-toggle pull-right" type="button" style="fill: white" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
+                            <span><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="4px" height="16px" viewBox="0 0 8 32" enable-background="new 0 0 8 32" xml:space="preserve"> <g> <circle cx="4" cy="4.062" r="4"></circle> <circle cx="4" cy="16" r="4"></circle> <circle cx="4" cy="28" r="4"></circle> </g> </svg></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" aria-labelledby="mobile-settings-dropdown" style="margin-top:42px">
+                            <li><a href="">Settings</a></li>
+                            <li><a href="">Dark mode</a></li>
+                            <li><a href="">Sign out</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- <button id="mobile-settings-dropdown" class="pull-right" style="fill: white" >
+                        <span><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="4px" height="16px" viewBox="0 0 8 32" enable-background="new 0 0 8 32" xml:space="preserve"> <g> <circle cx="4" cy="4.062" r="4"></circle> <circle cx="4" cy="16" r="4"></circle> <circle cx="4" cy="28" r="4"></circle> </g> </svg></span>
+                    </button> -->
+                    <span class="navbar-brand">Cofano-C</span>
+                </div>
+            </div>
+        </nav>
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar collapse" id="sidebar-nav">
+                <div class="title" >
+                    <div class="user-options hidden-xs">
+                        <div class="dropdown">
+                            <a id="settings-dopdown" href="#" class="dropdown-toggle push-right button" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true"><i class="fa fa-ellipsis-v push-right" aria-hidden="true"></i></a>
+                            <ul class="dropdown-menu" aria-labelledby="settings-dropdown">
+                              <li><a href="">Settings</a></li>
+                              <li><a href="">Dark mode</a></li>
+                              <li><a href="">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="user-image">
+                      <div class="media-object circle-text small">J</div>
+                    </div>
+                    <div class="user-info">
+                      <p class="person">Jesse van der Velden</p>
+                      <p class="firm">Cofano B.V.</p>
+                    </div>
+                </div>
+                <div class="menu-items">
+                  <div class="sidemenu">
+                    <ul>
+                      <li class="header">MAIN</li>
+                        <li  class="selected" >
+                          <a href="#">
+                            <i class="fa fa-home" aria-hidden="true"></i>
+                            <span class="collapse"> dashboard</span>
+                          </a>
+                        </li>
+                      </li>
+
+                      <li class="header">DATABASES</li>
+
+                    	 <li>
+                         <a href="#">
+                           <i class="fa fa-wpforms" aria-hidden="true"></i>
+                           <span class="collapse">projecten</span>
+                         </a>
+                       </li>
+
+
+                    </ul>
+                    <div class="sidebar-footer">
+                        <p><img src="/img/labs-flask.png" style="width: 10%"/> SST LABS</p>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="padding">
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main-wrapper ">
+                    <div class="masthead">
+                      Vessel database
+                    </div>
+                    <div class="content-wrapper">
+  			                <div class="row">
+    	                     <div class="col-md-12">
+                             <h3>Hi</h3>
+                  			   </div>
+                    		</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>
