@@ -1,0 +1,186 @@
+@font-face {
+    font-family: 'Futura Lt BT Light';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Futura Lt BT Light'), url('./fonts/futura_lt_bt_light-webfont.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Futura Lt Bold';
+    font-style: normal;
+    font-weight: normal;
+    src: local('☺'), url('./fonts/futura-lt-bold.woff') format('woff'); // local('Futura Lt Bold'),
+}
+
+@font-face {
+    font-family: 'SofiaProMedium';
+    font-style: normal;
+    font-weight: normal;
+    src: local('SofiaProMedium'), url('./fonts/SofiaProMedium.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'SofiaProSemiBold';
+    font-style: normal;
+    font-weight: normal;
+    src: local('☺'), url('./fonts/SofiaProSemiBold.woff') format('woff'); // local('Futura Lt Bold'),
+}
+
+body {
+  font-size: .875rem;
+}
+
+/* Navbar */
+.bg-dark {
+  background-color: #EF6C00 !important;
+}
+
+.feather {
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+}
+
+/*
+ * Sidebar
+ */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100; /* Behind the navbar */
+  padding: 48px 0 0; /* Height of navbar */
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+  background-color: #FF9800;
+  color: white;
+}
+
+@media (min-width: 768px) and (max-width 1300px) {
+  .sidebar {
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+
+  .navbar-brand {
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+
+  main {
+    flex: 0 0 80% !important;
+    max-width: 80% !important;
+  }
+}
+
+@media (min-width: 1300px){
+  .sidebar {
+    flex: 0 0 20%;
+    max-width: 15rem;
+  }
+
+  .navbar-brand {
+    flex: 0 0 20%;
+    max-width: 15rem;
+  }
+
+  main {
+    
+  }
+
+}
+
+.sidebar-sticky {
+  position: relative;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: .5rem;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  background-color: #FF9800;
+  color: white;
+}
+
+@supports ((position: -webkit-sticky) or (position: sticky)) {
+  .sidebar-sticky {
+    position: -webkit-sticky;
+    position: sticky;
+  }
+}
+
+.sidebar .nav-link {
+  font-weight: 500;
+  color: white;
+}
+
+.sidebar .nav-link .feather {
+  margin-right: 4px;
+}
+
+.sidebar .nav-link.active {
+  color: white;
+  background: #EF6C00;
+  border-left: 8px solid #ED2700;
+  padding-left: .5rem;
+}
+
+.sidebar .nav-link:hover .feather,
+.sidebar .nav-link.active .feather {
+  color: inherit;
+}
+
+.sidebar-heading {
+  font-family: "Futura Lt Bold";
+  -webkit-font-smoothing: subpixel-antialiased;
+  font-size: 18px !important;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+  color: white;
+}
+
+/*
+ * Content
+ */
+
+[role="main"] {
+  padding-top: 48px; /* Space for fixed navbar */
+}
+
+/*
+ * Navbar
+ */
+
+.navbar-brand {
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  font-size: 1rem;
+  background-color: rgba(0, 0, 0, .25);
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+}
+
+.navbar .form-control {
+  padding: .75rem 1rem;
+  border-width: 0;
+  border-radius: 0;
+}
+
+.form-control-dark {
+  color: #fff;
+  background-color: rgba(255, 255, 255, .1);
+  border-color: rgba(255, 255, 255, .1);
+}
+
+.form-control-dark:focus {
+  border-color: transparent;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+}
+
+/*
+ * Utilities
+ */
+
+.border-top { border-top: 1px solid #e5e5e5; }
+.border-bottom { border-bottom: 1px solid #e5e5e5; }
