@@ -174,3 +174,11 @@ $RECYCLE.BIN/
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
+
+BootstrapTesting/\.idea/BootstrapTesting\.iml
+
+BootstrapTesting/\.idea/misc\.xml
+
+BootstrapTesting/\.idea/modules\.xml
+
+BootstrapTesting/\.idea/workspace\.xml
