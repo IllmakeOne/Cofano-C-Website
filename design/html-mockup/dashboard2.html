@@ -26,14 +26,30 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Cofano-C</a>
-      <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-      <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-          <a class="nav-link" href="#">Sign out</a>
-        </li>
-      </ul>
+    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow collapse show">
+
+      <div class="navbar-brand title">
+        <div class="user-options hidden-xs">
+            <div class="dropdown">
+                <a id="settings-dopdown" href="#" class="dropdown-toggle push-right button" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
+
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="settings-dropdown">
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="#">Dark mode</a></li>
+                    <li><a href="#">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="user-image">
+          <div class="media-object circle-text small">J</div>
+        </div>
+        <div class="user-info">
+          <p class="person">Jesse van der Velden</p>
+          <p class="firm">Cofano B.V.</p>
+        </div>
+      </div>
+      <!-- <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Cofano-C</a> -->
     </nav>
 
     <div class="container-fluid">
@@ -53,32 +69,8 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">
-                  <span data-feather="file"></span>
-                  orders
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="shopping-cart"></span>
-                  products
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="users"></span>
-                  customers
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="bar-chart-2"></span>
-                  reports
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
                   <span data-feather="layers"></span>
-                  integrations
+                  application integrations
                 </a>
               </li>
             </ul>
@@ -113,7 +105,7 @@
           </div>
         </nav>
 
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <main role="main" class="cofano-main col-md-9 ml-sm-auto col-lg-10 px-4">
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Dashboard</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
