@@ -58,39 +58,9 @@ body {
   color: white;
 }
 
-@media only screen and (min-width: 768px) and (max-width: 1300px) {
-  .sidebar, .navbar-brand {
-    flex: 0 0 20%;
-    max-width: 240px;
-  }
-
-  .navbar {
-    max-width: 240px;
-  }
-
-  main.cofano-main {
-    margin-left: 250px !important;
-  }
-}
-
-@media only screen and (min-width: 1300px){
-  .navbar, .navbar-brand, .sidebar {
-    flex: 0 0 20%;
-    max-width: 15rem;
-  }
-
-
-  main.cofano-main {
-    margin-left: 250px !important;
-  }
-
-}
-
-@media only screen and (max-width: 767px) {
-  .navbar, .navbar-brand {
-    width: 100%;
-    margin-right: 0px;
-  }
+.sidebar.show, .sidebar.collapsing {
+  display: block!important;
+  width: 240px;
 }
 
 .sidebar-sticky {
@@ -177,7 +147,7 @@ body {
 }
 
 .navbar-brand.title .user-options .dropdown-menu {
-    margin-top: -15px;
+    margin-top: -25px;
 }
 
 .navbar-brand.title .user-image .circle-text {
@@ -245,4 +215,74 @@ main {
   box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
   -webkit-font-smoothing: subpixel-antialiased;
   position: relative;
+}
+
+
+
+@media only screen and (min-width: 768px) and (max-width: 1300px) {
+  .sidebar, .navbar-brand {
+    flex: 0 0 20%;
+    max-width: 240px;
+  }
+
+  .navbar {
+    max-width: 240px;
+  }
+
+  main.cofano-main {
+    margin-left: 250px !important;
+  }
+}
+
+@media only screen and (min-width: 1300px){
+  .navbar, .navbar-brand, .sidebar {
+    flex: 0 0 20%;
+    max-width: 15rem;
+  }
+
+
+  main.cofano-main {
+    margin-left: 250px !important;
+  }
+
+}
+
+@media only screen and (max-width: 767px) {
+  .navbar, .navbar-brand {
+    width: 100%;
+    margin-right: 0px;
+  }
+
+  .user-sidebar {
+    float: left;
+    margin-left: 15px;
+    margin-top: -7px;
+  }
+
+  .navbar-toggler {
+    float: left;
+  }
+
+  .navbar-brand {
+    height: 65px;
+  }
+
+  main {
+    margin-top: 65px;
+  }
+
+  .sidebar {
+    padding-top: 1.3rem;
+  }
+
+  .navbar-brand.title .user-options .dropdown-menu {
+    margin-left: -130px;
+  }
+
+}
+
+@media only screen and (min-width: 768px) {
+  .navbar-toggler {
+    display: none;
+  }
 }
