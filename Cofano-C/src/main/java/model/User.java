@@ -9,12 +9,12 @@ public class User {
 	private Date lastLogedIn;
 	private String email;
 	private String preferance;
-	private String ID;
+	private int ID;
 	
 	public User() {
 	}
 	
-	public User(String name, String email, String ID, Date date) {
+	public User(String name, String email, int ID, Date date) {
 		this.name = name;
 		this.email = email;
 		this.preferance = DEFAULTPREF;
@@ -38,11 +38,11 @@ public class User {
 		this.preferance = preferance;
 	}
 	
-	public void setID(String ID) {
+	public void setID(int ID) {
 		this.ID = ID;
 	}
 	
-	public String getID() {
+	public int getID() {
 		return this.ID;
 	}
 	
