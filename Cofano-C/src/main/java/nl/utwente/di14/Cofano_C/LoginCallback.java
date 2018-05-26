@@ -83,13 +83,22 @@ public class LoginCallback extends HttpServlet {
 		}
 		// From this map, extract the relevant profile info and store it in the session.
 		// See also: https://developers.google.com/+/web/api/rest/openidconnect/getOpenIdConnect
-		req.getSession().setAttribute("userEmail", userIdResult.get("email"));
-		req.getSession().setAttribute("userId", userIdResult.get("sub"));
-		req.getSession().setAttribute("userImageUrl", userIdResult.get("picture"));
-		req.getSession().setAttribute("userName", userIdResult.get("given_name"));
-		req.getSession().setAttribute("userFamilyName", userIdResult.get("family_name"));
-		resp.sendRedirect(getServletContext().getInitParameter("cofano.url") +
-				req.getSession().getAttribute("loginDestination"));
+
+		if (userIdResult.get("hd").equals("student.utwente.nl")) { //TODO check
+			req.getSession().setAttribute("userEmail", userIdResult.get("email"));
+			req.getSession().setAttribute("userId", userIdResult.get("sub"));
+			req.getSession().setAttribute("userImageUrl", userIdResult.get("picture"));
+			req.getSession().setAttribute("userName", userIdResult.get("given_name"));
+			req.getSession().setAttribute("userFamilyName", userIdResult.get("family_name"));
+			resp.sendRedirect(getServletContext().getInitParameter("cofano.url") +
+					req.getSession().getAttribute("loginDestination"));
+		} else {
+			resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			resp.setContentType("text/html");
+			PrintWriter out = resp.getWriter();
+			out.append("You must be part of the Cofano team! Change the setting in LoginCallback.java");
+			out.close();
+		}
 	}
 
 }

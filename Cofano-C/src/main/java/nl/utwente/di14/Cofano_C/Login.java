@@ -58,7 +58,7 @@ public class Login extends HttpServlet {
 						.setRedirectUri(callbackUrl.toString())
 						.setState(state)            // Prevent request forgery
 						.build();
-		response.sendRedirect(redirectUrl);
+		response.sendRedirect(redirectUrl+"&hd=student.utwente.nl"); // TODO HERE WE MUST SET COFANO ONLY
 	}
 }
 

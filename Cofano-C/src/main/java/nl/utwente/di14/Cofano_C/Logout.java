@@ -21,6 +21,7 @@ public class Logout extends HttpServlet {
 		// rebuild session
 		request.getSession();
 
+
 		response.sendRedirect(getServletContext().getInitParameter("cofano.url"));
 	}
 }
