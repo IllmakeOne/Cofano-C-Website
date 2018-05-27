@@ -12,10 +12,10 @@
     <link href="./css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="css/signin.css" rel="stylesheet">
+    <link href="./css/signin.css" rel="stylesheet">
 
     <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="76x76" href="./img/favicons/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="76x76" href=".img/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="./img/favicons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="./img/favicons/favicon-16x16.png">
     <link rel="manifest" href="./img/favicons/site.webmanifest">
@@ -34,7 +34,7 @@
       <img class="mb-4" src="./img/logo-cofano-c.png" alt="cofano-logo" height="72">
       <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
       <button type="button" class="btn btn-lg btn-block btn-outline-primary"
-      	onclick="location.href='./login'">
+      	onclick="location.href='./googlelogin'">
         <img style="margin-top: -3px;" width="20px" alt="Google &quot;G&quot; Logo" src="./img/google-g-logo.png"/>
         Login with Google
       </button>

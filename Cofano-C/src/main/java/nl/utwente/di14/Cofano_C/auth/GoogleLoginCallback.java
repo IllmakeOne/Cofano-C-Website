@@ -1,4 +1,4 @@
-package nl.utwente.di14.Cofano_C;
+package nl.utwente.di14.Cofano_C.auth;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -21,8 +22,8 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 
-@WebServlet(description="LoginCallback Servlet", urlPatterns={"/oauth2callback"})
-public class LoginCallback extends HttpServlet {
+@WebServlet(description="GoogleLoginCallback Servlet", urlPatterns={"/oauth2callback"})
+public class GoogleLoginCallback extends HttpServlet {
 	private static final Collection<String> SCOPES = Arrays.asList("email", "profile");
 	private static final String USERINFO_ENDPOINT
 			= "https://www.googleapis.com/plus/v1/people/me/openIdConnect";
@@ -51,7 +52,7 @@ public class LoginCallback extends HttpServlet {
 				getServletContext().getInitParameter("google.clientID"),
 				getServletContext().getInitParameter("google.clientSecret"),
 				SCOPES)
-				.setApprovalPrompt("auto")
+//				.setApprovalPrompt("auto")
 				.build();
 
 		GenericUrl callbackUrl = new GenericUrl(req.getRequestURL().toString());
@@ -90,13 +91,20 @@ public class LoginCallback extends HttpServlet {
 			req.getSession().setAttribute("userImageUrl", userIdResult.get("picture"));
 			req.getSession().setAttribute("userName", userIdResult.get("given_name"));
 			req.getSession().setAttribute("userFamilyName", userIdResult.get("family_name"));
+			req.getSession().setAttribute("userFullName", userIdResult.get("name"));
 			resp.sendRedirect(getServletContext().getInitParameter("cofano.url") +
 					req.getSession().getAttribute("loginDestination"));
 		} else {
+			HttpSession session =  req.getSession(false);
+			if (session != null) {
+				session.invalidate();
+			}
+			// rebuild session
+			req.getSession();
 			resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			resp.setContentType("text/html");
 			PrintWriter out = resp.getWriter();
-			out.append("You must be part of the Cofano team! Change the setting in LoginCallback.java");
+			out.append("You must be part of the Cofano team! Change the setting in GoogleLoginCallback.java");
 			out.close();
 		}
 	}

@@ -136,6 +136,13 @@ body {
     vertical-align: top;
 }
 
+.navbar-brand.title .user-image img {
+    display: block;
+    width: 30px;
+    margin-right: 15px;
+    margin-top: 10px;
+}
+
 .navbar-brand.title .user-options {
     float: right;
 }
@@ -168,6 +175,8 @@ body {
     text-align: center;
     font-size: 130px;
 }
+
+
 
 .navbar-brand.title .user-info .person {
     line-height: 30px;
@@ -285,4 +294,10 @@ main {
   .navbar-toggler {
     display: none;
   }
+}
+
+@media only screen and (max-width: 300px) {
+    .user-sidebar {
+        display: none;
+    }
 }
