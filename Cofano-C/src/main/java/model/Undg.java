@@ -4,10 +4,7 @@ public class Undg {
 	
 	private int ID;
 	
-	private String ENdescription;
-	private String DEdescription;
-	private String FRdescription;
-	private String NLdescription;
+	private int descriptionId;
 	
 	private boolean transportForbidden;
 	private boolean collective;
@@ -21,14 +18,10 @@ public class Undg {
 	
 	public Undg() {}	
 	
-	public Undg(int iD, String eNdescription, String dEdescription, String fRdescription, String nLdescription,
-			String classificationCode, String unNo, String classification, String packingGroup) {
+	public Undg(int iD, int descriptionID, String classificationCode, String unNo, String classification, String packingGroup) {
 		super();
 		ID = iD;
-		ENdescription = eNdescription;
-		DEdescription = dEdescription;
-		FRdescription = fRdescription;
-		NLdescription = nLdescription;
+		this.descriptionId = descriptionID;
 		this.classificationCode = classificationCode;
 		this.unNo = unNo;
 		this.classification = classification;
@@ -39,35 +32,17 @@ public class Undg {
 		notApplicable = false; 
 	}
 	
+	public int getDescriptionID() {
+		return descriptionId;
+	}
+	public void setDescriptionID(int iD) {
+		descriptionId = iD;
+	}
 	public int getID() {
 		return ID;
 	}
 	public void setID(int iD) {
 		ID = iD;
-	}
-	public String getENdescription() {
-		return ENdescription;
-	}
-	public void setENdescription(String eNdescription) {
-		ENdescription = eNdescription;
-	}
-	public String getDEdescription() {
-		return DEdescription;
-	}
-	public void setDEdescription(String dEdescription) {
-		DEdescription = dEdescription;
-	}
-	public String getFRdescription() {
-		return FRdescription;
-	}
-	public void setFRdescription(String fRdescription) {
-		FRdescription = fRdescription;
-	}
-	public String getNLdescription() {
-		return NLdescription;
-	}
-	public void setNLdescription(String nLdescription) {
-		NLdescription = nLdescription;
 	}
 	public boolean isTransportForbidden() {
 		return transportForbidden;

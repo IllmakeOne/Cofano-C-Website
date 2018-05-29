@@ -221,6 +221,79 @@
     <script>
       feather.replace()
     </script>
+    <script >
+
+    var myObj;
+    var restServlet = "http://localhost:8080/Cofano-C/rest/";
+
+    function loadBooks(e) {
+    	var array = ["kids","tech"]
+    	let search = document.getElementById("search");
+    	let auto = document.getElementById("autocomplete");
+
+        value = search.value;
+        if(value == ""){
+            auto.value = "";
+            return;
+        }
+        
+        new_value = value.toLowerCase();
+        auto.value = value;
+        for(i = 0; i< array.length; i++){
+            if(array[i].lastIndexOf(new_value, 0) === 0){
+                if(e.keyCode === 39){
+                    search.value = array[i]
+                }
+                str_after = array[i].substr(new_value.length, array[i].length);
+                new_str = value + str_after
+                auto.value = new_str;
+                if(e.key === "Enter")
+                	{
+                var txt = "", x;
+                	var	xmlhttp = new XMLHttpRequest();
+                	xmlhttp.onreadystatechange = function() {
+                	    if (this.readyState == 4 && this.status == 200) {
+                	        myObj = JSON.parse(this.responseText);
+                	        txt += "<table id=\"items\">"
+                	        for (x in myObj) {
+                	            txt += "<tr><td>" + myObj[x].shortDescription + "</td><td>" 
+                	            +  myObj[x].longDescription + "</td><td>" + myObj[x].cost + "</td><td>"
+                	            + "<button id=\"" + myObj[x].itemID + "\" onclick=\"addToCart(myObj[" + x + "])\">Add to cart</button></td></tr>";
+                	        }
+                	        txt += "</table>"        
+                	        document.getElementById("items").innerHTML = txt;
+                	    }
+                	};
+                	xmlhttp.open("GET", restServlet + new_str, true);
+                	xmlhttp.send();
+                	search.value = "";
+                	auto.value = "";
+                	}
+                return;
+            }
+        }
+    };
+
+        function addToCart(item) {
+        	var	xmlhttpPost = new XMLHttpRequest();
+        	xmlhttpPost.onreadystatechange = function() {
+        	    if (this.readyState == 4 && this.status == 204) {
+        	    	var	xmlhttp = new XMLHttpRequest();
+                	xmlhttp.onreadystatechange = function() {
+                	    if (this.readyState == 4 && this.status == 200) {
+                	    	document.getElementById("costs").innerHTML = "Total costs = "+ this.responseText + " Euros";
+                	    }
+    				 }
+                	xmlhttp.open("GET", restServlet + "cart/costs", true);
+                	xmlhttp.send();
+        	    }
+        	}
+        	xmlhttpPost.open("POST", restServlet + "cart", true);
+        	xmlhttpPost.setRequestHeader("Content-type", "application/json");
+        	var order = [ { item, numItems : 1 } ];
+        	xmlhttpPost.send(JSON.stringify(order));
+        };
+        </script>
 
 
     

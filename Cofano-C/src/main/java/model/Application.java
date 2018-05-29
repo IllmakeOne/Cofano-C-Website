@@ -4,14 +4,14 @@ public class Application {
 
 	
 	private String name;
-	private String APIkey;
+	private int APIkey;
 	private int ID;
 	
 	public Application() {
 		
 	}
 	
-	public Application(String name, String key, int id) {
+	public Application(String name, int key, int id) {
 		this.name = name;
 		this.APIkey = key;
 		this.ID = id;
@@ -33,11 +33,11 @@ public class Application {
 		return this.name;
 	}
 	
-	public void setAPIKey(String key) {
+	public void setAPIKey(int key) {
 		this.APIkey = key;
 	}
 	
-	public String getAPIKey() {
+	public int getAPIKey() {
 		return this.APIkey;
 	}
 }
