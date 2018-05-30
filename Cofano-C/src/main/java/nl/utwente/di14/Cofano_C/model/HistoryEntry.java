@@ -1,4 +1,4 @@
-package model;
+package nl.utwente.di14.Cofano_C.model;
 import java.sql.Date;
 
 public class HistoryEntry {

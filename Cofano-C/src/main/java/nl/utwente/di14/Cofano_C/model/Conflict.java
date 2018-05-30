@@ -1,5 +1,4 @@
-package model;
-import java.sql.Date;
+package nl.utwente.di14.Cofano_C.model;
 
 public class Conflict {
 	

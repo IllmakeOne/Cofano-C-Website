@@ -1,4 +1,4 @@
-package model;
+package nl.utwente.di14.Cofano_C.model;
 
 public class Undg {
 	
