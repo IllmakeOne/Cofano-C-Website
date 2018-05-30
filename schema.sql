@@ -6,7 +6,7 @@ CREATE TABLE ports(
 );
 
 CREATE TABLE terminals(
-id integer NOT NULL AUTO_INCREMENT,
+ id integer NOT NULL AUTO_INCREMENT,
  name varchar NOT NULL,
  terminal_code varchar NOT NULL,
  type varchar,
@@ -15,7 +15,7 @@ id integer NOT NULL AUTO_INCREMENT,
 );
 
 CREATE TABLE seaships(
-id integer NOT NULL AUTO_INCREMENT,
+ id integer NOT NULL AUTO_INCREMENT,
  imo varchar NOT NULL,
  name varchar NOT NULL,
  callsign varchar,
@@ -47,24 +47,24 @@ CREATE TABLE undgs(
 );
 
 CREATE TABLE undgs_labels(
-name varchar NOT NULL,
-id integer NOT NULL auto_increment,
-undgs_id integer NOT NULL REFERENCES undgs,
-PRIMARY KEY (id)
+ name varchar NOT NULL,
+ id integer NOT NULL auto_increment,
+ undgs_id integer NOT NULL REFERENCES undgs,
+ PRIMARY KEY (id)
 );
 
 CREATE TABLE undgs_tank_special_provisions(
-name varchar NOT NULL,
-id integer NOT NULL auto_increment,
-undgs_id integer NOT NULL REFERENCES undgs,
-PRIMARY KEY (id)
+ name varchar NOT NULL,
+ id integer NOT NULL auto_increment,
+ undgs_id integer NOT NULL REFERENCES undgs,
+ PRIMARY KEY (id)
 );
 
 CREATE TABLE undgs_tankcodes(
-name varchar NOT NULL,
-id integer NOT NULL auto_increment,
-undgs_id integer NOT NULL REFERENCES undgs,
-PRIMARY KEY (id)
+ name varchar NOT NULL,
+ id integer NOT NULL auto_increment,
+ undgs_id integer NOT NULL REFERENCES undgs,
+ PRIMARY KEY (id)
 );
 
 CREATE TABLE undgs_descriptions(
