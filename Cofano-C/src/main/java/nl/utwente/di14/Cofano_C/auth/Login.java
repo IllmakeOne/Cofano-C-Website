@@ -17,7 +17,6 @@ public class Login extends HttpServlet {
 		if (req.getSession().getAttribute("token") != null) {
 			resp.sendRedirect(getServletContext().getInitParameter("cofano.url"));
 		} else {
-			System.out.println("JOOO");
 			RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
 			view.forward(req, resp);
 		}
