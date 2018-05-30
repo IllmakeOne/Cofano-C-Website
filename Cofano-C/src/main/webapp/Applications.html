@@ -246,8 +246,8 @@
     	        txt += " <div class=\"table-responsive\" style=\"margin: 35px\"> <table id=\"items\" class=\"table table-striped \"><thead>"
       	         + "<tr><th><h5>ID</h5></th><th><h5>Name</h5></th><th><h5>API Key</h5></th></tr> </thead>";
         	        for (x in myObj) {
-        	            txt += "<tr><td>" + myObj[x].name + "</td><td>" 
-        	            +  myObj[x].apikey + "</td><td>" + myObj[x].id + "</td><td>"
+        	            txt += "<tr><td>" + myObj[x].id + "</td><td>" 
+        	            +  myObj[x].apikey + "</td><td>" + myObj[x].name + "</td><td>"
         	        }
         	        txt += "</table></div>"        
         	        document.getElementById("items").innerHTML = txt;

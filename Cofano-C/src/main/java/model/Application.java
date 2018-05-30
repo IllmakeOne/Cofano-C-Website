@@ -2,10 +2,10 @@ package model;
 
 public class Application {
 
-	
+
+	private int ID;
 	private String name;
 	private int APIkey;
-	private int ID;
 	
 	public Application() {
 		

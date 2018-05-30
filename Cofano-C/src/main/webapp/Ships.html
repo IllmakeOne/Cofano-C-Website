@@ -130,7 +130,10 @@
   							<div class="dropdown-menu">
     							<a class="dropdown-item" href="#">Name </a>
     							<a class="dropdown-item" href="#">Id</a>
-   								<a class="dropdown-item" href="#">Boat</a> 					
+   								<a class="dropdown-item" href="#">CallSign</a> 	
+    							<a class="dropdown-item" href="#">MMSI</a>
+   								<a class="dropdown-item" href="#">Depth</a>
+   								<a class="dropdown-item" href="#">IMO</a> 	 				
 	  						</div>
 					</div>
 	  			</div>
@@ -233,7 +236,7 @@
     <script >
 
     var myObj;
-    var restServlet = "http://localhost:8080/Cofano-C/rest/data/applications/";
+    var restServlet = "http://localhost:8080/Cofano-C/rest/data/ships/";
 
     
     function loadAll(){
@@ -244,9 +247,9 @@
     	    	console.log("made it");
     	        myObj = JSON.parse(this.responseText);
     	        txt += " <div class=\"table-responsive\" style=\"margin: 35px\"> <table id=\"items\" class=\"table table-striped \"><thead>"
-      	         + "<tr><th><h5>ID</h5></th><th><h5>Name</h5></th><th><h5>API Key</h5></th></tr> </thead>";
+      	         + "<tr><th><h5>ID</h5></th><th><h5>Name</h5></th><th><h5>IMO</h5></th><th><h5>CallSign</h5></th><th><h5>MMSI</h5></th><th><h5>Depth</h5></th></tr> </thead>";
         	        for (x in myObj) {
-        	            txt += "<tr><td>" + myObj[x].name + "</td><td>" 
+        	            txt += "<tr><td>" + myObj[x].ID + "</td><td>" 
         	            +  myObj[x].apikey + "</td><td>" + myObj[x].id + "</td><td>"
         	        }
         	        txt += "</table></div>"        

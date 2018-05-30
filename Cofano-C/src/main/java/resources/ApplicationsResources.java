@@ -1,14 +1,13 @@
 package resources;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.List;
 import model.Application;
+import dao.Tables;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -25,7 +24,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 
-@Path("data/applications/")
+@Path("data/applications")
 public class ApplicationsResources extends Connect {
 	
 
@@ -33,47 +32,33 @@ public class ApplicationsResources extends Connect {
 	}
 	
 	@GET
-	@Produces({ MediaType.APPLICATION_XML})
+	@Produces({MediaType.APPLICATION_JSON})
 	@Path("all")
 	public List<Application> getAllApps(){
-		ArrayList<Application> result = new ArrayList<>();
+		Tables.start();
+		ArrayList<Application> result = new ArrayList<>(); 
 		Application add = new Application();
+		String query = "SELECT * " +
+				"FROM application";
 		
 		try {
-			Class.forName("org.postgresql.Driver");
-			}
-			catch (ClassNotFoundException cnfe) {
-			System.err.println("Error loading driver: " + cnfe);
-			}
+		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 		
-		try {
-			Connection connection =
-			DriverManager.getConnection(url, "docker", "YsLxCu0I1");
-
-			String query = "SELECT * " +
-					"FROM application";
-			
-			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(query);
-			
-			ResultSet resultSet = statement.executeQuery();
-			
-
-			
-			while(resultSet.next()) {
-				System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
-				add.setName(resultSet.getString(1));
-				add.setAPIKey((Integer) resultSet.getInt(2));
-				add.setID(resultSet.getInt(3));
-				result.add(add);
-				}
-
-			connection.close();
-
-			}
-			catch(SQLException sqle) {
-			System.err.println("Error connecting: " + sqle);
-			}
+		ResultSet resultSet = statement.executeQuery();
 		
+		while(resultSet.next()) {
+			System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
+			add = new Application();
+			add.setName(resultSet.getString(1));
+			add.setAPIKey((Integer) resultSet.getInt(2));
+			add.setID(resultSet.getInt(3));
+			
+			result.add(add);
+			}
+		} catch (SQLException e) {
+			System.err.println("Could not retrive all apps" + e);
+		}
+	
 		return result;
 		
 	}
