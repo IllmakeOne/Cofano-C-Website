@@ -21,7 +21,9 @@ CREATE TABLE terminals (
   terminal_code varchar NOT NULL,
   type          varchar,
   unlo          varchar,
-  PRIMARY KEY (tid)
+  port_id       integer NOT NULL,
+  PRIMARY KEY (tid),
+  FOREIGN KEY (port_id) REFERENCES ports (pid)
 );
 
 CREATE TABLE seaships (
@@ -39,21 +41,25 @@ CREATE TABLE undgs (
   uid                              serial  NOT NULL,
   classification                   varchar NOT NULL,
   classification_code              varchar NOT NULL,
-  undgs_tank_special_provisions_id integer REFERENCES undgs_tank_special_provisions (utsid),
+  undgs_tank_special_provisions_id integer,
   collective                       boolean,
-  undgs_descriptions_id            integer NOT NULL REFERENCES undgs_descriptions (udid),
+  undgs_descriptions_id            integer NOT NULL,
   hazard_no                        varchar,
-  undgs_labels_id                  integer REFERENCES undgs_labels (ulid),
+  undgs_labels_id                  integer,
   not_applicable                   boolean,
   packing_group                    integer,
   station                          varchar,
-  undgs_tankcodes_id               integer REFERENCES undgs_tankcodes (utid),
+  undgs_tankcodes_id               integer,
   transport_category               varchar,
   transport_forbidden              boolean,
   tunnel_code                      varchar,
   un_no                            integer,
   vehicleTank_carriage             varchar,
-  PRIMARY KEY (uid)
+  PRIMARY KEY (uid),
+  FOREIGN KEY (undgs_tank_special_provisions_id) REFERENCES undgs_tank_special_provisions (utsid),
+  FOREIGN KEY (undgs_descriptions_id) REFERENCES undgs_descriptions (udid),
+  FOREIGN KEY (undgs_labels_id) REFERENCES undgs_labels (ulid),
+  FOREIGN KEY (undgs_tankcodes_id) REFERENCES undgs_tankcodes (utid)
 );
 
 CREATE TABLE undgs_labels (
@@ -142,5 +148,5 @@ CREATE TABLE history (
   id       SERIAL primary key,
   title    varchar   NOT NULL,
   message  text      NOT NULL,
-  added_at timestamp NOT NULL,
+  added_at timestamp NOT NULL
 );
