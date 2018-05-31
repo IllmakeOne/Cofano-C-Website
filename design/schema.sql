@@ -154,7 +154,7 @@ CREATE TABLE applications (
 
 CREATE TABLE conflicts (
   cid         SERIAL    NOT NULL,
-  created_by  varchar   NOT NULL,
+  created_by  integer   NOT NULL,
   solved_by   integer,
   table_name  varchar   NOT NULL,
   column_name varchar   NOT NULL,
@@ -162,7 +162,8 @@ CREATE TABLE conflicts (
   added_at    timestamp NOT NULL DEFAULT now(),
   updated_at  timestamp,
   PRIMARY KEY (cid),
-  FOREIGN KEY (solved_by) REFERENCES users (uid)
+  FOREIGN KEY (solved_by) REFERENCES users (uid),
+  FOREIGN KEY (created_by) REFERENCES applications (aid)
 );
 
 CREATE TABLE history (

@@ -99,8 +99,8 @@
       <file leaf-file-name="index.jsp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/index.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="36" column="52" selection-start-line="36" selection-start-column="52" selection-end-line="36" selection-end-column="52" />
+            <state relative-caret-position="675">
+              <caret line="45" column="90" lean-forward="true" selection-start-line="45" selection-start-column="90" selection-end-line="45" selection-end-column="90" />
             </state>
           </provider>
         </entry>
@@ -463,12 +463,12 @@
       <workItem from="1527422499548" duration="9009000" />
       <workItem from="1527495420196" duration="286000" />
       <workItem from="1527663208681" duration="2206000" />
-      <workItem from="1527749449934" duration="1079000" />
+      <workItem from="1527749449934" duration="1317000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="32175000" />
+    <option name="totallyTimeSpent" value="32413000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="1920" height="978" extended-state="0" />
@@ -875,8 +875,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/index.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="36" column="52" selection-start-line="36" selection-start-column="52" selection-end-line="36" selection-end-column="52" />
+        <state relative-caret-position="675">
+          <caret line="45" column="90" lean-forward="true" selection-start-line="45" selection-start-column="90" selection-end-line="45" selection-end-column="90" />
         </state>
       </provider>
     </entry>
