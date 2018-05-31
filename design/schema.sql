@@ -1,11 +1,9 @@
 /*
 Dropping old tables
- */
+*/
 
-/*DROP TABLE ports, terminals, seaships, undgs, undgs_labels, undgs_tank_special_provisions, undgs_tankcodes, undgs_descriptions, container_types;
- */
-DROP SCHEMA public CASCADE;
-CREATE SCHEMA public;
+DROP TABLE ports, terminals, ships, undgs, undgs_labels, undgs_tank_special_provisions, undgs_tankcodes, undgs_descriptions, container_types;
+
 /*
 Creating new tables
  */
@@ -126,10 +124,8 @@ Application specific tables
 Dropping old tables
  */
 
-/*
-DROP TABLE users, applications, conflicts, history;
 
- */
+DROP TABLE users, applications, conflicts, history;
 
 /**
 Creating new tables
