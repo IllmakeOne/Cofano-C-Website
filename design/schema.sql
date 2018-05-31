@@ -2,8 +2,10 @@
 Dropping old tables
  */
 
-DROP TABLE ports, terminals, seaships, undgs, undgs_labels, undgs_tank_special_provisions, undgs_tankcodes, undgs_descriptions, container_types;
-
+/*DROP TABLE ports, terminals, seaships, undgs, undgs_labels, undgs_tank_special_provisions, undgs_tankcodes, undgs_descriptions, container_types;
+ */
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
 /*
 Creating new tables
  */
@@ -26,7 +28,7 @@ CREATE TABLE terminals (
   FOREIGN KEY (port_id) REFERENCES ports (pid)
 );
 
-CREATE TABLE seaships (
+CREATE TABLE ships (
   sid        serial  NOT NULL,
   imo        varchar NOT NULL,
   name       varchar NOT NULL,
@@ -55,40 +57,43 @@ CREATE TABLE undgs (
   tunnel_code                      varchar,
   un_no                            integer,
   vehicleTank_carriage             varchar,
-  PRIMARY KEY (uid),
-  FOREIGN KEY (undgs_tank_special_provisions_id) REFERENCES undgs_tank_special_provisions (utsid),
-  FOREIGN KEY (undgs_descriptions_id) REFERENCES undgs_descriptions (udid),
-  FOREIGN KEY (undgs_labels_id) REFERENCES undgs_labels (ulid),
-  FOREIGN KEY (undgs_tankcodes_id) REFERENCES undgs_tankcodes (utid)
+  PRIMARY KEY (uid)
 );
 
 CREATE TABLE undgs_labels (
   ulid     serial  NOT NULL,
   name     varchar NOT NULL,
-  undgs_id integer NOT NULL REFERENCES undgs,
-  PRIMARY KEY (ulid)
+  undgs_id integer NOT NULL,
+  PRIMARY KEY (ulid),
+  FOREIGN KEY (undgs_id) REFERENCES undgs (uid)
 );
 
 CREATE TABLE undgs_tank_special_provisions (
   utsid    serial  NOT NULL,
   name     varchar NOT NULL,
-  undgs_id integer NOT NULL REFERENCES undgs,
-  PRIMARY KEY (utsid)
+  undgs_id integer NOT NULL,
+  PRIMARY KEY (utsid),
+  FOREIGN KEY (undgs_id) REFERENCES undgs (uid)
+
 );
 
 CREATE TABLE undgs_tankcodes (
   utid     serial  NOT NULL,
   name     varchar NOT NULL,
-  undgs_id integer NOT NULL REFERENCES undgs,
-  PRIMARY KEY (utid)
+  undgs_id integer NOT NULL,
+  PRIMARY KEY (utid),
+  FOREIGN KEY (undgs_id) REFERENCES undgs (uid)
+
 );
 
 CREATE TABLE undgs_descriptions (
   udid           serial  NOT NULL,
   undgs_language varchar NOT NULL,
   decription     varchar NOT NULL,
-  undgs_id       integer NOT NULL REFERENCES undgs,
-  PRIMARY KEY (udid)
+  undgs_id       integer NOT NULL,
+  PRIMARY KEY (udid),
+  FOREIGN KEY (undgs_id) REFERENCES undgs (uid)
+
 );
 
 
@@ -102,6 +107,15 @@ CREATE TABLE container_types (
   reefer       boolean,
   PRIMARY KEY (cid)
 );
+ALTER TABLE undgs
+  ADD CONSTRAINT fk_udngs_undgs_descriptions
+FOREIGN KEY (undgs_descriptions_id) REFERENCES undgs_descriptions (udid),
+  ADD CONSTRAINT fk_undgs_undgs_tank_special_prvisions
+FOREIGN KEY (undgs_tank_special_provisions_id) REFERENCES undgs_tank_special_provisions (utsid),
+  ADD CONSTRAINT fk_undgs_undgs_labels
+FOREIGN KEY (undgs_labels_id) REFERENCES undgs_labels (ulid),
+  ADD CONSTRAINT fk_undgs_undgs_tank_codes
+FOREIGN KEY (undgs_tankcodes_id) REFERENCES undgs_tankcodes (utid);
 
 
 /*
@@ -112,7 +126,10 @@ Application specific tables
 Dropping old tables
  */
 
+/*
 DROP TABLE users, applications, conflicts, history;
+
+ */
 
 /**
 Creating new tables
