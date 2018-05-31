@@ -169,6 +169,6 @@ CREATE TABLE history (
   hid      SERIAL,
   title    varchar   NOT NULL,
   message  text      NOT NULL,
-  added_at timestamp NOT NULL,
+  added_at timestamp NOT NULL DEFAULT now(),
   PRIMARY KEY (hid)
 );
