@@ -6,7 +6,7 @@
     <meta name="description" content="Cofano-C dashboard">
     <meta name="author" content="">
 
-    <title>Cofano-C DataBase</title>
+    <title>Cofano-C Applications</title>
 
     <!-- Bootstrap core CSS -->
     <link href="./css/bootstrap.min.css" rel="stylesheet">
@@ -57,19 +57,19 @@
             
 
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
-              <span>DATABASES</span>
+              <span>DATA</span>
             </h6>
             <ul class="nav flex-column">
               <li class="nav-item">
-                <a class="nav-link " href="#">
-                  <span data-feather="layers"></span>
+                <a class="nav-link " href="http://localhost:8080/Cofano-C/appsmockup.html">
+                  <span data-feather="aperture"></span>
                   Applications
                   <span class="sr-only">(current)</span>
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link " href="#">
-                  <span data-feather="layers"></span>
+                  <span data-feather="anchor"></span>
                   Ships
                   <span class="sr-only">(current)</span>
                 </a>
@@ -80,7 +80,51 @@
                   history
                 </a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link " href="#">
+                  <span data-feather="users"></span>
+                  Users
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " href="#">
+                  <span data-feather="package"></span>
+                  Container Types
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " href="#">
+                  <span data-feather="terminal"></span>
+                  Terminals 
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " href="#">
+                  <span data-feather="alert-triangle"></span>
+                  Conflicts
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li>
+               <li class="nav-item">
+                <a class="nav-link " href="#">
+                  <span data-feather="box"></span>
+                  UNDGs
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li>
+              
+               <li class="nav-item">
+                <a class="nav-link " href="#">
+                  <span data-feather="map-pin"></span>
+                  Destination Ports
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li>
             </ul>
+            
 
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
               <span>ADMINISTRATION</span>
@@ -115,10 +159,10 @@
           
           <div class="col-sm-4" ><div class="search-container">
 		   	 <form action="/action_page.php">
-		     	 <input type="text" placeholder="Search..." name="search">
-		     	 <button type="button" class="btn  btn-sm">
-					    <span data-feather="search"></span>
-					    </button>
+		     	 <input type="text" placeholder="Search..." name="search" style="margin-left: 10px">
+		     	 	<button type="button" class="btn  ">
+					    	<span data-feather="search"></span>
+					</button>
 		    	</form>
 		  	</div>
 		  </div>
@@ -140,10 +184,12 @@
 	       	  </div>
 			
 			
+		<div class="col-sm-11">	
 		<div id="results">
 			<div id="items">
 			<p>No items found so far!</p>
 			</div>
+		</div>
 		</div>
 			
 			
@@ -243,11 +289,17 @@
     	    if (this.readyState == 4 && this.status == 200) {
     	    	console.log("made it");
     	        myObj = JSON.parse(this.responseText);
-    	        txt += " <div class=\"table-responsive\" style=\"margin: 35px\"> <table id=\"items\" class=\"table table-striped \"><thead>"
-      	         + "<tr><th><h5>ID</h5></th><th><h5>Name</h5></th><th><h5>API Key</h5></th></tr> </thead>";
+    	        txt += " <div class=\"table-responsive\" style=\"margin: 10px\"> <table id=\"items\" class=\"table table-striped \"><thead>"
+      	         + "<tr>  <th><h5>ID</h5></th>  <th><h5>Name</h5></th>  <th><h5>API Key</h5></th> <th><h5>Changes</h5></th> </tr> </thead>";
         	        for (x in myObj) {
-        	            txt += "<tr><td>" + myObj[x].id + "</td><td>" 
-        	            +  myObj[x].apikey + "</td><td>" + myObj[x].name + "</td><td>"
+        	            txt += "<tr><td>" + myObj[x].name + "</td><td>" 
+        	            +  myObj[x].apikey + "</td><td>" + myObj[x].id + "</td>" +
+        	            "<td><div class=\"btn-group\"> <button type=\"button\" class=\"btn btn-info  \">" +
+    					 "<span data-feather=\"edit\"></span></button>"+
+    					 "<button type=\"button\" class=\"btn btn-danger  \">" +
+    					 "<span data-feather=\"trash-2\"></span> </button></div></td></tr>";
+    					 
+    
         	        }
         	        txt += "</table></div>"        
         	        document.getElementById("items").innerHTML = txt;
@@ -294,3 +346,4 @@
   </body>
   
 </html>
+	

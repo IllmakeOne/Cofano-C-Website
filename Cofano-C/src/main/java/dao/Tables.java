@@ -55,7 +55,6 @@ public class Tables {
 			catch (SQLException e) {
 				System.err.println("error loading DB" + e);
 			}
-			
 		
 		return true;
 	}

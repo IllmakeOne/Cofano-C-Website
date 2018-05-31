@@ -115,10 +115,10 @@
           
           <div class="col-sm-4" ><div class="search-container">
 		   	 <form action="/action_page.php">
-		     	 <input type="text" placeholder="Search..." name="search">
-		     	 <button type="button" class="btn  btn-sm">
-					    <span data-feather="search"></span>
-					    </button>
+		     	 <input type="text" placeholder="Search..." name="search" style="margin-left: 10px">
+		     	 	<button type="button" class="btn  ">
+					    	<span data-feather="search"></span>
+					</button>
 		    	</form>
 		  	</div>
 		  </div>
@@ -140,10 +140,12 @@
 	       	  </div>
 			
 			
+		<div class="col-sm-11">	
 		<div id="results">
 			<div id="items">
 			<p>No items found so far!</p>
 			</div>
+		</div>
 		</div>
 			
 			
@@ -243,11 +245,17 @@
     	    if (this.readyState == 4 && this.status == 200) {
     	    	console.log("made it");
     	        myObj = JSON.parse(this.responseText);
-    	        txt += " <div class=\"table-responsive\" style=\"margin: 35px\"> <table id=\"items\" class=\"table table-striped \"><thead>"
-      	         + "<tr><th><h5>ID</h5></th><th><h5>Name</h5></th><th><h5>API Key</h5></th></tr> </thead>";
+    	        txt += " <div class=\"table-responsive\" style=\"margin: 10px\"> <table id=\"items\" class=\"table table-striped \"><thead>"
+      	         + "<tr>  <th><h5>ID</h5></th>  <th><h5>Name</h5></th>  <th><h5>API Key</h5></th> <th><h5>Changes</h5></th> </tr> </thead>";
         	        for (x in myObj) {
         	            txt += "<tr><td>" + myObj[x].name + "</td><td>" 
-        	            +  myObj[x].apikey + "</td><td>" + myObj[x].id + "</td><td>"
+        	            +  myObj[x].apikey + "</td><td>" + myObj[x].id + "</td>" +
+        	            "<td><div class=\"btn-group\"> <button type=\"button\" class=\"btn btn-info  btn-sm\">" +
+    					 "<span data-feather=\"edit\"></span></button>"+
+    					 "<button type=\"button\" class=\"btn btn-danger  btn-sm\">" +
+    					 "<span data-feather=\"trash-2\"></span> </button></div></td></tr>";
+    					 
+    
         	        }
         	        txt += "</table></div>"        
         	        document.getElementById("items").innerHTML = txt;
