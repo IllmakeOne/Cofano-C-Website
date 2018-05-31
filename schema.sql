@@ -119,34 +119,39 @@ Creating new tables
  */
 
 CREATE TABLE users (
-  id                  SERIAL primary key,
+  uid                 SERIAL  NOT NULL,
   name                varchar NOT NULL,
   email               varchar,
   email_notifications boolean NOT NULL DEFAULT false,
   darkmode            boolean NOT NULL DEFAULT false,
-  last_login          timestamp
+  last_login          timestamp,
+  PRIMARY KEY (uid)
 );
 
 CREATE TABLE applications (
-  id      SERIAL primary key,
+  aid     SERIAL  NOT NULL,
   name    varchar NOT NULL,
-  api_key varchar NOT NULL
+  api_key varchar NOT NULL,
+  PRIMARY KEY (aid)
 );
 
 CREATE TABLE conflicts (
-  id          SERIAL primary key,
+  cid         SERIAL    NOT NULL,
   created_by  varchar   NOT NULL,
-  solved_by   integer REFERENCES users (id),
+  solved_by   integer,
   table_name  varchar   NOT NULL,
   column_name varchar   NOT NULL,
   value       varchar   NOT NULL,
   added_at    timestamp NOT NULL,
-  updated_at  timestamp
+  updated_at  timestamp,
+  PRIMARY KEY (cid),
+  FOREIGN KEY (solved_by) REFERENCES users (uid)
 );
 
 CREATE TABLE history (
-  id       SERIAL primary key,
+  hid      SERIAL,
   title    varchar   NOT NULL,
   message  text      NOT NULL,
-  added_at timestamp NOT NULL
+  added_at timestamp NOT NULL,
+  PRIMARY KEY (hid)
 );
