@@ -1,0 +1,202 @@
+[
+    {
+        "displayName": "23TK",
+        "isoCode": "",
+        "description": "23 ft. Tank container",
+        "length": 23,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "20BC",
+        "isoCode": "22B1",
+        "description": "20' Bulk ",
+        "length": 20,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "20DV",
+        "isoCode": "22G1",
+        "description": "20' Dry van",
+        "length": 20,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "20HD",
+        "isoCode": "22G1",
+        "description": "20' Heavy Duty",
+        "length": 20,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "20FL",
+        "isoCode": "22P1",
+        "description": "20' Flat rack",
+        "length": 20,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "20RF",
+        "isoCode": "22R1",
+        "description": "20' Reefer",
+        "length": 20,
+        "height": 8,
+        "reefer": true
+    },
+    {
+        "displayName": "20TK",
+        "isoCode": "22T1",
+        "description": "20' Bulk tank",
+        "length": 20,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "20OT",
+        "isoCode": "22U1",
+        "description": "20' Open Top",
+        "length": 20,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "20HC",
+        "isoCode": "25G1",
+        "description": "20' HC Dry van",
+        "length": 20,
+        "height": 9.5,
+        "reefer": false
+    },
+    {
+        "displayName": "20RH",
+        "isoCode": "25R1",
+        "description": "20' HC Reefer",
+        "length": 20,
+        "height": 9.5,
+        "reefer": true
+    },
+    {
+        "displayName": "40DV",
+        "isoCode": "42G1",
+        "description": "40' Dry van",
+        "length": 40,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "40RF",
+        "isoCode": "42R1",
+        "description": "40' Reefer",
+        "length": 40,
+        "height": 8,
+        "reefer": true
+    },
+    {
+        "displayName": "40TK",
+        "isoCode": "42T2",
+        "description": "40' Bulk tank",
+        "length": 40,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "40OT",
+        "isoCode": "42U1",
+        "description": "40' Open Top",
+        "length": 40,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "40HC",
+        "isoCode": "45G1",
+        "description": "40' HC Dry van",
+        "length": 40,
+        "height": 9.5,
+        "reefer": false
+    },
+    {
+        "displayName": "40FL",
+        "isoCode": "45P1",
+        "description": "40' Flat rack",
+        "length": 40,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "40RH",
+        "isoCode": "45R1",
+        "description": "40' HC Reefer",
+        "length": 40,
+        "height": 9.5,
+        "reefer": true
+    },
+    {
+        "displayName": "40DW",
+        "isoCode": "4CG1",
+        "description": "40' Dry Wide",
+        "length": 40,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "40PW",
+        "isoCode": "4CG1",
+        "description": "40' Pallet wide",
+        "length": 40,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "40HW",
+        "isoCode": "4EG1",
+        "description": "40' HC pallet wide",
+        "length": 40,
+        "height": 9.5,
+        "reefer": false
+    },
+    {
+        "displayName": "45DV",
+        "isoCode": "L2G1",
+        "description": "45'Dry Van",
+        "length": 45,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "45FL",
+        "isoCode": "L2P1",
+        "description": "45' Flat",
+        "length": 45,
+        "height": 8,
+        "reefer": false
+    },
+    {
+        "displayName": "45HC",
+        "isoCode": "L5G1",
+        "description": "45' High Cube",
+        "length": 45,
+        "height": 9.5,
+        "reefer": false
+    },
+    {
+        "displayName": "45RH",
+        "isoCode": "L5R1",
+        "description": "45' Reefer High Cube",
+        "length": 45,
+        "height": 9.5,
+        "reefer": true
+    },
+    {
+        "displayName": "45PW",
+        "isoCode": "LEG1",
+        "description": "45' pallet wide",
+        "length": 45,
+        "height": 8,
+        "reefer": false
+    }
+]
