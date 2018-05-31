@@ -1,102 +1,121 @@
-CREATE TABLE ports(
- id integer NOT NULL AUTO_INCREMENT,
- name varchar NOT NULL,
- unlo varchar,
- PRIMARY KEY(id)
+/*
+Dropping old tables
+ */
+
+DROP TABLE ports, terminals, seaships, undgs, undgs_labels, undgs_tank_special_provisions, undgs_tankcodes, undgs_descriptions, container_types;
+
+/*
+Creating new tables
+ */
+
+CREATE TABLE ports (
+  pid  serial  NOT NULL,
+  name varchar NOT NULL,
+  unlo varchar,
+  PRIMARY KEY (pid)
 );
 
-CREATE TABLE terminals(
- id integer NOT NULL AUTO_INCREMENT,
- name varchar NOT NULL,
- terminal_code varchar NOT NULL,
- type varchar,
- unlo varchar,
- PRIMARY KEY(id)
+CREATE TABLE terminals (
+  tid           serial  NOT NULL,
+  name          varchar NOT NULL,
+  terminal_code varchar NOT NULL,
+  type          varchar,
+  unlo          varchar,
+  PRIMARY KEY (tid)
 );
 
-CREATE TABLE seaships(
- id integer NOT NULL AUTO_INCREMENT,
- imo varchar NOT NULL,
- name varchar NOT NULL,
- callsign varchar,
- mmsi character(9),
- ship_depth real,
- PRIMARY KEY(id)
-);
-
-
-CREATE TABLE undgs(
- id integer NOT NULL AUTO_INCREMENT,
- classification varchar NOT NULL,
- classification_code varchar NOT NULL,
- undgs_tank_special_provisions_id integer REFERENCES undgs_tank_special_provisions.id,
- collective boolean,
- undgs_descriptions_id integer NOT NULL REFERENCES undgs_descriptions.id, 
- hazard_no varchar,
- undgs_labels_id integer REFERENCES undgs_labels.id,
- not_applicable boolean, 
- packing_group integer, 
- station varchar,
- undgs_tankcodes_id integer REFERENCES undgs_tankcodes.id
- transport_category varchar,
- transport_forbidden boolean,
- tunnel_code varchar,
- un_no integer,
- vehicleTank_carriage varchar,
- PRIMARY KEY(id)
-);
-
-CREATE TABLE undgs_labels(
- name varchar NOT NULL,
- id integer NOT NULL auto_increment,
- undgs_id integer NOT NULL REFERENCES undgs,
- PRIMARY KEY (id)
-);
-
-CREATE TABLE undgs_tank_special_provisions(
- name varchar NOT NULL,
- id integer NOT NULL auto_increment,
- undgs_id integer NOT NULL REFERENCES undgs,
- PRIMARY KEY (id)
-);
-
-CREATE TABLE undgs_tankcodes(
- name varchar NOT NULL,
- id integer NOT NULL auto_increment,
- undgs_id integer NOT NULL REFERENCES undgs,
- PRIMARY KEY (id)
-);
-
-CREATE TABLE undgs_descriptions(
- undgs_language varchar NOT NULL,
- decription varchar NOT NULL,
- id integer auto_increment NOT NULL,
- undgs_id integer NOT NULL REFERENCES undgs,
- PRIMARY KEY (id)
+CREATE TABLE seaships (
+  sid        serial  NOT NULL,
+  imo        varchar NOT NULL,
+  name       varchar NOT NULL,
+  callsign   varchar,
+  mmsi       character(9),
+  ship_depth real,
+  PRIMARY KEY (sid)
 );
 
 
-CREATE TABLE container_types(
- id integer NOT NULL AUTO_INCREMENT,
- display_name varchar NOT NULL,
- iso_code varchar,
- description varchar,
- c_length integer NOT NULL,
- c_height integer NOT NULL,
- reefer boolean,
- PRIMARY KEY(id)
+CREATE TABLE undgs (
+  uid                              serial  NOT NULL,
+  classification                   varchar NOT NULL,
+  classification_code              varchar NOT NULL,
+  undgs_tank_special_provisions_id integer REFERENCES undgs_tank_special_provisions (utsid),
+  collective                       boolean,
+  undgs_descriptions_id            integer NOT NULL REFERENCES undgs_descriptions (udid),
+  hazard_no                        varchar,
+  undgs_labels_id                  integer REFERENCES undgs_labels (ulid),
+  not_applicable                   boolean,
+  packing_group                    integer,
+  station                          varchar,
+  undgs_tankcodes_id               integer REFERENCES undgs_tankcodes (utid),
+  transport_category               varchar,
+  transport_forbidden              boolean,
+  tunnel_code                      varchar,
+  un_no                            integer,
+  vehicleTank_carriage             varchar,
+  PRIMARY KEY (uid)
 );
 
+CREATE TABLE undgs_labels (
+  ulid     serial  NOT NULL,
+  name     varchar NOT NULL,
+  undgs_id integer NOT NULL REFERENCES undgs,
+  PRIMARY KEY (ulid)
+);
+
+CREATE TABLE undgs_tank_special_provisions (
+  utsid    serial  NOT NULL,
+  name     varchar NOT NULL,
+  undgs_id integer NOT NULL REFERENCES undgs,
+  PRIMARY KEY (utsid)
+);
+
+CREATE TABLE undgs_tankcodes (
+  utid     serial  NOT NULL,
+  name     varchar NOT NULL,
+  undgs_id integer NOT NULL REFERENCES undgs,
+  PRIMARY KEY (utid)
+);
+
+CREATE TABLE undgs_descriptions (
+  udid           serial  NOT NULL,
+  undgs_language varchar NOT NULL,
+  decription     varchar NOT NULL,
+  undgs_id       integer NOT NULL REFERENCES undgs,
+  PRIMARY KEY (udid)
+);
+
+
+CREATE TABLE container_types (
+  cid          serial  NOT NULL,
+  display_name varchar NOT NULL,
+  iso_code     varchar,
+  description  varchar,
+  c_length     integer NOT NULL,
+  c_height     integer NOT NULL,
+  reefer       boolean,
+  PRIMARY KEY (cid)
+);
 
 
 /*
-Our stuff
+Application specific tables
 */
 
-CREATE TABLE users(
- id integer NOT NULL auto_increment,
- name varchar NOT NULL,
- email varchar,
- email_notifications boolean,
- last_login timestamp
+/*
+Dropping old tables
+ */
+
+DROP TABLE users;
+
+/**
+Creating new tables
+ */
+
+CREATE TABLE users (
+  uid                 serial  NOT NULL,
+  name                varchar NOT NULL,
+  email               varchar,
+  email_notifications boolean,
+  last_login          timestamp
 );
