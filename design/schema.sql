@@ -159,7 +159,7 @@ CREATE TABLE conflicts (
   table_name  varchar   NOT NULL,
   column_name varchar   NOT NULL,
   value       varchar   NOT NULL,
-  added_at    timestamp NOT NULL,
+  added_at    timestamp NOT NULL DEFAULT now(),
   updated_at  timestamp,
   PRIMARY KEY (cid),
   FOREIGN KEY (solved_by) REFERENCES users (uid)
