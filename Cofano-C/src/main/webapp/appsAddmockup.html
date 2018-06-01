@@ -27,7 +27,7 @@
     
   </head>
 
-  <body onload="loadAll()">
+  <body >
     <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Cofano-C</a>
     </nav>
@@ -152,46 +152,51 @@
 
            <div class="row">
            		<div class="col-sm-8">
-        	  <h2 style="margin: 20px" >Applications</h2></div>
+        	  <h2 style="margin: 20px" >Add Application</h2></div>
         	  
         	  
-           </div>
-          <div class="row">
           
-          <div class="col-sm-4" ><div class="search-container">
-		   	 <form action="/action_page.php">
-		     	 <input type="text" placeholder="Search..." name="search" style="margin-left: 10px">
-		     	 	<button type="button" class="btn  ">
-					    	<span data-feather="search"></span>
+			
+			
+			<div class="col-sm-10">	
+          <div class="table-responsive" style="margin: 35px">
+            <table class="table table-striped table-sm">
+              <thead>
+                <tr>
+                  <th><h5>Field</h5></th>
+                  <th><h5>Data</h5></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Name</td> 
+                  <td>
+                	<form action="/action_page.php">
+		     			 <input type="text" placeholder="* Name Example *" name="addname">
+		    		</form>
+                  </td>
+                </tr>
+ 				<tr>
+                  <td>API Key</td> 
+                  <td><form action="/action_page.php">
+		     			 <input type="text" placeholder="* 2727 *" name="addname">
+		    		</form>
+		    		</td>
+                </tr>
+                <tr>
+                  <td></td> 
+                  <td>
+                  	<button type="button" class="btn  ">
+					    	Add Information 
 					</button>
-		    	</form>
-		  	</div>
-		  </div>
-  				<div class="col-sm-4">
-  					<div class="dropdown">
-  						<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
-    					Order By
-  						</button>
-  							<div class="dropdown-menu">
-    							<a class="dropdown-item" href="#">Name </a>
-    							<a class="dropdown-item" href="#">Id</a>
-   								<a class="dropdown-item" href="#">Boat</a> 					
-	  						</div>
-					</div>
-	  			</div>
-	  			<div class="col-sm-4">
-	        	   <button type="button" class="btn   " onClick="location.href='D:\\University\\Module 4\\Project\\DataAndInformationProject\\Cofano-C\\target\\m2e-wtp\\html-mockup\\AddDAtabase.html'">
-	        	    Add Info  <span data-feather="plus-circle"></span></button>
-	       	  </div>
-			
-			
-			
-		<div class="col-sm-11">
-		<div id="results">
-			<div id="items">
-			<p>No items found so far!</p>
+		    		</td>
+                </tr>
+              
+              </tbody>
+            </table>
+          </div>   
+    
 			</div>
-		</div>
 		</div>
 			
 			
@@ -296,9 +301,9 @@
         	        for (x in myObj) {
         	            txt += "<tr><td>" + myObj[x].id + "</td><td>" 
         	            +  myObj[x].name + "</td><td>" + myObj[x].apikey + "</td>" +
-        	            "<td><div class=\"btn-group\"> <button type=\"button\" class=\"btn btn-outline-primary btn-sm \">" +
+        	            "<td><div class=\"btn-group\"> <button type=\"button\" class=\"btn btn-info btn-sm \">" +
     					 "<img src=\"img/edit.svg\" class=\"img-rounded\"></button>"+
-    					 "<button type=\"button\" class=\"btn btn-outline-danger btn-sm \">" +
+    					 "<button type=\"button\" class=\"btn btn-danger btn-sm \">" +
     					 "<img src=\"img/trash-2.svg\" class=\"img-rounded\"> </button></div></td></tr>";
     					 
     
