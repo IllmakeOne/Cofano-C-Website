@@ -67,7 +67,7 @@ public class ApplicationsResources extends Connect {
 		ArrayList<Application> result = new ArrayList<>(); 
 		Application add = new Application();
 		String query = "SELECT * " +
-				"FROM applications";
+				"FROM application";
 		
 		try {
 		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
