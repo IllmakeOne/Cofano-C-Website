@@ -1,4 +1,4 @@
-package dao;
+package nl.utwente.di14.Cofano_C.dao;
 
 
 
@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.List;
-import model.Application;
+import nl.utwente.di14.Cofano_C.model.Application;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
