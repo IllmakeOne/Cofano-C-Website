@@ -2,20 +2,20 @@
 Dropping old tables
 */
 
-DROP TABLE ports, terminals, ships, undgs, undgs_labels, undgs_tank_special_provisions, undgs_tankcodes, undgs_descriptions, container_types;
+DROP TABLE port, terminal, ship, undgs, undgs_label, undgs_tank_special_provision, undgs_tankcode, undgs_description, container_type;
 
 /*
 Creating new tables
  */
 
-CREATE TABLE ports (
+CREATE TABLE port (
   pid  serial  NOT NULL,
   name varchar NOT NULL,
   unlo varchar,
   PRIMARY KEY (pid)
 );
 
-CREATE TABLE terminals (
+CREATE TABLE terminal (
   tid           serial  NOT NULL,
   name          varchar NOT NULL,
   terminal_code varchar NOT NULL,
@@ -23,10 +23,10 @@ CREATE TABLE terminals (
   unlo          varchar,
   port_id       integer NOT NULL,
   PRIMARY KEY (tid),
-  FOREIGN KEY (port_id) REFERENCES ports (pid)
+  FOREIGN KEY (port_id) REFERENCES port (pid)
 );
 
-CREATE TABLE ships (
+CREATE TABLE ship (
   sid        serial  NOT NULL,
   imo        varchar NOT NULL,
   name       varchar NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE undgs (
   PRIMARY KEY (uid)
 );
 
-CREATE TABLE undgs_labels (
+CREATE TABLE undgs_label (
   ulid     serial  NOT NULL,
   name     varchar NOT NULL,
   PRIMARY KEY (ulid)
@@ -65,10 +65,10 @@ CREATE TABLE undgs_has_label (
   ulid  integer NOT NULL,
   PRIMARY KEY (uid, ulid),
   FOREIGN KEY (uid)  REFERENCES undgs,
-  FOREIGN KEY (ulid) REFERENCES undgs_labels
+  FOREIGN KEY (ulid) REFERENCES undgs_label
 );
 
-CREATE TABLE undgs_tank_special_provisions (
+CREATE TABLE undgs_tank_special_provision (
   utsid    serial  NOT NULL,
   name     varchar NOT NULL,
   PRIMARY KEY (utsid)
@@ -79,10 +79,10 @@ CREATE TABLE undgs_has_tank_special_provision (
   utsid integer NOT NULL,
   PRIMARY KEY (uid, utsid),
   FOREIGN KEY (uid)   REFERENCES undgs,
-  FOREIGN KEY (utsid) REFERENCES undgs_tank_special_provisions
+  FOREIGN KEY (utsid) REFERENCES undgs_tank_special_provision
 );
 
-CREATE TABLE undgs_tankcodes (
+CREATE TABLE undgs_tankcode (
   utid     serial  NOT NULL,
   name     varchar NOT NULL,
   PRIMARY KEY (utid)
@@ -93,10 +93,10 @@ CREATE TABLE undgs_has_tankcode (
   utid integer NOT NULL,
   PRIMARY KEY (uid, utid),
   FOREIGN KEY (uid)  REFERENCES undgs,
-  FOREIGN KEY (utid) REFERENCES undgs_tankcodes
+  FOREIGN KEY (utid) REFERENCES undgs_tankcode
 );
 
-CREATE TABLE undgs_descriptions (
+CREATE TABLE undgs_description (
   udid           serial  NOT NULL,
   undgs_language varchar NOT NULL,
   decription     varchar NOT NULL,
@@ -105,7 +105,7 @@ CREATE TABLE undgs_descriptions (
   FOREIGN KEY (undgs_id) REFERENCES undgs (uid)
 );
 
-CREATE TABLE container_types (
+CREATE TABLE container_type (
   cid          serial  NOT NULL,
   display_name varchar NOT NULL,
   iso_code     varchar,
@@ -125,13 +125,13 @@ Dropping old tables
  */
 
 
-DROP TABLE users, applications, conflicts, history;
+DROP TABLE user, application, conflict, history;
 
 /**
 Creating new tables
  */
 
-CREATE TABLE users (
+CREATE TABLE user (
   uid                 SERIAL  NOT NULL,
   name                varchar NOT NULL,
   email               varchar,
@@ -141,14 +141,14 @@ CREATE TABLE users (
   PRIMARY KEY (uid)
 );
 
-CREATE TABLE applications (
+CREATE TABLE application (
   aid     SERIAL  NOT NULL,
   name    varchar NOT NULL,
   api_key varchar NOT NULL,
   PRIMARY KEY (aid)
 );
 
-CREATE TABLE conflicts (
+CREATE TABLE conflict (
   cid         SERIAL    NOT NULL,
   created_by  integer   NOT NULL,
   solved_by   integer,
@@ -158,8 +158,8 @@ CREATE TABLE conflicts (
   added_at    timestamp NOT NULL DEFAULT now(),
   updated_at  timestamp,
   PRIMARY KEY (cid),
-  FOREIGN KEY (solved_by) REFERENCES users (uid),
-  FOREIGN KEY (created_by) REFERENCES applications (aid)
+  FOREIGN KEY (solved_by) REFERENCES user (uid),
+  FOREIGN KEY (created_by) REFERENCES application (aid)
 );
 
 CREATE TABLE history (
