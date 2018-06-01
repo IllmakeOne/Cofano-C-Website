@@ -73,7 +73,7 @@ CREATE TABLE undgs_has_tank_special_provision (
   utsid integer NOT NULL,
   PRIMARY KEY (uid, utsid),
   FOREIGN KEY (uid) REFERENCES undgs,
-  FOREIGN KEY (utsid) REFERENCES undgs_labels,
+  FOREIGN KEY (utsid) REFERENCES undgs_tank_special_provisions,
 );
 
 CREATE TABLE undgs_tank_special_provisions (
@@ -87,16 +87,13 @@ CREATE TABLE undgs_has_tankcode (
   utid integer NOT NULL,
   PRIMARY KEY (uid, utid),
   FOREIGN KEY (uid)   REFERENCES undgs,
-  FOREIGN KEY (utsid) REFERENCES undgs_tankcode
+  FOREIGN KEY (utsid) REFERENCES undgs_tankcodes
 );
 
 CREATE TABLE undgs_tankcodes (
   utid     serial  NOT NULL,
   name     varchar NOT NULL,
-  undgs_id integer NOT NULL,
   PRIMARY KEY (utid),
-  FOREIGN KEY (undgs_id) REFERENCES undgs (uid)
-
 );
 
 CREATE TABLE undgs_descriptions (
@@ -106,7 +103,6 @@ CREATE TABLE undgs_descriptions (
   undgs_id       integer NOT NULL,
   PRIMARY KEY (udid),
   FOREIGN KEY (undgs_id) REFERENCES undgs (uid)
-
 );
 
 
