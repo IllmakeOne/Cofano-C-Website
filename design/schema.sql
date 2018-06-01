@@ -54,21 +54,40 @@ CREATE TABLE undgs (
   PRIMARY KEY (uid)
 );
 
+CREATE TABLE undgs_has_label (
+  uid   integer NOT NULL,
+  ulid  integer NOT NULL,
+  PRIMARY KEY (uid, ulid),
+  FOREIGN KEY (uid)  REFERENCES undgs,
+  FOREIGN KEY (ulid) REFERENCES undgs_labels
+);
+
 CREATE TABLE undgs_labels (
   ulid     serial  NOT NULL,
   name     varchar NOT NULL,
-  undgs_id integer NOT NULL,
   PRIMARY KEY (ulid),
-  FOREIGN KEY (undgs_id) REFERENCES undgs (uid)
+);
+
+CREATE TABLE undgs_has_tank_special_provision (
+  uid   integer NOT NULL,
+  utsid integer NOT NULL,
+  PRIMARY KEY (uid, utsid),
+  FOREIGN KEY (uid) REFERENCES undgs,
+  FOREIGN KEY (utsid) REFERENCES undgs_labels,
 );
 
 CREATE TABLE undgs_tank_special_provisions (
   utsid    serial  NOT NULL,
   name     varchar NOT NULL,
-  undgs_id integer NOT NULL,
   PRIMARY KEY (utsid),
-  FOREIGN KEY (undgs_id) REFERENCES undgs (uid)
+);
 
+CREATE TABLE undgs_has_tankcode (
+  uid  integer NOT NULL,
+  utid integer NOT NULL,
+  PRIMARY KEY (uid, utid),
+  FOREIGN KEY (uid)   REFERENCES undgs,
+  FOREIGN KEY (utsid) REFERENCES undgs_tankcode
 );
 
 CREATE TABLE undgs_tankcodes (
