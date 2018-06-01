@@ -1,0 +1,201 @@
+	
+DROP FUNCTION allships();
+CREATE OR REPLACE FUNCTION allships() 
+RETURNS TABLE(ships TEXT, sid serial, imo varchar, name varchar,callsign varchar, mmsi character, ship_depth real) AS $$ 
+BEGIN 
+    RETURN QUERY  
+    SELECT ships.sid, ships.imo, ships.name, ships.callsign, ships.mmsi, ships.ship_depth 
+    FROM ships;
+END; 
+$$ LANGUAGE plpgsql; 
+SELECT allships()
+
+
+
+DROP FUNCTION allterminals();
+CREATE OR REPLACE FUNCTION allterminals()
+RETURNS TABLE(terminals TEXT, tid serial, name varchar, terminal_code varchar, type varchar, unlo varchar, port_id integer) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT terminals.tid, terminals.name, terminals.terminal_code, terminals.type, terminals.unlo, terminals.port_id
+    FROM terminals;
+ END;
+ $$ LANGUAGE plpgsql;
+ SELECT allterminals()
+
+
+
+ DROP FUNCTION allports();
+ CREATE OR REPLACE FUNCTION allports()
+ RETURNS TABLE (ports TEXT, pid serial, name varchar, unlo varchar) AS $$
+ BEGIN
+     RETURN QUERY
+     SELECT ports.pid, ports.name, ports.unlo
+     FROM ports;
+ END;
+ $$ LANGUAGE plpgsql;
+ SELECT allports()
+
+
+ DROP FUNCTION allundgs();
+ CREATE OR REPLACE FUNCTION allundgs()
+ RETURNS TABLE(undgs TEXT, uid serial, classification varchar, classification_code varchar, collective boolean, hazard_no varchar, not_applicable boolean, packing_group integer, station varchar, transport_category varchar, transport_forbidden boolean, tunnel_code varchar, un_no integer, vehicleTank_carriage varchar) AS $$
+ BEGIN
+     RETURN QUERY
+     SELECT undgs.uid, undgs.classification, undgs.classification_code, undgs.collective, undgs.hazard_no, undgs.not_applicable, undgs.packing_group, undgs.station, undgs.transport_category, undgs.transport_forbidden, undgs.tunnel_code, undgs.un_no, undgs.vehicleTank_carriage
+     FROM undgs;
+ END;
+ $$ LANGUAGE plpgsql;
+ SELECT allundgs()
+
+
+DROP FUNCTION allundgs_labels();
+CREATE OR REPLACE FUNCTION allundgs_labels()
+RETURNS TABLE(undgs_labels TEXT, ulid serial, name varchar, undgs_id integer) AS $$
+BEGIN 
+    RETURN QUERY
+    SELECT undgs_labels.ulid, undgs_labels.name, undgs_labels.undgs_id
+    FROM undgs_labels;
+ END;
+ $$ LANGUAGE plpgsql;
+ SELECT allundgs_labels()
+
+
+
+ DROP FUNCTION allundgs_tankcodes();
+ CREATE OR REPLACE FUNCTION allundgs_tankcodes()
+ RETURN TABLE(undgs_tankcodes TEXT, utid serial, name varchar, undgs_id integer) AS $$
+ BEGIN
+     RETURN QUERY
+     SELECT undgs_tankcodes.utid, undgs_tankcodes.name, undgs_tankcodes.undgs_id
+     FROM undgs_tankcodes;
+ END;
+ $$ LANGUAGE plpgsql;
+ SELECT allundgs_tankcodes()
+
+
+
+ DROP FUNCTION allundgs_descriptions();
+ CREATE OR REPLACE FUNCTION allundgs_descriptions()
+ RETURN TABLE(undgs_descriptions TEXT, udid serial, undgs_language varchar, description varchar, undgs_id integer) AS $$
+ BEGIN
+     RETURN QUERY
+     SELECT undgs_descriptions.udid, undgs_descriptions.undgs_language, undgs_descriptions.description, undgs_descriptions.undgs_id
+     FROM undgs_descriptions;
+ END;
+ $$ LANGUAGE plpgsql;
+ SELECT allundgs_descriptions()
+
+
+ DROP FUNCTION allundgs_tank_special_provisions();
+ CREATE OR REPLACE FUNCTION allundgs_tank_special_provisions()
+ RETURN TABLE( undgs_tank_special_provisions TEXT, utsid serial, name varchar, undgs_id integer) AS $$
+ BEGIN 
+     RETURN QUERY
+     SELECT undgs_tank_special_provisions.utsid, undgs_tank_special_provisions.name, undgs_tank_special_provisions.undgs_id
+     FROM undgs_tank_special_provisions; 
+END;
+$$ LANGUAGE plpgsql;
+SELECT allundgs_tank_special_provisions()
+
+
+
+ DROP FUNCTION allcontainer_types();
+ CREATE OR REPLACE FUNCTION allcontainer_types()
+ RETURN TABLE(container_types TEXT, cid serial, display_name varchar, iso_code varchar, description varchar, c_length integer, c_height integer, reefer boolean) AS $$
+ BEGIN
+     RETURN QUERY
+     SELECT container_types.cid, container_types.display_name, container_types.iso_code, container_types.description, container_types.c_length, container_types.reefer
+     FROM container_types;
+ END;
+ $$ LANGUAGE plpgsql;
+ SELECT allcontainer_types()
+
+
+ DROP FUNCTION allusers();
+ CREATE OR REPLACE FUNCTION allusers()
+ RETURN TABLE(users TEXT, uid serial, name varchar, email varchar, email_notifications boolean darkmode boolean, last_login timestamp) AS $$
+ BEGIN
+     RETURN QUERY
+     SELECT users.uid, users.name, users.email, users.email_notifications, users.darkmode, users.last_login
+     FROM users;
+ END;
+ $$ LANGUAGE plpgsql;
+ SELECT allusers()
+
+
+
+ DROP FUNCTION allapplications();
+ CREATE OR REPLACE FUNCTION allapplications()
+ RETURN TABLE(applications TEXT, aid serial, name varchar, api_key varchar) AS $$
+ BEGIN
+     RETURN QUERY
+     SELECT applications.aid, applications.name, applications.api_key
+     FROM applications;
+ END;
+ $$ LANGUAGE plpgsql;
+ SELECT allapplications()
+
+
+
+DROP FUNCTION allconflicts();
+ CREATE OR REPLACE FUNCTION allconflicts()
+ RETURN TABLE(conflicts TEXT, cid serial, created_by integer, solved_by integer, table_name varchar, column_name varchar, value varchar, added_at timestamp, updated_at timestamp) AS $$
+ BEGIN
+     RETURN QUERY
+     SELECT conflicts.cid, conflicts.created_by, conflicts.solved_by, conflicts.table_name, conflicts.column_name, conflicts.value, conflicts.added_at, conflicts.updated_at
+     FROM conflicts;
+ END;
+ $$ LANGUAGE plpgsql;
+ SELECT allconflicts()
+
+
+ DROP FUNCTION allhistory();
+ CREATE OR REPLACE FUNCTION allhistory()
+ RETURN TABLE(history TEXT, hid serial, tittle varchar, message text, added_at timestamp) AS $$
+ BEGIN
+     RETURN QUERY
+     SELECT history.hid, history.tittle, history.message, history.added_at
+     FROM history;
+ END;
+ $$ LANGUAGE plpgsql;
+ SELECT allhistory()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
