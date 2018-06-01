@@ -31,6 +31,33 @@ public class ApplicationsResources extends Connect {
 	public ApplicationsResources() {
 	}
 	
+	@POST
+	@Path("add")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void createCart(List<Application> input) {
+		Tables.start();
+		for(Application apple : input) {
+			System.out.println(apple.getID()+ " " + apple.getName() + " " + apple.getAPIKey());
+			String query ="INSERT INTO applications(name, api_key) VALUES('"+ 
+					apple.getName()+
+					"',"+apple.getAPIKey()+");";
+			System.out.println(query);
+			try {
+				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				boolean worked = statement.executeQuery() != null;
+				if(worked) {
+					System.out.println("succesfully added"  );
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not add application");
+				e.printStackTrace();
+			}
+			query = "";
+		}
+		
+			
+	}
+	
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
 	@Path("all")
@@ -39,7 +66,7 @@ public class ApplicationsResources extends Connect {
 		ArrayList<Application> result = new ArrayList<>(); 
 		Application add = new Application();
 		String query = "SELECT * " +
-				"FROM application";
+				"FROM applications";
 		
 		try {
 		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
@@ -49,9 +76,9 @@ public class ApplicationsResources extends Connect {
 		while(resultSet.next()) {
 			System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
 			add = new Application();
-			add.setName(resultSet.getString(1));
-			add.setAPIKey((Integer) resultSet.getInt(2));
-			add.setID(resultSet.getInt(3));
+			add.setName(resultSet.getString(2));
+			add.setAPIKey((Integer) resultSet.getInt(3));
+			add.setID(resultSet.getInt(1));
 			
 			result.add(add);
 			}

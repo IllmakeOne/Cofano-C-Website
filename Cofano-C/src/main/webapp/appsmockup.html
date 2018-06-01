@@ -51,7 +51,14 @@
               <li class="nav-item">
                 <a class="nav-link" href="#">
                   <span data-feather="home"></span>
-                  dashboard 
+                  Dashboard 
+                </a>
+              </li>
+               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="clock"></span>
+                  History
                 </a>
               </li>
             
@@ -68,16 +75,10 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link " href="#">
+                <a class="nav-link " href="http://localhost:8080/Cofano-C/shipsmockup.html">
                   <span data-feather="anchor"></span>
                   Ships
                   <span class="sr-only">(current)</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="clock"></span>
-                  history
                 </a>
               </li>
               <li class="nav-item">
@@ -184,7 +185,8 @@
 	       	  </div>
 			
 			
-		<div class="col-sm-11">	
+			
+		<div class="col-sm-11">
 		<div id="results">
 			<div id="items">
 			<p>No items found so far!</p>
@@ -292,12 +294,12 @@
     	        txt += " <div class=\"table-responsive\" style=\"margin: 10px\"> <table id=\"items\" class=\"table table-striped \"><thead>"
       	         + "<tr>  <th><h5>ID</h5></th>  <th><h5>Name</h5></th>  <th><h5>API Key</h5></th> <th><h5>Changes</h5></th> </tr> </thead>";
         	        for (x in myObj) {
-        	            txt += "<tr><td>" + myObj[x].name + "</td><td>" 
-        	            +  myObj[x].apikey + "</td><td>" + myObj[x].id + "</td>" +
-        	            "<td><div class=\"btn-group\"> <button type=\"button\" class=\"btn btn-info  \">" +
-    					 "<span data-feather=\"edit\"></span></button>"+
-    					 "<button type=\"button\" class=\"btn btn-danger  \">" +
-    					 "<span data-feather=\"trash-2\"></span> </button></div></td></tr>";
+        	            txt += "<tr><td>" + myObj[x].id + "</td><td>" 
+        	            +  myObj[x].name + "</td><td>" + myObj[x].apikey + "</td>" +
+        	            "<td><div class=\"btn-group\"> <button type=\"button\" class=\"btn btn-info btn-sm \">" +
+    					 "<img src=\"img/edit.svg\" class=\"img-rounded\"></button>"+
+    					 "<button type=\"button\" class=\"btn btn-danger btn-sm \">" +
+    					 "<img src=\"img/trash-2.svg\" class=\"img-rounded\"> </button></div></td></tr>";
     					 
     
         	        }
@@ -312,33 +314,16 @@
         xmlhttp.open("GET", restServlet + "all", true);
         xmlhttp.send();
     	
-    }
+    };
     
-    
-  
-
-    
-    
-    
-        function addToCart(item) {
-        	var	xmlhttpPost = new XMLHttpRequest();
-        	xmlhttpPost.onreadystatechange = function() {
-        	    if (this.readyState == 4 && this.status == 204) {
-        	    	var	xmlhttp = new XMLHttpRequest();
-                	xmlhttp.onreadystatechange = function() {
-                	    if (this.readyState == 4 && this.status == 200) {
-                	    	document.getElementById("costs").innerHTML = "Total costs = "+ this.responseText + " Euros";
-                	    }
-    				 }
-                	xmlhttp.open("GET", restServlet + "cart/costs", true);
-                	xmlhttp.send();
-        	    }
-        	}
-        	xmlhttpPost.open("POST", restServlet + "cart", true);
-        	xmlhttpPost.setRequestHeader("Content-type", "application/json");
-        	var order = [ { item, numItems : 1 } ];
-        	xmlhttpPost.send(JSON.stringify(order));
-        };
+    function addToCart(item) {
+    	var	xmlhttpPost = new XMLHttpRequest();
+    	
+    	xmlhttpPost.open("POST", restServlet + "add ", true);
+    	xmlhttpPost.setRequestHeader("Content-type", "application/json");
+    	var order = [ { "id":22, "name":"boi", "apikey":2} ];
+    	xmlhttpPost.send(JSON.stringify(order));
+    };
         </script>
 
 
