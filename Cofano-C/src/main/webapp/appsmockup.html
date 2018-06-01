@@ -316,14 +316,6 @@
     	
     };
     
-    function addToCart(item) {
-    	var	xmlhttpPost = new XMLHttpRequest();
-    	
-    	xmlhttpPost.open("POST", restServlet + "add ", true);
-    	xmlhttpPost.setRequestHeader("Content-type", "application/json");
-    	var order = [ { "id":22, "name":"boi", "apikey":2} ];
-    	xmlhttpPost.send(JSON.stringify(order));
-    };
         </script>
 
 
