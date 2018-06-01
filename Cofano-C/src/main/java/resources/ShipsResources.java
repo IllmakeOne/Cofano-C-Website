@@ -43,7 +43,7 @@ public class ShipsResources {
 			ship.setName(resultSet.getString(3));
 			ship.setImo(resultSet.getString(2));
 			ship.setID(resultSet.getInt(1));
-			ship.setDepth(resultSet.getFloat(6));
+			ship.setDepth(resultSet.getBigDecimal(6));
 			ship.setCallsign(resultSet.getString(4));
 			ship.setMmsi(resultSet.getString(5));
 			

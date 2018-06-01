@@ -1,17 +1,19 @@
 package nl.utwente.di14.Cofano_C.model;
 
+import java.math.BigDecimal;
+
 public class Ship {
 
 	private String imo;
 	private String name;
 	private String callsign;
 	private String mmsi;
-	private double depth;
+	private BigDecimal depth;
 	private int ID;
 	
 	public Ship() {}
 	
-	public Ship(String imo, String name, String callsign, String mmsi, double depth, int iD) {
+	public Ship(String imo, String name, String callsign, String mmsi, BigDecimal depth, int iD) {
 		super();
 		this.imo = imo;
 		this.name = name;
@@ -45,10 +47,10 @@ public class Ship {
 	public void setMmsi(String mmsi) {
 		this.mmsi = mmsi;
 	}
-	public double getDepth() {
+	public BigDecimal getDepth() {
 		return depth;
 	}
-	public void setDepth(double depth) {
+	public void setDepth(BigDecimal depth) {
 		this.depth = depth;
 	}
 	public int getID() {
