@@ -25,7 +25,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 
-@Path("data/applications")
+@Path("/rest/data/applications")
 public class ApplicationsResources extends Connect {
 	
 

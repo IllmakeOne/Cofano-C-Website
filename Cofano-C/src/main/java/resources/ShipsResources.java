@@ -28,7 +28,7 @@ public class ShipsResources {
 		ArrayList<Ship> result = new ArrayList<>(); 
 		Ship ship = new Ship();
 		String query = "SELECT * " +
-				"FROM ships";
+				"FROM ship";
 		
 		try {
 		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
