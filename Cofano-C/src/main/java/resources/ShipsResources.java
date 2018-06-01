@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import dao.*;
-import model.*;
+import nl.utwente.di14.Cofano_C.dao.Tables;
+import nl.utwente.di14.Cofano_C.model.*;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

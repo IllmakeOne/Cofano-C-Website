@@ -6,8 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.*;
-import dao.Tables;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
