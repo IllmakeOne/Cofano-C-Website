@@ -41,15 +41,11 @@ CREATE TABLE undgs (
   uid                              serial  NOT NULL,
   classification                   varchar NOT NULL,
   classification_code              varchar NOT NULL,
-  undgs_tank_special_provisions_id integer,
   collective                       boolean,
-  undgs_descriptions_id            integer NOT NULL,
   hazard_no                        varchar,
-  undgs_labels_id                  integer,
   not_applicable                   boolean,
   packing_group                    integer,
   station                          varchar,
-  undgs_tankcodes_id               integer,
   transport_category               varchar,
   transport_forbidden              boolean,
   tunnel_code                      varchar,
@@ -105,15 +101,6 @@ CREATE TABLE container_types (
   reefer       boolean,
   PRIMARY KEY (cid)
 );
-ALTER TABLE undgs
-  ADD CONSTRAINT fk_udngs_undgs_descriptions
-FOREIGN KEY (undgs_descriptions_id) REFERENCES undgs_descriptions (udid),
-  ADD CONSTRAINT fk_undgs_undgs_tank_special_prvisions
-FOREIGN KEY (undgs_tank_special_provisions_id) REFERENCES undgs_tank_special_provisions (utsid),
-  ADD CONSTRAINT fk_undgs_undgs_labels
-FOREIGN KEY (undgs_labels_id) REFERENCES undgs_labels (ulid),
-  ADD CONSTRAINT fk_undgs_undgs_tank_codes
-FOREIGN KEY (undgs_tankcodes_id) REFERENCES undgs_tankcodes (utid);
 
 
 /*
