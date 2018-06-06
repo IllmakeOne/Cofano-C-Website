@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(description="Ship Data Servlet", urlPatterns={"/ships"})
+@WebServlet(description="Ship Data Servlet", urlPatterns={"/containertypes"})
 
 public class ContainerTypes extends HttpServlet {
     @Override
