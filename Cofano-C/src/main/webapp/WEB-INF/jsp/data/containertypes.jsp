@@ -16,7 +16,7 @@
     <jsp:attribute name="footer">
         <script type="text/javascript">
             var myObj;
-            var restServlet = "./rest/data/ships";
+            var restServlet = "./rest/data/ships/";
 
             function loadAll() {
                 var xmlhttp = new XMLHttpRequest();
@@ -68,7 +68,7 @@
                 xmlhttp.send();
             }
 
-            windows.onload = loadAll();
+            window.onload = loadAll();
         </script>
     </jsp:attribute>
 

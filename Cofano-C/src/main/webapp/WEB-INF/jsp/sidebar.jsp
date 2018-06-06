@@ -51,7 +51,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'ships')}"> active</c:if>"
-                   href="./ships">
+                   href="./containertypes">
                     <span data-feather="anchor"></span>
                     Container types
                 </a>

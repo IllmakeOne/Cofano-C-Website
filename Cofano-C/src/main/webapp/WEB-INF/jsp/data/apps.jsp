@@ -52,7 +52,7 @@
     <jsp:body>
         <div class="row">
             <div class="col-sm-8">
-                <h2 style="margin: 20px">Ships</h2>
+                <h2 style="margin: 20px">Applications</h2>
             </div>
         </div>
 
