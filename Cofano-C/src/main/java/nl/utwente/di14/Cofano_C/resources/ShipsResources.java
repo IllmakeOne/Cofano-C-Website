@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
-import nl.utwente.di14.Cofano_C.model.*;
+import nl.utwente.di14.Cofano_C.model.Ship;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
