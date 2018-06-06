@@ -4,6 +4,7 @@ package nl.utwente.di14.Cofano_C.resources;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +12,11 @@ import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.*;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -25,32 +28,52 @@ public class ApplicationsResources extends Connect {
 	public ApplicationsResources() {
 	}
 	
+	
 	@POST
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void createCart(List<Application> input) {
+	public void addApp(Application input) {
 		Tables.start();
-		for(Application apple : input) {
-			System.out.println(apple.getID()+ " " + apple.getName() + " " + apple.getAPIKey());
-			String query ="INSERT INTO applications(name, api_key) VALUES('"+ 
-					apple.getName()+
-					"',"+apple.getAPIKey()+");";
-			System.out.println(query);
+	
+			System.out.println(input.getID()+ " " + input.getName() + " " + input.getAPIKey());
+			String query ="INSERT INTO application(name, api_key) VALUES('"+ 
+					input.getName()+
+					"',"+input.getAPIKey()+");";
+			System.out.println("name, api_key -> "+ input.getName()+ ","+input.getAPIKey());
 			try {
-				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
-				boolean worked = statement.executeQuery() != null;
-				if(worked) {
-					System.out.println("succesfully added"  );
-				}
+				//PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				Statement stmt=Tables.getCon().createStatement();
+				stmt.executeUpdate(query);
 			} catch (SQLException e) {
 				System.err.println("Could not add application");
+				System.err.println(e.getSQLState());
 				e.printStackTrace();
 			}
 			query = "";
-		}
-		
-			
 	}
+	
+	
+	
+	@DELETE
+	@Path("/{appid}")
+	public void deleteApp(@PathParam("appid") int appid) {
+		Tables.start();
+	
+			
+			String query ="DELETE FROM application WHERE aid = ?";
+			try {
+				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				statement.setLong(1, appid);
+				statement.executeUpdate();
+			} catch (SQLException e) {
+				System.err.println("Could not add application");
+				System.err.println(e.getSQLState());
+				e.printStackTrace();
+			}
+			query = "";
+	}
+	
+	
 	
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})

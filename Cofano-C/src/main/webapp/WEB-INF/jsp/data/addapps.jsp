@@ -9,42 +9,32 @@
 
     <jsp:attribute name="footer">
         <script type="text/javascript">
-            var myObj;
-            var restServlet = "http://localhost:8080/Cofano-C/rest/data/applications/";
+            
+            var restServlet = "http://localhost:8080/Cofano-C/rest/data/applications/add";
+            
+            function addApp(){
+            	var name = document.getElementById("addname");
+            	var api = document.getElementById("addapi");
+            	if(name.value == "" || api.value == ""){
+            		alert("Please fill in all the boxes");	
+            	} else {
+            		var json = {"name": name.value, "apikey":api.value};
+            		let	xmlhttp = new XMLHttpRequest();
+            		xmlhttp.open("POST", restServlet, true);
+            		xmlhttp.setRequestHeader('Content-Type', 'application/json');
+            		xmlhttp.send(JSON.stringify(json));	
+            		
+            		alert("Entry added to Database!");
 
-            function loadAll(){
-                var	xmlhttp = new XMLHttpRequest();
-                var txt = "";
-                xmlhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        console.log("made it");
-                        myObj = JSON.parse(this.responseText);
-                        txt += " <div class=\"table-responsive\" style=\"margin: 10px\"> <table id=\"items\" class=\"table table-striped \"><thead>"
-                            + "<tr>  <th><h5>ID</h5></th>  <th><h5>Name</h5></th>  <th><h5>API Key</h5></th> <th><h5>Changes</h5></th> </tr> </thead>";
-                        for (x in myObj) {
-                            txt += "<tr><td>" + myObj[x].id + "</td><td>"
-                                +  myObj[x].name + "</td><td>" + myObj[x].apikey + "</td>" +
-                                "<td><div class=\"btn-group\"> <button type=\"button\" class=\"btn btn-outline-light btn-sm \">" +
-               				 "<img src=\"img/edit.svg\" class=\"img-rounded\"></button>"+
-               				 "<button type=\"button\" class=\"btn btn-outline-danger btn-sm \">" +
-               				 "<img src=\"img/trash-2.svg\" class=\"img-rounded\"> </button></div></td></tr>";
-               					
-
-
-                        }
-                        txt += "</table></div>"
-                        document.getElementById("items").innerHTML = txt;
-                    }
-
-                    console.log(txt);
-
-                };
-
-                xmlhttp.open("GET", restServlet + "all", true);
-                xmlhttp.send();
-
-            };
-            window.onload = loadAll();
+            		window.location.replace("applications");
+            		
+            		name.value="";api.value="";	
+            	}
+            };    
+            
+            $(document).keypress(function (e) {
+            	  if(e.which == 13 && e.target.nodeName != "TEXTAREA") return false;
+            	});
         </script>
     </jsp:attribute>
 
@@ -54,42 +44,44 @@
                 <h2 style="margin: 20px" >Applications</h2>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-4" >
-                <div class="search-container">
-                    <form action="/action_page.php">
-                        <input type="text" placeholder="Search..." name="search" style="margin-left: 10px">
-                        <button type="button" class="btn  ">
-                            <span data-feather="search"></span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="dropdown">
-                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
-                        Order By
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Name </a>
-                        <a class="dropdown-item" href="#">Id</a>
-                        <a class="dropdown-item" href="#">Boat</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <button type="button" class="btn   " onClick="location.href='AddDAtabase.html'">
-                    Add Info  <span data-feather="plus-circle"></span>
-                </button>
-            </div>
-
-            <div class="col-sm-11">
-                <div id="results">
-                    <div id="items">
-                        <p>No items found so far!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="col-sm-10">	
+          <div class="table-responsive" style="margin: 35px">
+            <table class="table table-striped table-sm">
+              <thead>
+                <tr>
+                  <th><h5>Field</h5></th>
+                  <th><h5>Data</h5></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Company Name</td> 
+                  <td>
+                	<form	>
+		     			 <input type="text" placeholder=" Name Example " id="addname">
+		    		</form>
+                  </td>
+                </tr>
+ 				<tr>
+                  <td>API Key</td> 
+                  <td><form>
+		     			 <input type="text" placeholder=" 12345 " id="addapi">
+		    		</form>
+		    		</td>
+                </tr>
+                <tr>
+                  <td></td> 
+                  <td>
+                  	<button type="button" class="btn" onclick="addApp()">
+					    	Add Information 
+					</button>
+		    		</td>
+                </tr>
+              
+              </tbody>
+            </table>
+          </div>   
+    
+			</div>
     </jsp:body>
 </t:dashboard>

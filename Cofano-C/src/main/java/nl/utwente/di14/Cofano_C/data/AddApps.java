@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(description="Application Data Servlet", urlPatterns={"/applications"})
+@WebServlet(description="Application Data Servlet", urlPatterns={"/addapp"})
 
 public class AddApps extends HttpServlet {
 
