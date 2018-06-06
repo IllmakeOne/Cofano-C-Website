@@ -28,6 +28,7 @@
 
 body {
   font-size: .875rem;
+  background-color: #ECF0F5;
 }
 
 /* Navbar */
@@ -57,49 +58,21 @@ body {
   color: white;
 }
 
-@media (min-width: 768px) and (max-width 1300px) {
-  .sidebar {
-    flex: 0 0 20%;
-    max-width: 20%;
-  }
-
-  .navbar-brand {
-    flex: 0 0 20%;
-    max-width: 20%;
-  }
-
-  main {
-    flex: 0 0 80% !important;
-    max-width: 80% !important;
-  }
-}
-
-@media (min-width: 1300px){
-  .sidebar {
-    flex: 0 0 20%;
-    max-width: 15rem;
-  }
-
-  .navbar-brand {
-    flex: 0 0 20%;
-    max-width: 15rem;
-  }
-
-  main {
-    
-  }
-
+.sidebar.show, .sidebar.collapsing {
+  display: block!important;
+  width: 240px;
 }
 
 .sidebar-sticky {
   position: relative;
   top: 0;
   height: calc(100vh - 48px);
-  padding-top: .5rem;
+  padding-top: 2rem;
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
   background-color: #FF9800;
   color: white;
+  min-width: 240px;
 }
 
 @supports ((position: -webkit-sticky) or (position: sticky)) {
@@ -142,23 +115,77 @@ body {
 }
 
 /*
- * Content
- */
-
-[role="main"] {
-  padding-top: 48px; /* Space for fixed navbar */
-}
-
-/*
  * Navbar
  */
 
 .navbar-brand {
+  height: 90px;
   padding-top: .75rem;
   padding-bottom: .75rem;
   font-size: 1rem;
   background-color: rgba(0, 0, 0, .25);
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+  padding: 10px;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  min-width: 240px;
+}
+
+.navbar-brand.title .user-image, .navbar-brand.title .user-info, .navbar-brand.title .user-options {
+    display: table-cell;
+    vertical-align: top;
+}
+
+.navbar-brand.title .user-image img {
+    display: block;
+    width: 30px;
+    margin-right: 15px;
+    margin-top: 10px;
+}
+
+.navbar-brand.title .user-options {
+    float: right;
+}
+
+.navbar-brand.title .user-options a.button {
+    color: #fff;
+    font-size: 2em;
+    line-height: 2.3;
+}
+
+.navbar-brand.title .user-options .dropdown-menu {
+    margin-top: -25px;
+}
+
+.navbar-brand.title .user-image .circle-text {
+    width: 30px;
+    margin-right: 15px;
+    margin-top: 10px;
+    font-size: 24px;
+    height: auto;
+}
+
+.circle-text {
+    text-transform: uppercase;
+    max-width: 200px;
+    height: 200px;
+    background-color: #90caf9;
+    border-radius: 5px;
+    color: #fff!important;
+    text-align: center;
+    font-size: 130px;
+}
+
+
+
+.navbar-brand.title .user-info .person {
+    line-height: 30px;
+    height: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+    margin-bottom: .1rem;
 }
 
 .navbar .form-control {
@@ -184,3 +211,93 @@ body {
 
 .border-top { border-top: 1px solid #e5e5e5; }
 .border-bottom { border-bottom: 1px solid #e5e5e5; }
+
+/* Main */
+main {
+  background-color: #FDFDFD;
+  margin-top: 15px;
+  border-top: 3px solid #FF9800;
+  border-bottom: 3px solid #FF9800;
+  -ms-flex: 1;
+  flex: 1;
+  margin-bottom: 10px;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
+  -webkit-font-smoothing: subpixel-antialiased;
+  position: relative;
+}
+
+
+
+@media only screen and (min-width: 768px) and (max-width: 1300px) {
+  .sidebar, .navbar-brand {
+    flex: 0 0 20%;
+    max-width: 240px;
+  }
+
+  .navbar {
+    max-width: 240px;
+  }
+
+  main.cofano-main {
+    margin-left: 250px !important;
+  }
+}
+
+@media only screen and (min-width: 1300px){
+  .navbar, .navbar-brand, .sidebar {
+    flex: 0 0 20%;
+    max-width: 15rem;
+  }
+
+
+  main.cofano-main {
+    margin-left: 250px !important;
+  }
+
+}
+
+@media only screen and (max-width: 767px) {
+  .navbar, .navbar-brand {
+    width: 100%;
+    margin-right: 0px;
+  }
+
+  .user-sidebar {
+    float: left;
+    margin-left: 15px;
+    margin-top: -7px;
+  }
+
+  .navbar-toggler {
+    float: left;
+  }
+
+  .navbar-brand {
+    height: 65px;
+  }
+
+  main {
+    margin-top: 65px;
+  }
+
+  .sidebar {
+    padding-top: 1.3rem;
+  }
+
+  .navbar-brand.title .user-options .dropdown-menu {
+    margin-left: -130px;
+  }
+
+}
+
+@media only screen and (min-width: 768px) {
+  .navbar-toggler {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 300px) {
+    .user-sidebar {
+        display: none;
+    }
+}
