@@ -12,10 +12,10 @@
             var myObj;
             var restServlet = "http://localhost:8080/Cofano-C/rest/data/applications/";
 
-            function loadAll(){
-                var	xmlhttp = new XMLHttpRequest();
+            function loadAll() {
+                var xmlhttp = new XMLHttpRequest();
                 var txt = "";
-                xmlhttp.onreadystatechange = function() {
+                xmlhttp.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
                         console.log("made it");
                         myObj = JSON.parse(this.responseText);
@@ -23,12 +23,11 @@
                             + "<tr>  <th><h5>ID</h5></th>  <th><h5>Name</h5></th>  <th><h5>API Key</h5></th> <th><h5>Changes</h5></th> </tr> </thead>";
                         for (x in myObj) {
                             txt += "<tr><td>" + myObj[x].id + "</td><td>"
-                                +  myObj[x].name + "</td><td>" + myObj[x].apikey + "</td>" +
+                                + myObj[x].name + "</td><td>" + myObj[x].apikey + "</td>" +
                                 "<td><div class=\"btn-group\"> <button type=\"button\" class=\"btn btn-outline-light btn-sm \">" +
-               				 "<img src=\"img/edit.svg\" class=\"img-rounded\"></button>"+
-               				 "<button type=\"button\" class=\"btn btn-outline-danger btn-sm \">" +
-               				 "<img src=\"img/trash-2.svg\" class=\"img-rounded\"> </button></div></td></tr>";
-               					
+                                "<img src=\"img/edit.svg\" class=\"img-rounded\"></button>" +
+                                "<button type=\"button\" class=\"btn btn-outline-danger btn-sm \">" +
+                                "<img src=\"img/trash-2.svg\" class=\"img-rounded\"> </button></div></td></tr>";
 
 
                         }
@@ -51,15 +50,16 @@
     <jsp:body>
         <div class="row">
             <div class="col-sm-8">
-                <h2 style="margin: 20px" >Applications</h2>
+                <h2 style="margin: 20px">Applications</h2>
             </div>
         </div>
+
         <div class="row">
-            <div class="col-sm-4" >
+            <div class="col-sm-4">
                 <div class="search-container">
                     <form action="/action_page.php">
                         <input type="text" placeholder="Search..." name="search" style="margin-left: 10px">
-                        <button type="button" class="btn  ">
+                        <button type="button" class="btn btn-sm ">
                             <span data-feather="search"></span>
                         </button>
                     </form>
@@ -79,7 +79,7 @@
             </div>
             <div class="col-sm-4">
                 <button type="button" class="btn   " onClick="location.href='AddDAtabase.html'">
-                    Add Info  <span data-feather="plus-circle"></span>
+                    Add Info <span data-feather="plus-circle"></span>
                 </button>
             </div>
 
