@@ -10,7 +10,7 @@
     <jsp:attribute name="footer">
         <script type="text/javascript">
             var myObj;
-            var restServlet = "http://localhost:8080/Cofano-C/rest/data/ships/";
+            var restServlet = "./rest/data/ships/";
 
             function loadAll() {
                 var xmlhttp = new XMLHttpRequest();
@@ -19,7 +19,10 @@
                     if (this.readyState == 4 && this.status == 200) {
                         console.log("made it");
                         myObj = JSON.parse(this.responseText);
-                        txt += " <div class=\"table-responsive\" style=\"margin: 5px\"> <table id=\"items\" class=\"table table-striped \"><thead>"
+                        txt += " " +
+                            "<div class=\"table-responsive\" style=\"margin: 5px\"> " +
+                            "<table id=\"items\" class=\"table table-striped \">" +
+                            "<thead>"
                             + "<tr><th><h5>ID</h5></th>" +
                             "<th><h5>Name</h5></th><th>" +
                             "<h5>IMO</h5></th>" +
