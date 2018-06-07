@@ -27,7 +27,7 @@
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
             <span>DATA</span>
         </h6>
-        <ul class="navbar-nav flex-column">
+        <ul class="nav flex-column">
             <li class="nav-item">
                 <a class="nav-link" href="./applications">
                     <span data-feather="aperture"></span>
@@ -35,7 +35,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="./ships">
+                <a class="nav-link href="./ships">
                     <span data-feather="anchor"></span>
                     Ships
                 </a>
@@ -78,16 +78,25 @@
                 </a>
             </li>
         </ul>
+        <%--<script type="text/javascript">--%>
+            <%--$(".nav-link a").on("click", function () {--%>
+                <%--$(".a").find(".active").removeClass("active");--%>
+                <%--$(this).addClass("active");--%>
+            <%--});--%>
+        <%--</script>--%>
+
         <script type="text/javascript">
-            $(document).ready(function () {
+            $(document).ready(function() {
                 "use strict";
-                $('ul.navbar-nav > li').click(function (e) {
+
+                $('ul.nav-item > li > a').click(function(e) {
                     e.preventDefault();
-                    $('ul.navbar-nav > li').removeClass('active');
+                    $('ul.nav-item > li > a').removeClass('active');
                     $(this).addClass('active');
                 });
             });
         </script>
+
 
 
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">

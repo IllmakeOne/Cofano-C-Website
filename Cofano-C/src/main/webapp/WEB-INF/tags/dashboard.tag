@@ -23,6 +23,9 @@
     <!-- Bootstrap core CSS -->
     <link href="./css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Bootstrap core JS -->
+    <script src="./js/bootstrap.min.js"></script>
+
     <!-- Custom styles for this template -->
     <link href="./css/dashboard.css" rel="stylesheet">
 
@@ -35,9 +38,6 @@
     <link rel="shortcut icon" href="./img/favicons/favicon.ico">
     <meta name="msapplication-TileColor" content="#00aba9">
     <meta name="msapplication-config" content="./img/favicons/browserconfig.xml">
-
-    <!-- Javascript file -->
-    <script src="script.js"></script>
 
     <jsp:invoke fragment="header"/>
 </head>
@@ -59,7 +59,6 @@
         </main>
     </div>
 </div>
-
 
 
 <%--<!-- JS for marking the active page on the sidebar. -->
@@ -84,7 +83,6 @@
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
 <script>window.jQuery</script>
-<script src="./js/bootstrap.min.js"></script>
 
 <!-- Icons -->
 <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
