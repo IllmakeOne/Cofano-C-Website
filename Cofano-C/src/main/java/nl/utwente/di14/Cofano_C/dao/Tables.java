@@ -2,8 +2,10 @@ package nl.utwente.di14.Cofano_C.dao;
 
 
 
+import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class Tables {
@@ -51,33 +53,23 @@ public class Tables {
 		return con;
 	}
 	
-//	public static List<Application> getAllApps(){
-//
-//		ArrayList<Application> result = new ArrayList<>(); 
-//		Application add = new Application();
-//		String query = "SELECT * " +
-//				"FROM application";
-//		
-//		try {
-//		PreparedStatement statement = (PreparedStatement) con.prepareStatement(query);
-//		
-//		ResultSet resultSet = statement.executeQuery();
-//		
-//		while(resultSet.next()) {
-//			//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
-//			add = new Application();
-//			add.setName(resultSet.getString(1));
-//			add.setAPIKey((Integer) resultSet.getInt(2));
-//			add.setID(resultSet.getInt(3));
-//			
-//			result.add(add);
-//			}
-//		} catch (SQLException e) {
-//			System.err.println("Could not retrive all apps" + e);
-//		}
-//	
-//		return result;
-//	}
+	
+	public static void addHistoryEntry(String title, String who, String message, Timestamp timestamp) {
+		
+		String query ="INSERT INTO history(title,message,added_at) VALUES(?,?,?)";
+		try {
+			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			statement.setString(1, title);
+			statement.setString(2, who+" " + title+" " +message);
+			statement.setTimestamp(3, timestamp);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("Could not add application IN Tables");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
+	}
+
 	
 	
 	

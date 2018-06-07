@@ -2,13 +2,15 @@ package nl.utwente.di14.Cofano_C.model;
 
 public class ContainerType {
 	
+
+	private int ID;
+	
 	private String displayName;
 	private String isoCode;
 	private String description;
 	private int lenght;
 	private int height;
 	private boolean refeer;
-	private int ID;
 
 	public ContainerType() {}
 	
@@ -20,6 +22,12 @@ public class ContainerType {
 		this.height = height;
 		this.refeer = reef;
 		this.ID = ID;
+	}
+	
+	@Override 
+	public String toString() {
+		return "ContainerType:  displayName: "+displayName+"; isoCode: "+isoCode+"; Description: "+description+
+				"; Lenght: "+lenght+"; Height: "+ height+"; Refeer: " +refeer;
 	}
 	
 	public void setID(int ID) {
