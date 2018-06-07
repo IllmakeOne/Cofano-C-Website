@@ -35,9 +35,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link href="./ships">
-                    <span data-feather="anchor"></span>
-                    Ships
+                <a class="nav-link href=" ./ships">
+                <span data-feather="anchor"></span>
+                Ships
                 </a>
             </li>
             <li class="nav-item">
@@ -78,26 +78,37 @@
                 </a>
             </li>
         </ul>
-        <%--<script type="text/javascript">--%>
-            <%--$(".nav-link a").on("click", function () {--%>
-                <%--$(".a").find(".active").removeClass("active");--%>
-                <%--$(this).addClass("active");--%>
-            <%--});--%>
-        <%--</script>--%>
-
         <script type="text/javascript">
-            $(document).ready(function() {
-                "use strict";
-
-                $('ul.nav-item > li > a').click(function(e) {
-                    e.preventDefault();
-                    $('ul.nav-item > li > a').removeClass('active');
-                    $(this).addClass('active');
-                });
-            });
+        $(".nav-link a").on("click", function () {
+        $(".a").find(".active").removeClass("active");
+        $(this).addClass("active");
+        });
         </script>
 
+        <%--<script type="text/javascript">--%>
+        <%--$(document).ready(function() {--%>
+        <%--"use strict";--%>
 
+        <%--$('ul.nav-item > li > a').click(function(e) {--%>
+        <%--e.preventDefault();--%>
+        <%--$('ul.nav-item > li > a').removeClass('active');--%>
+        <%--$(this).addClass('active');--%>
+        <%--});--%>
+        <%--});--%>
+        <%--</script>--%>
+
+        <%--<script type="text/javascript">--%>
+            <%--var path = window.location.pathname;--%>
+            <%--path = path.replace(/\$/, "");--%>
+            <%--path = decodeURIComponent(path);--%>
+
+            <%--$(".nav a").each(function () {--%>
+                <%--var href = $(this).attr('href');--%>
+                <%--if (path.substring(0, href.length) === href) {--%>
+                    <%--$(this).closest('li').addClass('active');--%>
+                <%--}--%>
+            <%--});--%>
+        <%--</script>--%>
 
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
             <span>ADMINISTRATION</span>
