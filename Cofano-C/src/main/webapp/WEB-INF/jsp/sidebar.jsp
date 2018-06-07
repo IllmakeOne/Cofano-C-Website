@@ -35,7 +35,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link href=" ./ships">
+                <a class="nav-link" href="./ships">
                 <span data-feather="anchor"></span>
                 Ships
                 </a>
