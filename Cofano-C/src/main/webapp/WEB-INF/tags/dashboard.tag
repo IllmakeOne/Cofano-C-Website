@@ -61,9 +61,11 @@
 <script type="text/javascript">
     $(document).ready(function () {
         var url = window.location;
+        //Normal method
         $('ul.nav a[href="' + url + '"]').parent().addClass('active');
+        //Fail safe
         $('ul.nav a').filter(function () {
-            return this.href == url;
+            return this.href === url;
         }).parent().addClass('active');
     });
 
