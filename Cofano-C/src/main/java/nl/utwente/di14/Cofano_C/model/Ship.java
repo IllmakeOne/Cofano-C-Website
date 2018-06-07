@@ -4,12 +4,13 @@ import java.math.BigDecimal;
 
 public class Ship {
 
+	private int ID;
+	
 	private String imo;
 	private String name;
 	private String callsign;
 	private String mmsi;
 	private BigDecimal depth;
-	private int ID;
 	
 	public Ship() {}
 	
@@ -21,6 +22,12 @@ public class Ship {
 		this.mmsi = mmsi;
 		this.depth = depth;
 		ID = iD;
+	}
+	
+	@Override 
+	public String toString() {
+		return "Ship:  IMO: " + imo + "; Name: "+name+"; CallSign: "
+				+callsign+ "; MMSI: " +mmsi+ "; Depth: " +depth;
 	}
 	
 	public String getImo() {

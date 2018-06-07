@@ -82,9 +82,9 @@
             </div>
 
             <div class="col-sm-4">
-                <button type="button" class="btn   "
-                        onClick="location.href='AddDatabase.html'">
-                    Add Info <span data-feather="plus-circle"></span></button>
+                <button type="button" class="btn   " onClick="location.href='addapp	'">
+                    Add Info  <span data-feather="plus-circle"></span>
+                </button>
             </div>
 
 

@@ -5,16 +5,21 @@ public class Application {
 
 	private int ID;
 	private String name;
-	private int APIkey;
+	private String APIkey;
 	
 	public Application() {
 		
 	}
 	
-	public Application(String name, int key, int id) {
+	public Application(String name, String key, int id) {
 		this.name = name;
 		this.APIkey = key;
 		this.ID = id;
+	}
+	
+	@Override
+	public String toString() {
+		return "  Application:  Name: "+name+"; APIKey: "+APIkey;
 	}
 	
 	public void setID(int ID) {
@@ -33,11 +38,11 @@ public class Application {
 		return this.name;
 	}
 	
-	public void setAPIKey(int key) {
+	public void setAPIKey(String key) {
 		this.APIkey = key;
 	}
 	
-	public int getAPIKey() {
+	public String getAPIKey() {
 		return this.APIkey;
 	}
 }

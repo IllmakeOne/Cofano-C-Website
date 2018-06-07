@@ -1,67 +1,76 @@
 package nl.utwente.di14.Cofano_C.model;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 public class User {
 
-	public final static String DEFAULTPREF = " ";
+	private int ID;
 	
 	private String name;
-	private Date lastLogedIn;
 	private String email;
-	private String preferance;
-	private int ID;
+	
+	private boolean email_notification;
+	private boolean darkmode;
+	
+	private Timestamp lastLogedIn;
+	
+	@Override
+	public String toString() {
+		return "User:  Name: "+name+"; email: "+email+"; email_notification: "+ email_notification+
+				"; darkmode: "+darkmode + "; lastLogedIn: "+lastLogedIn; 
+	}
 	
 	public User() {
 	}
-	
-	public User(String name, String email, int ID, Date date) {
-		this.name = name;
-		this.email = email;
-		this.preferance = DEFAULTPREF;
-		this.ID = ID;
-		this.lastLogedIn = date;
+
+	public String getName() {
+		return name;
 	}
-	
-	public void setDate(Date date) {
-		this.lastLogedIn = date;
-	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	public Timestamp getLastLogedIn() {
+		return lastLogedIn;
+	}
+
+	public void setLastLogedIn(Timestamp lastLogedIn) {
+		this.lastLogedIn = lastLogedIn;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	public void setPreferance(String preferance) {
-		this.preferance = preferance;
+
+	public boolean isEmail_notification() {
+		return email_notification;
 	}
-	
-	public void setID(int ID) {
-		this.ID = ID;
+
+	public void setEmail_notification(boolean email_notification) {
+		this.email_notification = email_notification;
 	}
-	
+
+	public boolean isDarkmode() {
+		return darkmode;
+	}
+
+	public void setDarkmode(boolean darkmode) {
+		this.darkmode = darkmode;
+	}
+
 	public int getID() {
-		return this.ID;
+		return ID;
+	}
+
+	public void setID(int iD) {
+		ID = iD;
 	}
 	
-	public String getEmail() {
-		return this.email;
-	}
-	
-	public String getName() {
-		return this.name;
-	}
-	
-	public Date getLastLogIn() {
-		return this.lastLogedIn;
-	}
-	
-	public String getPreference() {
-		return this.preferance;
-	}
-	
+
 	
 	
 }
