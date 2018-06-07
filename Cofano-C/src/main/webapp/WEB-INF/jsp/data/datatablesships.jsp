@@ -57,53 +57,20 @@
     </jsp:attribute>
 
     <jsp:body>
-        <div class="row">
-            <div class="col-sm-8">
-                <h2 style="margin: 20px" >Ships</h2>
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">DatatablesTest</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group mr-2">
+                    <button class="btn btn-sm btn-outline-secondary">Share</button>
+                    <button class="btn btn-sm btn-outline-secondary">Export</button>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                    <span data-feather="calendar"></span>
+                    This week
+                </button>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-sm-4" >
-                <div class="search-container">
-                    <form action="/action_page.php">
-                        <input type="text" placeholder="Search..." name="search">
-                        <button type="button" class="btn  btn-sm">
-                            <span data-feather="search"></span>
-                        </button>
-                    </form>
-                </div>
-            </div>
 
-            <div class="col-sm-4">
-                <div class="dropdown">
-                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
-                        Order By
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Name </a>
-                        <a class="dropdown-item" href="#">Id</a>
-                        <a class="dropdown-item" href="#">CallSign</a>
-                        <a class="dropdown-item" href="#">MMSI</a>
-                        <a class="dropdown-item" href="#">Depth</a>
-                        <a class="dropdown-item" href="#">IMO</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-4">
-                <button type="button" class="btn   " onClick="location.href='D:\\University\\Module 4\\Project\\DataAndInformationProject\\Cofano-C\\target\\m2e-wtp\\html-mockup\\AddDAtabase.html'">
-                    Add Info  <span data-feather="plus-circle"></span></button>
-            </div>
-
-
-            <div class="col-sm-11">
-                <div id="results">
-                    <div id="items">
-                        <p>No items found so far!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </jsp:body>
 </t:dashboard>

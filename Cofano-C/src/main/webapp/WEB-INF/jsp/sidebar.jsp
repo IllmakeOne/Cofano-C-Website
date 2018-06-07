@@ -9,7 +9,8 @@
         </h6>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link<c:if test="${fn:endsWith(pageContext.request.requestURI, '/Cofano-C/')}"> active</c:if>" href="./">
+                <a class="nav-link<c:if test="${fn:endsWith(pageContext.request.requestURI, '/Cofano-C/')}"> active</c:if>"
+                   href="./">
                     <span data-feather="home"></span>
                     Dashboard
                     <span class="sr-only">(current)</span>
@@ -29,13 +30,15 @@
         </h6>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'applications')}"> active</c:if>" href="./applications">
+                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'applications')}"> active</c:if>"
+                   href="./applications">
                     <span data-feather="aperture"></span>
                     Applications
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'ships')}"> active</c:if>" href="./ships">
+                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'ships')}"> active</c:if>"
+                   href="./ships">
                     <span data-feather="anchor"></span>
                     Ships
                 </a>

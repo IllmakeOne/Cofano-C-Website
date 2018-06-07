@@ -24,10 +24,11 @@
                         for (x in myObj) {
                             txt += "<tr><td>" + myObj[x].id + "</td><td>"
                                 +  myObj[x].name + "</td><td>" + myObj[x].apikey + "</td>" +
-                                "<td><div class=\"btn-group\"> <button type=\"button\" class=\"btn btn-info btn-sm \">" +
-                                "<img src=\"img/edit.svg\" class=\"img-rounded\"></button>"+
-                                "<button type=\"button\" class=\"btn btn-danger btn-sm \">" +
-                                "<img src=\"img/trash-2.svg\" class=\"img-rounded\"> </button></div></td></tr>";
+                                "<td><div class=\"btn-group\"> <button type=\"button\" class=\"btn btn-outline-light btn-sm \">" +
+               				 "<img src=\"img/edit.svg\" class=\"img-rounded\"></button>"+
+               				 "<button type=\"button\" class=\"btn btn-outline-danger btn-sm \">" +
+               				 "<img src=\"img/trash-2.svg\" class=\"img-rounded\"> </button></div></td></tr>";
+               					
 
 
                         }
