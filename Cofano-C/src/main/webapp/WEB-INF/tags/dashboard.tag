@@ -36,6 +36,9 @@
     <meta name="msapplication-TileColor" content="#00aba9">
     <meta name="msapplication-config" content="./img/favicons/browserconfig.xml">
 
+    <!-- Javascript file -->
+    <script src="script.js"></script>
+
     <jsp:invoke fragment="header"/>
 </head>
 
@@ -57,19 +60,21 @@
     </div>
 </div>
 
-<!-- JS for marking the active page on the sidebar. -->
+
+
+<%--<!-- JS for marking the active page on the sidebar. -->
 <script type="text/javascript">
     $(document).ready(function () {
         var url = window.location;
         //Normal method
-        $('ul.nav a[href="' + url + '"]').parent().addClass('active');
+        $('li.nav-item a[href="'+ url +'"]').addClass('active');
         //Fail safe
-        $('ul.nav a').filter(function () {
+        $('li.nav-item a').filter(function () {
             return this.href === url;
-        }).parent().addClass('active');
+        }).addClass('active');
     });
 
-</script>
+</script>--%>
 
 
 <!-- Bootstrap core JavaScript
