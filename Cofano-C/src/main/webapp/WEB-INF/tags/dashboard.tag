@@ -59,8 +59,9 @@
 
 <!-- JS for marking the active page on the sidebar. -->
 <script>
-    $('.nav li).click(function() {
-    $(this.addClass('active').siblings().removeClass('active');
+    ('.nav li').click(function () {
+        (this).addClass('active').siblings().removeClass('active');
+    })
 </script>
 
 

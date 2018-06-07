@@ -9,8 +9,7 @@
         </h6>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link<c:if test="${fn:endsWith(pageContext.request.requestURI, '/Cofano-C/')}"> active</c:if>"
-                   href="./">
+                <a class="nav-link" href="./">
                     <span data-feather="home"></span>
                     Dashboard
                     <span class="sr-only">(current)</span>
