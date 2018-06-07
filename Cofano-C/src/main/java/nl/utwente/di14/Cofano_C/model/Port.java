@@ -1,17 +1,22 @@
 package nl.utwente.di14.Cofano_C.model;
 
-public class DestinationPort {
+public class Port {
 
 	private int ID;
 	private String name;
 	private String unlo;
 	
-	public DestinationPort() {}
+	public Port() {}
 	
-	public DestinationPort(int id, String name, String unlo) {
+	public Port(int id, String name, String unlo) {
 		this.ID = id;
 		this.name = name;
 		this.unlo = unlo;
+	}
+	
+	@Override
+	public String toString() {
+		return "Port:  Name: "+ name+"; Unlo: "+unlo;
 	}
 	
 	public int getID() {

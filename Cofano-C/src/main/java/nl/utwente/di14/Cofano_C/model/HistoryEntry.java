@@ -1,101 +1,55 @@
 package nl.utwente.di14.Cofano_C.model;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class HistoryEntry {
 	
 	private int ID;
-	private int tableID;
-	private int changerID;
-	private int changedID;
-	private String type;
+	private String title;
 	private String message;
-	private Date addDate;
+	private Timestamp added_at;
 	
 	public HistoryEntry() {}
-	
-	public HistoryEntry(int iD, int tableID, int changerID, int changedID, String type, String message, Date addDate) {
+
+	public HistoryEntry(int iD, String title, String message, Timestamp added_at) {
 		super();
 		ID = iD;
-		this.tableID = tableID;
-		this.changerID = changerID;
-		this.changedID = changedID;
-		this.type = type;
+		this.title = title;
 		this.message = message;
-		this.addDate = addDate;
+		this.added_at = added_at;
 	}
-
 
 	public int getID() {
 		return ID;
 	}
 
-
 	public void setID(int iD) {
 		ID = iD;
 	}
 
-
-	public int getTableID() {
-		return tableID;
+	public String getTitle() {
+		return title;
 	}
 
-
-	public void setTableID(int tableID) {
-		this.tableID = tableID;
+	public void setTitle(String title) {
+		this.title = title;
 	}
-
-
-	public int getChangerID() {
-		return changerID;
-	}
-
-
-	public void setChangerID(int changerID) {
-		this.changerID = changerID;
-	}
-
-
-	public int getChangedID() {
-		return changedID;
-	}
-
-
-	public void setChangedID(int changedID) {
-		this.changedID = changedID;
-	}
-
-
-	public String getType() {
-		return type;
-	}
-
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 
 	public String getMessage() {
 		return message;
 	}
 
-
 	public void setMessage(String message) {
 		this.message = message;
 	}
 
-
-	public Date getAddDate() {
-		return addDate;
+	public Timestamp getAdded_at() {
+		return added_at;
 	}
 
-
-	public void setAddDate(Date addDate) {
-		this.addDate = addDate;
+	public void setAdded_at(Timestamp added_at) {
+		this.added_at = added_at;
 	}
 	
 	
-	
-	
-
 }
