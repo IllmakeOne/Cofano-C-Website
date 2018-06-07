@@ -58,12 +58,15 @@
 </div>
 
 <!-- JS for marking the active page on the sidebar. -->
-<script>
-    $('#sidebar-sticky .nav a').on('click', function () {
-        $('#sidebar-sticky .nav').find('li.active').removeClass('active');
-        $(this).parent('li').addClass('active');
-
+<script type="text/javascript">
+    $(document).ready(function () {
+        var url = window.location;
+        $('ul.nav a[href="' + url + '"]').parent().addClass('active');
+        $('ul.nav a').filter(function () {
+            return this.href == url;
+        }).parent().addClass('active');
     });
+
 </script>
 
 
