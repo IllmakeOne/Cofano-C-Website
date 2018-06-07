@@ -30,15 +30,13 @@
         </h6>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'applications')}"> active</c:if>"
-                   href="./applications">
+                <a class="nav-link" href="./applications">
                     <span data-feather="aperture"></span>
                     Applications
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'ships')}"> active</c:if>"
-                   href="./ships">
+                <a class="nav-link" href="./ships">
                     <span data-feather="anchor"></span>
                     Ships
                 </a>
@@ -50,8 +48,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'ships')}"> active</c:if>"
-                   href="./containertypes">
+                <a class="nav-link" href="./containertypes">
                     <span data-feather="anchor"></span>
                     Container types
                 </a>
