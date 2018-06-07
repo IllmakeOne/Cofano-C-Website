@@ -10,7 +10,7 @@
     <jsp:attribute name="footer">
         <script type="text/javascript">
             var myObj;
-            var restServlet = "http://localhost:8080/Cofano-C/rest/data/applications";
+            var restServlet = "http://localhost:8080/Cofano-C/rest/data/applications/";
 
             function loadAll() {
                 var xmlhttp = new XMLHttpRequest();
