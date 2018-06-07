@@ -1,5 +1,7 @@
 package nl.utwente.di14.Cofano_C.data;
 
+import nl.utwente.di14.Cofano_C.util.RequestHelper;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +16,6 @@ public class Apps extends HttpServlet {
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		request.setAttribute("page", "data/apps");           // Tells base.jsp to include form.jsp
-		request.getRequestDispatcher("/WEB-INF/jsp/data/apps.jsp").forward(request, response);
+		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/apps.jsp");
 	}
 }

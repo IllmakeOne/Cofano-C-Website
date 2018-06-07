@@ -7,12 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(description="DatatablesTest Servlet", urlPatterns={"/dbtest"})
+@WebServlet(description="Container Data Servlet", urlPatterns={"/containers"})
 
-public class DBTest extends HttpServlet {
+public class Containers extends HttpServlet {
+
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		request.setAttribute("page", "data/datatablesships");           // Tells base.jsp to include form.jsp
-		request.getRequestDispatcher("/WEB-INF/jsp/data/datatablesships.jsp").forward(request, response);
+		request.setAttribute("base", getServletContext().getInitParameter("cofano.url"));
+		request.getRequestDispatcher("/WEB-INF/jsp/data/containers.jsp").forward(request, response);
 	}
 }

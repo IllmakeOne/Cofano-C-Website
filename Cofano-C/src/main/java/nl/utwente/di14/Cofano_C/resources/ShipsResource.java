@@ -14,13 +14,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("/data/ships")
-public class ShipsResources {
+@Path("/ships")
+public class ShipsResource {
 	
 
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
-	@Path("all")
 	public ArrayList<Ship> getAllApps(){
 		Tables.start();
 		ArrayList<Ship> result = new ArrayList<>(); 

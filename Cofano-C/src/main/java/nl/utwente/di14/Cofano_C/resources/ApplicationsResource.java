@@ -18,12 +18,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 
-@Path("data/applications")
-public class ApplicationsResources extends Connect {
-	
-
-	public ApplicationsResources() {
-	}
+@Path("/applications")
+public class ApplicationsResource extends Connect {
 	
 	@POST
 	@Path("add")
@@ -54,7 +50,6 @@ public class ApplicationsResources extends Connect {
 	
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
-	@Path("all")
 	public List<Application> getAllApps(){
 		Tables.start();
 		ArrayList<Application> result = new ArrayList<>(); 
@@ -85,7 +80,7 @@ public class ApplicationsResources extends Connect {
 	}
 	
 	public static void main(String[] args) {
-		ApplicationsResources test = new ApplicationsResources();
+		ApplicationsResource test = new ApplicationsResource();
 		test.getAllApps();
 	}
 

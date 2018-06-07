@@ -9,7 +9,7 @@
         </h6>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link<c:if test="${fn:endsWith(pageContext.request.requestURI, '/Cofano-C/')}"> active</c:if>" href="./">
+                <a class="nav-link<c:if test="${fn:endsWith(pageContext.request.requestURI, '/Cofano-C/')}"> active</c:if>" href="${(empty base) ? '.' : base}/">
                     <span data-feather="home"></span>
                     Dashboard
                     <span class="sr-only">(current)</span>
@@ -29,13 +29,13 @@
         </h6>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'applications')}"> active</c:if>" href="./applications">
+                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'applications')}"> active</c:if>" href="${(empty base) ? '.' : base}/applications">
                     <span data-feather="aperture"></span>
                     Applications
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'ships')}"> active</c:if>" href="./ships">
+                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'ships')}"> active</c:if>" href="${(empty base) ? '.' : base}/ships">
                     <span data-feather="anchor"></span>
                     Ships
                 </a>
@@ -47,13 +47,13 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="#">
+                <a class="nav-link " href="${(empty base) ? '.' : base}/containers">
                     <span data-feather="package"></span>
                     Container Types
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="#">
+                <a class="nav-link " href="${(empty base) ? '.' : base}/terminals">
                     <span data-feather="terminal"></span>
                     Terminals
                 </a>
@@ -72,7 +72,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link " href="#">
+                <a class="nav-link " href="${(empty base) ? '.' : base}/ports">
                     <span data-feather="map-pin"></span>
                     Ports
                 </a>

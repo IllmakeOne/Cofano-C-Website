@@ -7,103 +7,65 @@
 
 <t:dashboard>
 
+    <jsp:attribute name="header">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/fh-3.1.3/r-2.2.1/datatables.min.css"/>
+    </jsp:attribute>
+
     <jsp:attribute name="footer">
+        <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/fh-3.1.3/r-2.2.1/datatables.min.js"></script>
         <script type="text/javascript">
-            var myObj;
-            var restServlet = "http://localhost:8080/Cofano-C/rest/data/ships/";
-
-            function loadAll(){
-                var	xmlhttp = new XMLHttpRequest();
-                var txt = "";
-                xmlhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        console.log("made it");
-                        myObj = JSON.parse(this.responseText);
-                        txt += " <div class=\"table-responsive\" style=\"margin: 5px\"> <table id=\"items\" class=\"table table-striped \"><thead>"
-                            + "<tr><th><h5>ID</h5></th>"+
-                            "<th><h5>Name</h5></th><th>"+
-                            "<h5>IMO</h5></th>"+
-                            "<th><h5>CallSign</h5></th>"
-                            + "<th><h5>MMSI</h5></th>"+
-                            "<th><h5>Depth</h5></th>"+
-                            "<th><h5>Changes</h5></th></tr> </thead>";
-                        for (x in myObj) {
-                            txt += "<tr><td>" + myObj[x].id + "</td><td>"
-                                +  myObj[x].name + "</td><td>" + myObj[x].imo + "</td>" + "</td><td>" + myObj[x].callsign +
-                                "</td><td>" + myObj[x].mmsi + "</td><td>" + myObj[x].depth +
-                                "<td><div class=\"btn-group\"> <button type=\"button\" class=\"btn btn-outline-light btn-sm \">" +
-                  				 "<img src=\"img/edit.svg\" class=\"img-rounded\"></button>"+
-                  				 "<button type=\"button\" class=\"btn btn-outline-danger btn-sm \">" +
-                  				 "<img src=\"img/trash-2.svg\" class=\"img-rounded\"> </button></div></td></tr>";
-
-
-                        }
-                        txt += "</table></div>"
-                        document.getElementById("items").innerHTML = txt;
-                    }
-
-                    console.log(txt);
-
-                };
-
-                xmlhttp.open("GET", restServlet + "all", true);
-                xmlhttp.send();
-
-            }
-
-            window.onload = loadAll();
+            $(document).ready( function () {
+                $('.datatables').DataTable({
+                    ajax: {
+                        url: "${base}/api/ships",
+                        dataSrc: '',
+                    },
+                    columns: [
+                        { data: 'id' },
+                        { data: 'name' },
+                        { data: 'imo' },
+                        { data: 'callsign' },
+                        { data: 'mmsi' },
+                        { data: 'depth' }
+                    ],
+                    responsive: true
+                });
+            } );
         </script>
-
     </jsp:attribute>
 
     <jsp:body>
-        <div class="row">
-            <div class="col-sm-8">
-                <h2 style="margin: 20px" >Ships</h2>
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">Ships</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group mr-2">
+                    <button class="btn btn-sm btn-outline-secondary">Share</button>
+                    <button class="btn btn-sm btn-outline-secondary">Export</button>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                    <span data-feather="calendar"></span>
+                    This week
+                </button>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-sm-4" >
-                <div class="search-container">
-                    <form action="/action_page.php">
-                        <input type="text" placeholder="Search..." name="search">
-                        <button type="button" class="btn  btn-sm">
-                            <span data-feather="search"></span>
-                        </button>
-                    </form>
-                </div>
-            </div>
+        <table class="table table-striped table-sm datatables>
+            <thead>
+            <tr>
+                <th data-priority="1">#</th>
+                <th data-priority="1">Name</th>
+                <th>IMO</th>
+                <th>CallSign</th>
+                <th>MMSI</th>
+                <th>Depth</th>
+            </tr>
+            </thead>
 
-            <div class="col-sm-4">
-                <div class="dropdown">
-                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
-                        Order By
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Name </a>
-                        <a class="dropdown-item" href="#">Id</a>
-                        <a class="dropdown-item" href="#">CallSign</a>
-                        <a class="dropdown-item" href="#">MMSI</a>
-                        <a class="dropdown-item" href="#">Depth</a>
-                        <a class="dropdown-item" href="#">IMO</a>
-                    </div>
-                </div>
-            </div>
+            <tbody>
 
-            <div class="col-sm-4">
-                <button type="button" class="btn   " onClick="location.href='D:\\University\\Module 4\\Project\\DataAndInformationProject\\Cofano-C\\target\\m2e-wtp\\html-mockup\\AddDAtabase.html'">
-                    Add Info  <span data-feather="plus-circle"></span></button>
-            </div>
+            </tbody>
+        </table>
 
 
-            <div class="col-sm-11">
-                <div id="results">
-                    <div id="items">
-                        <p>No items found so far!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </jsp:body>
 </t:dashboard>
