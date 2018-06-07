@@ -25,7 +25,7 @@ import javax.ws.rs.core.MediaType;
 
 
 @Path("/applications")
-public class ApplicationsResource extends Connect {
+public class ApplicationsResource{
 	
 	
 	@POST
@@ -107,7 +107,7 @@ public class ApplicationsResource extends Connect {
 	
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
-	public List<Application> getAllApps(){
+	public List<Application> getAllApps(@Context HttpServletRequest request){
 		Tables.start();
 		ArrayList<Application> result = new ArrayList<>(); 
 		Application add = new Application();
@@ -120,7 +120,7 @@ public class ApplicationsResource extends Connect {
 		ResultSet resultSet = statement.executeQuery();
 		
 		while(resultSet.next()) {
-			System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
+			//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
 			add = new Application();
 			add.setName(resultSet.getString(2));
 			add.setAPIKey( resultSet.getString(3));
@@ -136,10 +136,7 @@ public class ApplicationsResource extends Connect {
 		
 	}
 	
-	public static void main(String[] args) {
-		ApplicationsResource test = new ApplicationsResource();
-		test.getAllApps();
-	}
+	
 
 }
 

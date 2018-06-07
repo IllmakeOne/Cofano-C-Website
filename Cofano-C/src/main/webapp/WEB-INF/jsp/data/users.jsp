@@ -17,16 +17,14 @@
             $(document).ready( function () {
                 $('.datatables').DataTable({
                     ajax: {
-                        url: "${base}/api/ships",
+                        url: "${base}/api/users",
                         dataSrc: '',
                     },
                     columns: [
                         { data: 'id' },
                         { data: 'name' },
-                        { data: 'imo' },
-                        { data: 'callsign' },
-                        { data: 'mmsi' },
-                        { data: 'depth' }
+                        { data: 'email' },
+                        { data: 'lastLogedIn' }
                     ],
                     responsive: true
                 });
@@ -36,7 +34,7 @@
 
     <jsp:body>
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">Ships</h1>
+            <h1 class="h2">Users</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group mr-2">
                     <button class="btn btn-sm btn-outline-secondary">Share</button>
@@ -54,10 +52,8 @@
             <tr>
                 <th data-priority="1">#</th>
                 <th data-priority="1">Name</th>
-                <th>IMO</th>
-                <th>CallSign</th>
-                <th>MMSI</th>
-                <th>Depth</th>
+                <th>E-mail</th>
+                <th>Last login in</th>
             </tr>
             </thead>
             <tbody>
