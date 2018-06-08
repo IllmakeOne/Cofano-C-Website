@@ -42,18 +42,18 @@ public class ApplicationsResource{
 			
 			System.out.println("Received from client request " +input.toString());
 			
-			String query ="INSERT INTO application(name, api_key) VALUES('"+ 
-					input.getName()+
-					"','"+input.getAPIKey()+"');";
+			String query ="SELECT addapplications(?,?)";
 			
 			System.out.println(query);
 			
 			System.out.println("Added to database: " + "name, api_key -> "+
 			input.getName()+ ","+input.getAPIKey());
 			try {
-				//PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
-				Statement stmt=Tables.getCon().createStatement();
-				stmt.executeUpdate(query);
+				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				statement.setString(1, input.getName());
+				statement.setString(2, input.getAPIKey());
+				
+				statement.executeQuery();
 			} catch (SQLException e) {
 				System.err.println("Could not add application");
 				System.err.println(e.getSQLState());
@@ -82,7 +82,7 @@ public class ApplicationsResource{
 				add.setID(resultSet.getInt(1));
 				}
 			} catch (SQLException e) {
-				System.err.println("Could not retrive all apps" + e);
+				System.err.println("Coulnd retrive app about to be deleted" + e);
 			}
 		//add the deletion to the history table
 		String title = "DELETE";
@@ -96,7 +96,7 @@ public class ApplicationsResource{
 				statement.setLong(1, appid);
 				statement.executeUpdate();
 			} catch (SQLException e) {
-				System.err.println("Could not add application");
+				System.err.println("Was not able to delete APP");
 				System.err.println(e.getSQLState());
 				e.printStackTrace();
 			}
