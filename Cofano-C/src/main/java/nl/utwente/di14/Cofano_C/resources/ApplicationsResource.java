@@ -111,8 +111,7 @@ public class ApplicationsResource{
 		Tables.start();
 		ArrayList<Application> result = new ArrayList<>(); 
 		Application add = new Application();
-		String query = "SELECT * " +
-				"FROM application";
+		String query = "SELECT * FROM application";
 		
 		try {
 		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
@@ -120,7 +119,7 @@ public class ApplicationsResource{
 		ResultSet resultSet = statement.executeQuery();
 		
 		while(resultSet.next()) {
-			//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
+			//System.out.println(resultSet.getString(1));
 			add = new Application();
 			add.setName(resultSet.getString(2));
 			add.setAPIKey( resultSet.getString(3));
