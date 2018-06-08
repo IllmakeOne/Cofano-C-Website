@@ -5,30 +5,30 @@ public class Terminal {
 	private int ID;
 	
 	private String name;
-	private String terminalcode;
+	private String terminalCode;
 	private String type;
 	private String unlo;
-	private int port_id;
+	private int portId;
 	
 	
 
 	public Terminal() {}
 	
 	
-	public Terminal(int iD, String name, String terminalcode, String type, String unlo, int port_id) {
+	public Terminal(int iD, String name, String terminalCode, String type, String unlo, int portId) {
 		super();
 		ID = iD;
 		this.name = name;
-		this.terminalcode = terminalcode;
+		this.terminalCode = terminalCode;
 		this.type = type;
 		this.unlo = unlo;
-		this.port_id = port_id;
+		this.portId = portId;
 	}
 	
 	@Override
 	public String toString() {
-		return "Terminal:  Name: " + name + "; TerminalCode: " + terminalcode + "; Type: " + type+ 
-				"; Unlo: " + unlo + "; port ID: " + port_id;
+		return "Terminal:  Name: " + name + "; TerminalCode: " + terminalCode + "; Type: " + type+
+				"; Unlo: " + unlo + "; port ID: " + portId;
 	}
 	
 	public String getName() {
@@ -37,11 +37,11 @@ public class Terminal {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getTerminalcode() {
-		return terminalcode;
+	public String getTerminalCode() {
+		return terminalCode;
 	}
-	public void setTerminalcode(String terminalcode) {
-		this.terminalcode = terminalcode;
+	public void setTerminalCode(String terminalCode) {
+		this.terminalCode = terminalCode;
 	}
 	public String getType() {
 		return type;
@@ -62,12 +62,12 @@ public class Terminal {
 	public void setID(int iD) {
 		ID = iD;
 	}
-	public int getPort_id() {
-		return port_id;
+	public int getPortId() {
+		return portId;
 	}
 
-	public void setPort_id(int port_id) {
-		this.port_id = port_id;
+	public void setPortId(int portId) {
+		this.portId = portId;
 	}
 	
 	
