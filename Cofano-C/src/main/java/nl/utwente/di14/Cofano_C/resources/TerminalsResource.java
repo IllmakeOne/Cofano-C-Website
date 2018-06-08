@@ -48,7 +48,7 @@ public class TerminalsResource {
 				result.add(terminal);
 			}
 		} catch (SQLException e) {
-			System.err.println("Could not retrieve all containers" + e);
+			System.err.println("Could not retrieve all terminals" + e);
 		}
 
 		return result;
