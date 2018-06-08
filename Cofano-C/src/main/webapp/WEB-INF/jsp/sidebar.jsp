@@ -16,9 +16,21 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="${(empty base) ? '.' : base}/history">
                     <span data-feather="clock"></span>
                     Recently added data
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="${(empty base) ? '.' : base}/conflicts">
+                    <span data-feather="alert-triangle"></span>
+                    Conflicts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="${(empty base) ? '.' : base}/users">
+                    <span data-feather="users"></span>
+                    Users
                 </a>
             </li>
         </ul>
@@ -41,12 +53,15 @@
                 </a>
             </li>
             <li class="nav-item">
+<<<<<<< HEAD
                 <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'ships')}"> active</c:if>" href="${(empty base) ? '.' : base}/users">
                     <span data-feather="users"></span>
                     Users
                 </a>
             </li>
             <li class="nav-item">
+=======
+>>>>>>> sprint3-datatables
                 <a class="nav-link " href="${(empty base) ? '.' : base}/containers">
                     <span data-feather="package"></span>
                     Container Types
@@ -58,19 +73,13 @@
                     Terminals
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link " href="#">
-                    <span data-feather="alert-triangle"></span>
-                    Conflicts
-                </a>
-            </li>
+
             <li class="nav-item">
                 <a class="nav-link " href="#">
                     <span data-feather="box"></span>
                     UNDGs
                 </a>
             </li>
-
             <li class="nav-item">
                 <a class="nav-link " href="${(empty base) ? '.' : base}/ports">
                     <span data-feather="map-pin"></span>
@@ -78,7 +87,6 @@
                 </a>
             </li>
         </ul>
-
 
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
             <span>ADMINISTRATION</span>
