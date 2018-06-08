@@ -10,29 +10,33 @@ public class ContainerType {
 	private String description;
 	private int length;
 	private int height;
-	private boolean refeer;
+	private boolean reefer;
 
 
 	@Override 
 	public String toString() {
 		return "ContainerType:  displayName: "+displayName+"; isoCode: "+isoCode+"; Description: "+description+
-				"; Lenght: "+length+"; Height: "+ height+"; Refeer: " +refeer;
+				"; Lenght: "+length+"; Height: "+ height+"; Refeer: " +reefer;
 	}
 
 
-    public ContainerType(String name, String isocode, String decription, int lenght, int height, boolean reef, int ID) {
+    public ContainerType(String name, String isocode, String decription, int length, int height, boolean reefer, int ID) {
         this.displayName = name;
         this.isoCode = isocode;
         this.description = decription;
-        this.length = lenght;
+        this.length = length;
         this.height = height;
-        this.refeer = reef;
+        this.reefer = reefer;
         this.ID = ID;
     }
 
     public ContainerType() {
 
 	}
+
+	public void setReefer (boolean reefer) { this.reefer = reefer; }
+
+	public boolean getReefer() { return this.reefer; }
 
     public void setID(int ID) {
         this.ID = ID;
@@ -42,11 +46,11 @@ public class ContainerType {
         return this.ID;
     }
 
-    public void setLenght(int lenght) {
-        this.length = lenght;
+    public void setLength(int length) {
+        this.length = length;
     }
 
-    public int getLenght() {
+    public int getLength() {
         return this.length;
     }
 
