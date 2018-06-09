@@ -16,19 +16,19 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="${(empty base) ? '.' : base}/history">
+                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'history')}"> active</c:if>" href="${(empty base) ? '.' : base}/history">
                     <span data-feather="clock"></span>
                     Recently added data
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="${(empty base) ? '.' : base}/conflicts">
+                <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'conflicts')}"> active</c:if>" href="${(empty base) ? '.' : base}/conflicts">
                     <span data-feather="alert-triangle"></span>
                     Conflicts
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="${(empty base) ? '.' : base}/users">
+                <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'users')}"> active</c:if>" href="${(empty base) ? '.' : base}/users">
                     <span data-feather="users"></span>
                     Users
                 </a>
@@ -53,7 +53,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'ships')}"> active</c:if>" href="${(empty base) ? '.' : base}/users">
+                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'users')}"> active</c:if>" href="${(empty base) ? '.' : base}/users">
                     <span data-feather="users"></span>
                     Users
                 </a>
