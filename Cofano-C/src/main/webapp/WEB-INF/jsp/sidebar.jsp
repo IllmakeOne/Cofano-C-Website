@@ -53,12 +53,6 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'users')}"> active</c:if>" href="${(empty base) ? '.' : base}/users">
-                    <span data-feather="users"></span>
-                    Users
-                </a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link " href="${(empty base) ? '.' : base}/containers">
                     <span data-feather="package"></span>
                     Container Types
