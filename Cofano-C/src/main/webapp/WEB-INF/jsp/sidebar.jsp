@@ -53,26 +53,26 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="${(empty base) ? '.' : base}/containers">
+                <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'containers')}"> active</c:if>" href="${(empty base) ? '.' : base}/containers">
                     <span data-feather="package"></span>
                     Container Types
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="${(empty base) ? '.' : base}/terminals">
+                <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'terminals')}"> active</c:if>" href="${(empty base) ? '.' : base}/terminals">
                     <span data-feather="terminal"></span>
                     Terminals
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link " href="#">
+                <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'undgs')}"> active</c:if>" href="#">
                     <span data-feather="box"></span>
                     UNDGs
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="${(empty base) ? '.' : base}/ports">
+                <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'ports')}"> active</c:if>" href="${(empty base) ? '.' : base}/ports">
                     <span data-feather="map-pin"></span>
                     Ports
                 </a>
