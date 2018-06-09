@@ -83,11 +83,11 @@
             <span>ADMINISTRATION</span>
         </h6>
         <ul class="nav flex-column mb-3">
-            <a class="nav-link" href="#">
+            <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'api')}"> active</c:if>" href="#">
                 <span data-feather="book-open"></span>
                 API-documentation
             </a>
-            <a class="nav-link" href="#">
+            <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'settings')}"> active</c:if>" href="#">
                 <span data-feather="settings"></span>
                 Settings
             </a>
