@@ -91,7 +91,7 @@ body {
   margin-right: 4px;
 }
 
-.sidebar .nav-link.active {
+.sidebar .nav-item.active {
   color: white;
   background: #EF6C00;
   border-left: 8px solid #ED2700;
