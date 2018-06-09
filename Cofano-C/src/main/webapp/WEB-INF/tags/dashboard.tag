@@ -61,7 +61,7 @@
     </div>
 </div>
 <!-- JQuery for changing active page -->
-<%--<script type="text/javascript">
+<script type="text/javascript">
     $(document).ready(function () {
         "use strict";
 
@@ -71,49 +71,7 @@
             $(this).addClass('active');
         });
     });
-</script>--%>
-<%--<script type="text/javascript">
-    $(document).ready(function () {
-        $('ul.nav > li').click(function () {
-            $('ul.nav > li').removeClass("active");
-            $(this).addClass("active");
-        });
-    });
-</script>--%>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        var pathname = window.location.pathname;
-        $('.nav > li > a[href="' + pathname + '"]').parent().addClass('active');
-    })
 </script>
-
-<%--<script type="text/javascript">
-    $(document).ready(function () {
-        var url = window.location;
-        $('ul.nav a[href="' + url + '"]').parent().addClass('active');
-        $('ul.nav a').filter(function () {
-            return this.href == url;
-        }).parent().addClass('active');
-    });--%>
-
-
-<%--</script>--%>
-
-
-<%--<!-- JS for marking the active page on the sidebar. -->
-<script type="text/javascript">
-    $(document).ready(function () {
-        var url = window.location;
-        //Normal method
-        $('li.nav-item a[href="'+ url +'"]').addClass('active');
-        //Fail safe
-        $('li.nav-item a').filter(function () {
-            return this.href === url;
-        }).addClass('active');
-    });
-
-</script>--%>
 
 
 <!-- Bootstrap core JavaScript
