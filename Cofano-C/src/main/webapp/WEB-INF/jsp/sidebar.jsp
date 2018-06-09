@@ -41,7 +41,7 @@
         </h6>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'applications')}"> active</c:if>" href="${(empty base) ? '.' : base}/applications">
+                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'apps')}"> active</c:if>" href="${(empty base) ? '.' : base}/applications">
                     <span data-feather="aperture"></span>
                     Applications
                 </a>
