@@ -38,11 +38,12 @@
     <link rel="shortcut icon" href="./img/favicons/favicon.ico">
     <meta name="msapplication-TileColor" content="#00aba9">
     <meta name="msapplication-config" content="./img/favicons/browserconfig.xml">
-
+    <script src="./js/jquery-3.3.1.min.js"></script>
     <jsp:invoke fragment="header"/>
 </head>
 
 <body>
+
 <c:import url="/WEB-INF/jsp/sidebar-up.jsp"/>
 <div class="container-fluid">
     <div class="row">
@@ -59,6 +60,45 @@
         </main>
     </div>
 </div>
+<!-- JQuery for changing active page -->
+<%--<script type="text/javascript">
+    $(document).ready(function () {
+        "use strict";
+
+        $('ul.nav > li').click(function (e) {
+            e.preventDefault();
+            $('ul.nav > li').removeClass('active');
+            $(this).addClass('active');
+        });
+    });
+</script>--%>
+<%--<script type="text/javascript">
+    $(document).ready(function () {
+        $('ul.nav > li').click(function () {
+            $('ul.nav > li').removeClass("active");
+            $(this).addClass("active");
+        });
+    });
+</script>--%>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var pathname = window.location.pathname;
+        $('.nav > li > a[href="' + pathname + '"]').parent().addClass('active');
+    })
+</script>
+
+<%--<script type="text/javascript">
+    $(document).ready(function () {
+        var url = window.location;
+        $('ul.nav a[href="' + url + '"]').parent().addClass('active');
+        $('ul.nav a').filter(function () {
+            return this.href == url;
+        }).parent().addClass('active');
+    });--%>
+
+
+<%--</script>--%>
 
 
 <%--<!-- JS for marking the active page on the sidebar. -->
@@ -79,10 +119,7 @@
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script>window.jQuery</script>
+
 
 <!-- Icons -->
 <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
