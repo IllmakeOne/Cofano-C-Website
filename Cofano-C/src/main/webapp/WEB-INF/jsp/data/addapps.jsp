@@ -10,7 +10,7 @@
     <jsp:attribute name="footer">
         <script type="text/javascript">
             
-            var restServlet = "http://localhost:8080/Cofano-C/rest/data/applications/add";
+            var restServlet = "${base}/api/applications/add";
             
             function addApp(){
             	var name = document.getElementById("addname");
@@ -58,14 +58,14 @@
                   <td>Company Name</td> 
                   <td>
                 	<form	>
-		     			 <input type="text" placeholder=" Name Example " id="addname">
+		     			 <input type="text" placeholder=" Name Example " id="addname" autocomplete="off">
 		    		</form>
                   </td>
                 </tr>
  				<tr>
                   <td>API Key</td> 
                   <td><form>
-		     			 <input type="text" placeholder=" 12345 " id="addapi">
+		     			 <input type="text" placeholder=" 12345 " id="addapi" autocomplete="off">
 		    		</form>
 		    		</td>
                 </tr>
