@@ -8,11 +8,11 @@
 <t:dashboard>
 
     <jsp:attribute name="header">
-        <link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
+        <link rel="stylesheet" type="text/css" href="${base}/DataTables/datatables.min.css"/>
     </jsp:attribute>
 
     <jsp:attribute name="footer">
-        <script type="text/javascript" src="DataTables/datatables.min.js"></script>
+        <script type="text/javascript" src="${base}/DataTables/datatables.min.js"></script>
         <script type="text/javascript">
             $(document).ready( function () {
                 $('.datatables').DataTable({
@@ -34,7 +34,7 @@
 
     <jsp:body>
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">History</h1>
+            <h1 class="h2">Recently added data</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group mr-2">
                     <button class="btn btn-sm btn-outline-secondary">Share</button>
