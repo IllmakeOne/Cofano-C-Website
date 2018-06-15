@@ -32,7 +32,7 @@ public class PortsResource {
 			ResultSet resultSet = statement.executeQuery();
 
 			while(resultSet.next()) {
-				System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
+				//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
 
 				Port port = new Port();
 				port.setID(resultSet.getInt("pid"));
