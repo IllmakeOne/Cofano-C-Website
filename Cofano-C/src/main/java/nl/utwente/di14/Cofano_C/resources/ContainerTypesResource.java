@@ -66,16 +66,14 @@ public class ContainerTypesResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void addApp(ContainerType input, @Context HttpServletRequest request) {
 		Tables.start();
-			
+		
 		String title = "ADD";
 			
-			Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"), input.toString()
-			, new Timestamp(System.currentTimeMillis()));
 			
 			
 			System.out.println("Received from client request " +input.toString());
 			
-			String query ="SELECT addcontainer_type(?,?,?,?,?,?)";
+			String query ="SELECT addcontainer_types(?,?,?,?,?,?)";
 			
 			try {
 				//Create prepared statement
@@ -89,11 +87,16 @@ public class ContainerTypesResource {
 				statement.setBoolean(6, input.getReefer());
 				
 				statement.executeQuery();
+				
+				//add to history
+				Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"), input.toString()
+						, new Timestamp(System.currentTimeMillis()));
 			} catch (SQLException e) {
 				System.err.println("Could not add contaynertype");
 				System.err.println(e.getSQLState());
 				e.printStackTrace();
 			}
+			
 	}
 
 }

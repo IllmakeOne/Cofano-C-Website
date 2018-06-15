@@ -14,27 +14,33 @@
             
             function addContainer(){
             	
+            	
             	var name = document.getElementById("addname");
             	var iso = document.getElementById("addiso");
             	var descr = document.getElementById("adddescrip");
             	var lenght = document.getElementById("addlenght");
             	var height = document.getElementById("addheight");
-            	var reefer = document.getElementById("addreefer");
+            	var reefer = false;
             	
-            	if(name.value == "" || api.value == ""){
-            		alert("Please fill in all the boxes");	
+            	if($('#' + "addreefer").is(":checked")){
+            		reefer = true;
+            	}
+            	
+            	if(name.value == "" || iso.value == ""){
+            		alert("Please fill in at least name and ISO");	
             	} else {
-            		var json = {"name": name.value, "apikey":api.value};
+            		var json = {"displayName": name.value, "isoCode":iso.value,"description":descr.value,
+            				"length":lenght.value,"height":height.value,"reefer":reefer};
+            	
             		let	xmlhttp = new XMLHttpRequest();
             		xmlhttp.open("POST", restServlet, true);
             		xmlhttp.setRequestHeader('Content-Type', 'application/json');
-            		xmlhttp.send(JSON.stringify(json));	
             		
+            		xmlhttp.send(JSON.stringify(json));	
+          
             		alert("Entry added to Database!");
 
-            		window.location.replace("applications");
-            		
-            		name.value="";api.value="";	
+            		window.location.replace("containers");	
             	}
             };    
             
@@ -50,7 +56,7 @@
                 <h2 style="margin: 20px" >Add Container Type</h2>
             </div>
         </div>
-        <div class="col-sm-10">	
+        <div class="col-sm-12">	
           <div class="table-responsive" style="margin: 35px">
             <table class="table table-striped table-sm">
               <thead>
@@ -89,7 +95,7 @@
                   <td>Length</td> 
                   <td>
                 	<form	>
-		     			 <input type="text" placeholder=" 10" id="addlenght" autocomplete="off">
+		     			 <input type="number" min="1" max="999" placeholder=" 10" id="addlenght" autocomplete="off">
 		    		</form>
                   </td>
                 </tr>
@@ -97,21 +103,20 @@
                   <td>Height</td> 
                   <td>
                 	<form	>
-		     			 <input type="text" placeholder=" 5 " id="addheight" autocomplete="off">
+		     			 <input type="number" min="1" max="999" placeholder=" 5 " id="addheight" autocomplete="off">
 		    		</form>
                   </td>
                 </tr>
                   <td>Reefer</td> 
                   <td>
-                	<form	>
-		     			 <input type="text" placeholder=" Name Example " id="addreefer" autocomplete="off">
-		    		</form>
+					 <input class="form-check-input" type="checkbox" value="" id="addreefer" required>
+				        Check for true, leave unchecked for false
                   </td>
                 </tr>
                 
                   <td></td> 
                   <td>
-                  	<button type="button" class="btn" onclick="addApp()">
+                  	<button type="button" class="btn" onclick="addContainer()">
 					    	Add Information 
 					</button>
 		    		</td>

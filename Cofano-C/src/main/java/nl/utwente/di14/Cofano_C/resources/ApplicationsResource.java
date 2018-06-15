@@ -40,11 +40,11 @@ public class ApplicationsResource{
 			, new Timestamp(System.currentTimeMillis()));
 			
 			
-			System.out.println("Received from client request " +input.toString());
+			//System.out.println("Received from client request " +input.toString());
 			
 			String query ="SELECT addapplications(?,?)";
 			
-			System.out.println(query);
+			//System.out.println(query);
 			
 			System.out.println("Added to database: " + "name, api_key -> "+
 			input.getName()+ ","+input.getAPIKey());
@@ -62,7 +62,7 @@ public class ApplicationsResource{
 	}
 	
 	
-	
+	//NOT WORKING
 	@DELETE
 	@Path("/{appid}")
 	public void deleteApp(@PathParam("appid") int appid, @Context HttpServletRequest request) {
