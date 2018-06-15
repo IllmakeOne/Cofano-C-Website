@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Handles a login request
+ * Handles log ins
  */
 @WebServlet(description = "Login Servlet", urlPatterns = {"/login"})
 public class Login extends HttpServlet {
