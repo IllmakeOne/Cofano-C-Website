@@ -10,22 +10,22 @@
     <jsp:attribute name="footer">
         <script type="text/javascript">
             
-            var restServlet = "${base}/api/ships/add";
+            var restServlet = "${base}/api/terminals/add";
             
-            function addShip(){
+            function addTerminal(){
             	
             	
             	var name = document.getElementById("addname");
             	var terminalcode = document.getElementById("addterminalcode");
             	var type = document.getElementById("caddtype");
             	var unlo = document.getElementById("addunlo");
-            	var portid = document.getElementById("portid");
+            	var portid = document.getElementById("addportid");
             	
-            	if(imo.value == ""){
-            		alert("Please fill in at least IMO");	
+            	if(name.value == "" || portid.value == 0){
+            		alert("Please fill in at least a name and a valid port ID");	
             	} else {
-            		var json = {"imo": imo.value, "name":name.value,"callsign":callsign.value,
-            				"mmsi":mmsi.value,"depth":depth.value};
+            		var json = {"name": name.value, "portId":portid.value,"type":type.value,
+            				"terminalCode":terminalcode.value,"unlo":unlo.value};
             	
             		let	xmlhttp = new XMLHttpRequest();
             		xmlhttp.open("POST", restServlet, true);
@@ -33,9 +33,12 @@
             		
             		xmlhttp.send(JSON.stringify(json));	
           
-            		alert("Entry added to Database!");
-
-            		window.location.replace("ships");	
+            		if(false){
+            			
+            		} else {
+            			alert("Entry added to Database!");
+            			window.location.replace("terminals");
+            		}	
             	}
             };    
             
@@ -62,50 +65,50 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>IMO</td> 
+                  <td>Name</td> 
                   <td>
                 	<form	>
-		     			 <input type="text" placeholder=12345AB id="addimo" autocomplete="off">
+		     			 <input type="text" placeholder=Timisoara id="addname" autocomplete="off">
 		    		</form>
                   </td>
                 </tr>
  				<tr>
-                  <td>Name</td> 
+                  <td>Port ID</td> 
                   <td><form>
-		     			 <input type="text" placeholder=" McBoatFace " id="addname" autocomplete="off">
+		     			 <input type="number" placeholder=23 id="addportid" autocomplete="off">
 		    		</form>
 		    		</td>
                 </tr>
                 <tr>
                 <tr>
-                  <td>Callsign</td> 
+                  <td>Terminal Code</td> 
                   <td>
                 	<form	>
-		     			 <input type="text" placeholder=" BF45" id="addcallsign" autocomplete="off">
+		     			 <input type="text" placeholder=" 00BF97" id="addterminalcode" autocomplete="off">
 		    		</form>
                   </td>
                 </tr>
                 <tr>
                 <tr>
-                  <td>MMSI</td> 
+                  <td>Type</td> 
                   <td>
                 	<form	>
-		     			 <input type="text"  placeholder=" 456465ABC" id="addmmsi" autocomplete="off">
+		     			 <input type="text"  placeholder=" UNKNOWN" id="caddtype" autocomplete="off">
 		    		</form>
                   </td>
                 </tr>
                 <tr>
-                  <td>Depth</td> 
+                  <td>Unlo</td> 
                   <td>
                 	<form	>
-		     			 <input type="number" step="0.01" min="1" max="999" placeholder=" 5.5 " id="adddepth" autocomplete="off">
+		     			 <input type="text" placeholder=" 123123XP" id="addunlo" autocomplete="off">
 		    		</form>
                   </td>
                   </tr>
                   <tr>
                 	<td> </td>
                   <td>
-                  	<button type="button" class="btn" onclick="addShip()">
+                  	<button type="button" class="btn" onclick="addTerminal()">
 					    	Add Information 
 					</button>
 		    		</td>
