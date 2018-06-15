@@ -3,20 +3,62 @@ package nl.utwente.di14.Cofano_C.resources;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
+import nl.utwente.di14.Cofano_C.model.Application;
+import nl.utwente.di14.Cofano_C.model.ContainerType;
 import nl.utwente.di14.Cofano_C.model.Ship;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 @Path("/ships")
 public class ShipsResource {
 	
+	
+	@POST
+	@Path("add")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void addShip(Ship input, @Context HttpServletRequest request) {
+		Tables.start();
+		
+		String title = "ADD";
+			
+			System.out.println("Received from client request " +input.toString());
+			
+			String query ="SELECT addships(?,?,?,?,?)";
+			
+			try {
+				//Create prepared statement
+				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				//add the data to the statement's query
+				statement.setString(1, input.getName());
+				statement.setString(2,input.getImo());
+				statement.setString(3, input.getCallsign());
+				statement.setString(4, input.getMmsi());
+				statement.setBigDecimal(5, input.getDepth());
+				
+				statement.executeQuery();
+				
+				//add to history
+				Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"), input.toString()
+						, new Timestamp(System.currentTimeMillis()));
+			} catch (SQLException e) {
+				System.err.println("Could not add contaynertype");
+				System.err.println(e.getSQLState());
+				e.printStackTrace();
+			}
+			
+	}
 
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
