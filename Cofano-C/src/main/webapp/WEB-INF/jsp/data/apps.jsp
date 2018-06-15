@@ -12,8 +12,8 @@
     </jsp:attribute>
 
     <jsp:attribute name="footer">
-        <script type="text/javascript" src="${base}/js/dataTables.cellEdit.js"></script>
         <script type="text/javascript" src="${base}/DataTables/datatables.min.js"></script>
+        <script type="text/javascript" src="${base}/js/dataTables.cellEdit.js"></script>
         <script type="text/javascript">
             $(document).ready( function () {
                 var table = $('.datatables').DataTable({
@@ -25,6 +25,9 @@
                         {
                             data: 'id',
                             render: function (data, type, row, meta) {
+                                if (type == "sort" || type == 'type') {
+                                    return data;
+                                }
                                 return '<a class="btn btn-info btn-sm" href="'+ data +'" role="button">' +
                                             '<span data-feather="edit-2"></span>' +
                                        '</a>&nbsp;' +
