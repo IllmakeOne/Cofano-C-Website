@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <table class="table table-striped table-sm datatables">
+        <table class="table table-striped table-sm datatables" style="width:100%">
             <thead>
             <tr>
                 <th data-priority="1">#</th>
