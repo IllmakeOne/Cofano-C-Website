@@ -15,7 +15,7 @@ public class ContainerType {
 
 	@Override 
 	public String toString() {
-		return "ContainerType:  displayName: "+displayName+"; isoCode: "+isoCode+"; Description: "+description+
+		return "  ContainerType:  displayName: "+displayName+"; isoCode: "+isoCode+"; Description: "+description+
 				"; Lenght: "+length+"; Height: "+ height+"; Refeer: " +reefer;
 	}
 
