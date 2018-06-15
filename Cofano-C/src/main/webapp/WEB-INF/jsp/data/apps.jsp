@@ -13,30 +13,59 @@
 
     <jsp:attribute name="footer">
         <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/fh-3.1.3/r-2.2.1/datatables.min.js"></script>
+        <script type="text/javascript" src="${base}/js/dataTables.cellEdit.js"></script>
         <script type="text/javascript">
             $(document).ready( function () {
-                $('.datatables').DataTable({
+                var table = $('.datatables').DataTable({
                     ajax: {
                         url: "${base}/api/applications",
                         dataSrc: '',
                     },
                     columns: [
-                        { data: null },
-                        { data: 'id' },
+                        {
+                            data: 'id',
+                            render: function (data, type, row, meta) {
+                                return '<a class="btn btn-info btn-sm" href="'+ data +'" role="button">' +
+                                            '<span data-feather="edit-2"></span>' +
+                                       '</a>&nbsp;' +
+                                        '<a class="btn btn-danger btn-sm" href="'+ data +'" role="button">' +
+                                            '<span data-feather="trash-2"></span>' +
+                                        '</a>' ;
+                            }
+                        },
                         { data: 'name' },
                         { data: 'apikey' }
                     ],
-                    columnDefs: [
-                        {
-                            "targets": 0,
-                            "render": function ( data, type, row ) {
-                                return "<button>Click!" + row[0] + "</button>";
-                            }
-                        },
-                        { "visible": true,  "targets": [ 1 ] }
-                    ],
-                    responsive: true
+                    // columnDefs: [
+                    //     {
+                    //         "targets": 0,
+                    //         "render": function ( data, type, row ) {
+                    //             return "<button>Click!" + row[0] + "</button>";
+                    //         }
+                    //     },
+                    //     { "visible": true,  "targets": [ 1 ] }
+                    // ],
+                    responsive: true,
+                    drawCallback: function( settings ) {
+                        feather.replace();
+                    },
                 });
+
+                function myCallbackFunction (updatedCell, updatedRow, oldValue) {
+                    console.log("The new value for the cell is: " + updatedCell.data());
+                    console.log("The values for each cell in that row are: " + updatedRow.data());
+                }
+
+                table.MakeCellsEditable({
+                    "onUpdate": myCallbackFunction,
+                    "columns": [1,2],
+                    "inputCss": 'form-cotrol',
+                    "confirmationButton": { // could also be true
+                        "confirmCss": 'btn btn-sm btn-primary',
+                        "cancelCss": 'btn btn-sm btn-danger'
+                    },
+                });
+
             } );
         </script>
 
@@ -61,7 +90,6 @@
             <thead>
             <tr>
                 <th data-priority="1">#</th>
-                <th>ID</th>
                 <th data-priority="1">Name</th>
                 <th>API-Key</th>
             </tr>
