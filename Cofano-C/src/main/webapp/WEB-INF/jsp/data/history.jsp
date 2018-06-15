@@ -8,11 +8,11 @@
 <t:dashboard>
 
     <jsp:attribute name="header">
-        <link rel="stylesheet" type="text/css" href="Datatables/datatables.min.css"/>
+        <link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
     </jsp:attribute>
 
     <jsp:attribute name="footer">
-        <script type="text/javascript" src="Datatables/datatables.min.js"></script>
+        <script type="text/javascript" src="DataTables/datatables.min.js"></script>
         <script type="text/javascript">
             $(document).ready( function () {
                 $('.datatables').DataTable({
