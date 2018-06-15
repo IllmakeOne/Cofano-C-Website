@@ -21,9 +21,19 @@
                         dataSrc: '',
                     },
                     columns: [
+                        { data: null },
                         { data: 'id' },
                         { data: 'name' },
                         { data: 'apikey' }
+                    ],
+                    columnDefs: [
+                        {
+                            "targets": 0,
+                            "render": function ( data, type, row ) {
+                                return "<button>Click!" + row[0] + "</button>";
+                            }
+                        },
+                        { "visible": true,  "targets": [ 1 ] }
                     ],
                     responsive: true
                 });
@@ -51,6 +61,7 @@
             <thead>
             <tr>
                 <th data-priority="1">#</th>
+                <th>ID</th>
                 <th data-priority="1">Name</th>
                 <th>API-Key</th>
             </tr>
