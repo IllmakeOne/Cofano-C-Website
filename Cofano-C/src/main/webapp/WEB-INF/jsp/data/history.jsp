@@ -23,7 +23,15 @@
                     columns: [
                         { data: 'title' },
                         { data: 'message' },
-                        { data: 'added_at' },
+                        {
+                            data: 'added_at',
+                            render: function (data, type, row, meta) {
+                                if (type == "sort" || type == 'type') {
+                                    return data;
+                                }
+                                return new Date(data).toLocaleString();
+                            }
+                        },
                     ],
                     order: [[ 2, "desc" ]],
                     responsive: true

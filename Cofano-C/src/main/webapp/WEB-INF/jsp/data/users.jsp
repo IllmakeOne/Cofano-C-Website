@@ -24,7 +24,15 @@
                         { data: 'id' },
                         { data: 'name' },
                         { data: 'email' },
-                        { data: 'lastLogedIn' }
+                        {
+                            data: 'lastLogedIn',
+                            render: function (data, type, row, meta) {
+                                if (type == "sort" || type == 'type') {
+                                    return data;
+                                }
+                                return new Date(data).toLocaleString();
+                            }
+                        },
                     ],
                     responsive: true
                 });
