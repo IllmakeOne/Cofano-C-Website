@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Tables {
@@ -56,20 +57,39 @@ public class Tables {
 	
 	public static void addHistoryEntry(String title, String who, String message, Timestamp timestamp) {
 		
-		String query ="INSERT INTO history(title,message,added_at) VALUES(?,?,?)";
+		String query ="SELECT addhistory(?,?,?)";
 		try {
 			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 			statement.setString(1, title);
 			statement.setString(2, who+" " + title+" " +message);
 			statement.setTimestamp(3, timestamp);
-			statement.executeUpdate();
+			statement.executeQuery();
+			//ResultSet result= statement.executeQuery();
 		} catch (SQLException e) {
-			System.err.println("Could not add application IN Tables");
+			System.err.println("Could not add hisotry IN Tables");
 			System.err.println(e.getSQLState());
 			e.printStackTrace();
 		}
+		
+		resetLastlogin(who, timestamp);
 	}
 
+	
+	public static void resetLastlogin(String user,Timestamp time) {
+		
+		String query ="SELECT updatelastlogin(?,?)";
+		try {
+			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			statement.setString(1, user);
+			statement.setTimestamp(2, time);
+			statement.executeQuery();
+		} catch (SQLException e) {
+			System.err.println("Could not update last login IN Tables");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
+		
+	}
 	
 	
 	

@@ -80,7 +80,7 @@
     <jsp:body>
         <div class="row">
             <div class="col-sm-8">
-                <h2 style="margin: 20px" >Add Container Type</h2>
+                <h2 style="margin: 20px" >Add Terminal</h2>
             </div>
         </div>
         <div class="col-sm-12">	
