@@ -28,17 +28,25 @@
             				"terminalCode":terminalcode.value,"unlo":unlo.value};
             	
             		let	xmlhttp = new XMLHttpRequest();
+            		xmlhttp.onreadystatechange = function() {
+                	    if (this.readyState == 4 && this.status == 200) {
+                	    	console.log(this);
+                	   		 }
+                	   }
+            		console.log("sent");
             		xmlhttp.open("POST", restServlet, true);
             		xmlhttp.setRequestHeader('Content-Type', 'application/json');
             		
             		xmlhttp.send(JSON.stringify(json));	
           
+            		/*
             		if(false){
             			
             		} else {
             			alert("Entry added to Database!");
             			window.location.replace("terminals");
-            		}	
+            		}
+            		*/
             	}
             };    
             
