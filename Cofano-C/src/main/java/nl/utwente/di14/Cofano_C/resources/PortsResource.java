@@ -23,6 +23,8 @@ import java.util.ArrayList;
 @Path("/ports")
 public class PortsResource {
 
+	private String myname = "Port";
+	
 	@POST
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -46,7 +48,8 @@ public class PortsResource {
 				
 				//add to history
 				Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"), input.toString()
-						, new Timestamp(System.currentTimeMillis()));
+						, new Timestamp(System.currentTimeMillis()),myname);
+				
 			} catch (SQLException e) {
 				System.err.println("Could not add contaynertype");
 				System.err.println(e.getSQLState());

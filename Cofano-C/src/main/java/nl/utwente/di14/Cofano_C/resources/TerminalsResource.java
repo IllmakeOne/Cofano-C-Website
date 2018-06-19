@@ -25,7 +25,8 @@ import java.util.ArrayList;
 @Path("/terminals")
 public class TerminalsResource {
 
-	
+
+	private String myname = "Terminal";
 	
 	@POST
 	@Path("add")
@@ -53,7 +54,7 @@ public class TerminalsResource {
 				
 				//add to history
 				Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"), input.toString()
-						, new Timestamp(System.currentTimeMillis()));
+						, new Timestamp(System.currentTimeMillis()),myname);
 			} catch (SQLException e) {
 				System.err.println("Could not add terminal");
 				System.err.println(e.getSQLState());
@@ -65,6 +66,12 @@ public class TerminalsResource {
 			
 	}
 	
+	
+	/**
+	 * this function is used in the Adding of a terminal.
+	 * Terminal have a foreign key to Ports
+	 * @return the PKs and name of all ports
+	 */
 	@GET
 	@Path("portids")
 	@Produces({MediaType.APPLICATION_JSON})

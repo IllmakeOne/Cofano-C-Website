@@ -3,6 +3,9 @@ package nl.utwente.di14.Cofano_C.dao;
 
 
 import java.sql.Timestamp;
+
+import javax.servlet.http.HttpServletRequest;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -55,14 +58,15 @@ public class Tables {
 	}
 	
 	
-	public static void addHistoryEntry(String title, String who, String message, Timestamp timestamp) {
+	public static void addHistoryEntry(String title, String who, String message, Timestamp timestamp, String type) {
 		
-		String query ="SELECT addhistory(?,?,?)";
+		String query ="SELECT addhistory(?,?,?,?)";
 		try {
 			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 			statement.setString(1, title);
 			statement.setString(2, who+" " + title+" " +message);
 			statement.setTimestamp(3, timestamp);
+			statement.setString(4, type);
 			statement.executeQuery();
 			//ResultSet result= statement.executeQuery();
 		} catch (SQLException e) {
@@ -89,6 +93,28 @@ public class Tables {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public static boolean testRequste(HttpServletRequest request) {
+		boolean result = false;
+		String user = (String)request.getSession().getAttribute("userEmail");
+		System.out.println(request);
+		String key = "";
+		String query ="SELECT testrequest(?,?)";
+		try {
+			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			statement.setString(1, user);
+			statement.setString(2, key);
+			ResultSet rez =statement.executeQuery();
+			rez.next();
+			result = rez.getBoolean(1);
+			
+		} catch (SQLException e) {
+			System.err.println("Could test request IN Tables");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	

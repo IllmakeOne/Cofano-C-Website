@@ -28,6 +28,8 @@ import javax.ws.rs.core.MediaType;
 @Path("/applications")
 public class ApplicationsResource{
 	
+	private String myname = "Application";
+	
 	
 	@POST
 	@Path("add")
@@ -38,7 +40,7 @@ public class ApplicationsResource{
 		String title = "ADD";
 
 			Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"), input.toString()
-			, new Timestamp(System.currentTimeMillis()));
+			, new Timestamp(System.currentTimeMillis()), myname );
 
 
 			//System.out.println("Received from client request " +input.toString());
@@ -89,7 +91,7 @@ public class ApplicationsResource{
 		String title = "DELETE";
 		Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"),
 				add.toString()
-				, new Timestamp(System.currentTimeMillis()));
+				, new Timestamp(System.currentTimeMillis()),myname );
 			
 			query ="DELETE FROM application WHERE aid = ?";
 			try {
@@ -111,30 +113,40 @@ public class ApplicationsResource{
 	public List<Application> getAllApps(@Context HttpServletRequest request){
 		Tables.start();
 		ArrayList<Application> result = new ArrayList<>();
-		Application add = new Application();
-		String query = "SELECT * FROM application";
-
-		try {
-		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
-
-		ResultSet resultSet = statement.executeQuery();
-
-		while(resultSet.next()) {
-			//System.out.println(resultSet.getString(1));
-			add = new Application();
-			add.setName(resultSet.getString(2));
-			add.setAPIKey( resultSet.getString(3));
-			add.setID(resultSet.getInt(1));
-
-			result.add(add);
+		
+		if(Tables.testRequste(request)) {
+			System.out.println("acces granted to "+
+		(String)request.getSession().getAttribute("userEmail"));
+		
+			Application add = new Application();
+			String query = "SELECT * FROM application";
+	
+			try {
+			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+	
+			ResultSet resultSet = statement.executeQuery();
+	
+			while(resultSet.next()) {
+				//System.out.println(resultSet.getString(1));
+				add = new Application();
+				add.setName(resultSet.getString(2));
+				add.setAPIKey( resultSet.getString(3));
+				add.setID(resultSet.getInt(1));
+	
+				result.add(add);
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not retrive all apps" + e);
 			}
-		} catch (SQLException e) {
-			System.err.println("Could not retrive all apps" + e);
+		} else {
+			System.out.println("access denied to "+
+					(String)request.getSession().getAttribute("userEmail"));
 		}
-
 		return result;
 		
+		
 	}
+		
 	
 	
 

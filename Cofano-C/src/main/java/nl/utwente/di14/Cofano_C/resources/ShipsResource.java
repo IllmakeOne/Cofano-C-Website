@@ -24,6 +24,8 @@ import javax.ws.rs.core.MediaType;
 @Path("/ships")
 public class ShipsResource {
 	
+
+	private String myname = "Ship";
 	
 	@POST
 	@Path("add")
@@ -51,7 +53,7 @@ public class ShipsResource {
 				
 				//add to history
 				Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"), input.toString()
-						, new Timestamp(System.currentTimeMillis()));
+						, new Timestamp(System.currentTimeMillis()),myname);
 			} catch (SQLException e) {
 				System.err.println("Could not add contaynertype");
 				System.err.println(e.getSQLState());

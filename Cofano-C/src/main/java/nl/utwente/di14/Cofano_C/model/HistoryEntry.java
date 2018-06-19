@@ -8,15 +8,27 @@ public class HistoryEntry {
 	private String title;
 	private String message;
 	private Timestamp added_at;
+	private String type;
 	
 	public HistoryEntry() {}
 
-	public HistoryEntry(int iD, String title, String message, Timestamp added_at) {
+	public HistoryEntry(int iD, String title, String message, Timestamp added_at, String type) {
 		super();
 		ID = iD;
 		this.title = title;
 		this.message = message;
 		this.added_at = added_at;
+		this.type = type;
+	}
+	
+	
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public int getID() {

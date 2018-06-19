@@ -39,6 +39,7 @@ public class HistoryResource {
 				entry.setTitle(resultSet.getString("title"));
 				entry.setAdded_at(resultSet.getTimestamp("added_at"));
 				entry.setMessage(resultSet.getString("message"));
+				entry.setType(resultSet.getString("type"));
 
 				result.add(entry);
 			}

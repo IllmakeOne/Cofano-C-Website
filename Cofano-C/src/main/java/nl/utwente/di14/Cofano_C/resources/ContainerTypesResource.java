@@ -24,7 +24,8 @@ import javax.ws.rs.core.MediaType;
 @Path("/containers")
 public class ContainerTypesResource {
 
-
+	private String myname= "Container";
+	
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
 	public ArrayList<ContainerType> getAllContainerTypes(){
@@ -90,7 +91,7 @@ public class ContainerTypesResource {
 				
 				//add to history
 				Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"), input.toString()
-						, new Timestamp(System.currentTimeMillis()));
+						, new Timestamp(System.currentTimeMillis()),myname);
 			} catch (SQLException e) {
 				System.err.println("Could not add contaynertype");
 				System.err.println(e.getSQLState());
