@@ -10,7 +10,25 @@
     <jsp:attribute name="footer">
         <script type="text/javascript">
             
-            var restServlet = "${base}/api/terminals/add";
+            var restServlet = "${base}/api/terminals/";
+            
+            
+            
+            let dropdown = $('#pid-dropdown');
+
+            dropdown.empty();
+
+            dropdown.append('<option selected="true" disabled>Choose an Port ID</option>');
+            dropdown.prop('selectedIndex', 0);
+
+        
+
+            // Populate dropdown with list of provinces
+            $.getJSON(restServlet + "portids", function (data) {
+              $.each(data, function (key, entry) {
+                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.id+" "+entry.name));
+              })
+            });
             
             function addTerminal(){
             	
@@ -19,7 +37,7 @@
             	var terminalcode = document.getElementById("addterminalcode");
             	var type = document.getElementById("caddtype");
             	var unlo = document.getElementById("addunlo");
-            	var portid = document.getElementById("addportid");
+            	var portid = document.getElementById("pid-dropdown");
             	
             	if(name.value == "" || portid.value == 0){
             		alert("Please fill in at least a name and a valid port ID");	
@@ -34,10 +52,13 @@
                 	   		 }
                 	   }
             		console.log("sent");
-            		xmlhttp.open("POST", restServlet, true);
+            		xmlhttp.open("POST", restServlet+"add", true);
             		xmlhttp.setRequestHeader('Content-Type', 'application/json');
             		
             		xmlhttp.send(JSON.stringify(json));	
+
+        			alert("Entry added to Database!");
+        			window.location.replace("terminals");
           
             		/*
             		if(false){
@@ -82,9 +103,9 @@
                 </tr>
  				<tr>
                   <td>Port ID</td> 
-                  <td><form>
-		     			 <input type="number" placeholder=23 id="addportid" autocomplete="off">
-		    		</form>
+                  <td>
+                  <!--<form><input type="number" placeholder=23 id="addportid" autocomplete="off"></form>-->
+		    		<select id="pid-dropdown" name="pid"></select>
 		    		</td>
                 </tr>
                 <tr>

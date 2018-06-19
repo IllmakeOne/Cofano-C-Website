@@ -64,6 +64,35 @@ public class TerminalsResource {
 			}
 			
 	}
+	
+	@GET
+	@Path("portids")
+	@Produces({MediaType.APPLICATION_JSON})
+	public ArrayList<Port> getAvailableIDs(){
+		Tables.start();
+		ArrayList<Port> result = new ArrayList<>();
+		String query = "SELECT pid, name FROM port";
+
+		try {
+			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+
+			ResultSet resultSet = statement.executeQuery();
+
+			while(resultSet.next()) {
+				
+				Port terminal = new Port();
+				terminal.setID(resultSet.getInt("pid"));
+				terminal.setName(resultSet.getString("name"));
+
+				result.add(terminal);
+			}
+		} catch (SQLException e) {
+			System.err.println("Could not retrieve all terminals" + e);
+		}
+
+		return result;
+
+	}
 
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
@@ -98,7 +127,6 @@ public class TerminalsResource {
 		}
 
 		return result;
-
 	}
 
 }

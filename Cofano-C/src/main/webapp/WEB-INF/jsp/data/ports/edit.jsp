@@ -10,7 +10,10 @@
     <jsp:attribute name="footer">
         <script type="text/javascript">
             
-            var restServlet = "${base}/api/ports/add";
+            var restServlet = "${base}/api/ports/";
+            
+            
+            
             
             function addShip(){
             	
@@ -24,7 +27,7 @@
             		var json = {"unlo": unlo.value, "name":name.value};
             	
             		let	xmlhttp = new XMLHttpRequest();
-            		xmlhttp.open("POST", restServlet, true);
+            		xmlhttp.open("POST", restServlet+"add", true);
             		xmlhttp.setRequestHeader('Content-Type', 'application/json');
             		
             		xmlhttp.send(JSON.stringify(json));	
