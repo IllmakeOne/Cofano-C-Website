@@ -35,10 +35,26 @@
             </li>
         </ul>
 
-
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
+	<div class="row">
+      <div class="col-sm-8">  <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
             <span>DATA</span>
-        </h6>
+            </h6></div>
+            <div class="col-sm-4">
+         		 <div class="dropdown" style="z-index:20">
+	  				<button class="btn btn-primary dropdown-toggle btn-sm" type="button" data-toggle="dropdown">+
+					  <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+				    <li class="dropdown-item"><a href="/addship">Ship</a></li>
+			    	<li class="dropdown-item"><a href="#">Application</a></li>
+				    <li class="dropdown-item"><a href="#">Container Type</a></li>
+			    	<li class="dropdown-item"><a href="#">Terminal</a></li>
+				    <li class="dropdown-item"><a href="#">UNDG</a></li>
+			    	<li class="dropdown-item"><a href="#">Port</a></li>
+				 </ul>
+				</div>
+				</div>
+	</div>
+			
         <ul class="nav flex-column">
             <li class="nav-item">
                 <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'apps')}"> active</c:if>" href="${(empty base) ? '.' : base}/applications">
