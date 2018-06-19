@@ -1,4 +1,6 @@
-package nl.utwente.di14.Cofano_C.data;
+package nl.utwente.di14.Cofano_C.data.apps;
+
+import nl.utwente.di14.Cofano_C.util.RequestHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,13 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(description="Application Data Servlet", urlPatterns={"/settings"})
+@WebServlet(description="Application Data Servlet", urlPatterns={"/applications"})
 
-public class Settings extends HttpServlet {
+public class Apps extends HttpServlet {
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		request.setAttribute("page", "data/apps");           // Tells base.jsp to include form.jsp
-		request.getRequestDispatcher("/WEB-INF/jsp/settings.jsp").forward(request, response);
+		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/apps/overview.jsp");
 	}
 }

@@ -87,7 +87,7 @@
                 <span data-feather="book-open"></span>
                 API-documentation
             </a>
-            <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'settings')}"> active</c:if>" href="#">
+            <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'settings')}"> active</c:if>" href="${(empty base) ? '.' : base}/settings">
                 <span data-feather="settings"></span>
                 Settings
             </a>

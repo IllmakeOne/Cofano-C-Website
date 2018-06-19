@@ -1,4 +1,4 @@
-package nl.utwente.di14.Cofano_C.data;
+package nl.utwente.di14.Cofano_C.data.terminals;
 
 import nl.utwente.di14.Cofano_C.util.RequestHelper;
 
@@ -14,6 +14,6 @@ import java.io.IOException;
 public class Terminals extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/terminals.jsp");
+		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/terminals/overview.jsp");
 	}
 }

@@ -10,37 +10,43 @@
     <jsp:attribute name="footer">
         <script type="text/javascript">
             
-            var restServlet = "${base}/api/containers/add";
+            var restServlet = "${base}/api/terminals/add";
             
-            function addContainer(){
+            function addTerminal(){
             	
             	
             	var name = document.getElementById("addname");
-            	var iso = document.getElementById("addiso");
-            	var descr = document.getElementById("adddescrip");
-            	var lenght = document.getElementById("addlenght");
-            	var height = document.getElementById("addheight");
-            	var reefer = false;
+            	var terminalcode = document.getElementById("addterminalcode");
+            	var type = document.getElementById("caddtype");
+            	var unlo = document.getElementById("addunlo");
+            	var portid = document.getElementById("addportid");
             	
-            	if($('#' + "addreefer").is(":checked")){
-            		reefer = true;
-            	}
-            	
-            	if(name.value == "" || iso.value == ""){
-            		alert("Please fill in at least name and ISO");	
+            	if(name.value == "" || portid.value == 0){
+            		alert("Please fill in at least a name and a valid port ID");	
             	} else {
-            		var json = {"displayName": name.value, "isoCode":iso.value,"description":descr.value,
-            				"length":lenght.value,"height":height.value,"reefer":reefer};
+            		var json = {"name": name.value, "portId":portid.value,"type":type.value,
+            				"terminalCode":terminalcode.value,"unlo":unlo.value};
             	
             		let	xmlhttp = new XMLHttpRequest();
+            		xmlhttp.onreadystatechange = function() {
+                	    if (this.readyState == 4 && this.status == 200) {
+                	    	console.log(this);
+                	   		 }
+                	   }
+            		console.log("sent");
             		xmlhttp.open("POST", restServlet, true);
             		xmlhttp.setRequestHeader('Content-Type', 'application/json');
             		
             		xmlhttp.send(JSON.stringify(json));	
           
-            		alert("Entry added to Database!");
-
-            		window.location.replace("containers");	
+            		/*
+            		if(false){
+            			
+            		} else {
+            			alert("Entry added to Database!");
+            			window.location.replace("terminals");
+            		}
+            		*/
             	}
             };    
             
@@ -67,56 +73,50 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>Display Name</td> 
+                  <td>Name</td> 
                   <td>
                 	<form	>
-		     			 <input type="text" placeholder=" 54JS " id="addname" autocomplete="off">
+		     			 <input type="text" placeholder=Timisoara id="addname" autocomplete="off">
 		    		</form>
                   </td>
                 </tr>
  				<tr>
-                  <td>ISO Code</td> 
+                  <td>Port ID</td> 
                   <td><form>
-		     			 <input type="text" placeholder=" 23B4 " id="addiso" autocomplete="off">
+		     			 <input type="number" placeholder=23 id="addportid" autocomplete="off">
 		    		</form>
 		    		</td>
                 </tr>
                 <tr>
                 <tr>
-                  <td>Description</td> 
+                  <td>Terminal Code</td> 
                   <td>
                 	<form	>
-		     			 <input type="text" placeholder=" Big squery thingy " id="adddescrip" autocomplete="off">
+		     			 <input type="text" placeholder=" 00BF97" id="addterminalcode" autocomplete="off">
 		    		</form>
                   </td>
                 </tr>
                 <tr>
                 <tr>
-                  <td>Length</td> 
+                  <td>Type</td> 
                   <td>
                 	<form	>
-		     			 <input type="number" min="1" max="999" placeholder=" 10" id="addlenght" autocomplete="off">
+		     			 <input type="text"  placeholder=" UNKNOWN" id="caddtype" autocomplete="off">
 		    		</form>
                   </td>
                 </tr>
                 <tr>
-                  <td>Height</td> 
+                  <td>Unlo</td> 
                   <td>
                 	<form	>
-		     			 <input type="number" min="1" max="999" placeholder=" 5 " id="addheight" autocomplete="off">
+		     			 <input type="text" placeholder=" 123123XP" id="addunlo" autocomplete="off">
 		    		</form>
                   </td>
-                </tr>
-                  <td>Reefer</td> 
+                  </tr>
+                  <tr>
+                	<td> </td>
                   <td>
-					 <input class="form-check-input" type="checkbox" value="" id="addreefer" required>
-				        Check for true, leave unchecked for false
-                  </td>
-                </tr>
-                
-                  <td></td> 
-                  <td>
-                  	<button type="button" class="btn" onclick="addContainer()">
+                  	<button type="button" class="btn" onclick="addTerminal()">
 					    	Add Information 
 					</button>
 		    		</td>

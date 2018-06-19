@@ -1,48 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-
-
-<t:dashboard>
-
-    <jsp:attribute name="footer">
-        <script type="text/javascript">
-            var myObj;
-            var restServlet = "http://localhost:8080/Cofano-C/rest/data/ships/";
-
-            
-            }
-
-            
-        </script>
-
-    </jsp:attribute>
-
-    <jsp:body>
-        <div class="row">
-            <div class="col-sm-8">
-                <h2 style="margin: 20px" >Setting</h2>
-            </div>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group mr-2">
+            <button class="btn btn-sm btn-outline-secondary">Share</button>
+            <button class="btn btn-sm btn-outline-secondary">Export</button>
         </div>
-
-        <div class="row">
-            <div class="col-sm-4" >
-                <div class="search-container">
-                    <form action="/action_page.php">
-                        <input type="text" placeholder="Search..." name="search">
-                        <button type="button" class="btn  btn-sm">
-                            <span data-feather="search"></span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="col-sm-4">
-                
-            
-            </div>
-        </div>
-    </jsp:body>
-</t:dashboard>
+        <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+            <span data-feather="calendar"></span>
+            This week
+        </button>
+    </div>
+</div>

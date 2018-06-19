@@ -1,4 +1,4 @@
-package nl.utwente.di14.Cofano_C.data;
+package nl.utwente.di14.Cofano_C.data.undgs;
 
 import nl.utwente.di14.Cofano_C.util.RequestHelper;
 
@@ -7,15 +7,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(description="Application Data Servlet", urlPatterns={"/applications"})
+@WebServlet(description="Terminals Data Servlet", urlPatterns={"/undgs"})
 
-public class Apps extends HttpServlet {
-
+public class Undgs extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/apps.jsp");
+		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/undgs.jsp");
 	}
 }
