@@ -1,19 +1,22 @@
-package nl.utwente.di14.Cofano_C.data;
-
-import nl.utwente.di14.Cofano_C.util.RequestHelper;
+package nl.utwente.di14.Cofano_C.data.apps;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import nl.utwente.di14.Cofano_C.util.RequestHelper;
+
 import java.io.IOException;
 
-@WebServlet(description="Ports Data Servlet", urlPatterns={"/ports"})
+@WebServlet(description="Application Data Servlet", urlPatterns={"/addapp"})
 
-public class Ports extends HttpServlet {
+public class AddApps extends HttpServlet {
+
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/ports.jsp");
+		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/apps/edit.jsp");
 	}
 }

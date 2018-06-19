@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
+import nl.utwente.di14.Cofano_C.exceptions.NotFoundException;
 import nl.utwente.di14.Cofano_C.model.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,26 +34,26 @@ public class ApplicationsResource{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void addApp(Application input, @Context HttpServletRequest request) {
 		Tables.start();
-			
+
 		String title = "ADD";
-			
+
 			Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"), input.toString()
 			, new Timestamp(System.currentTimeMillis()));
-			
-			
+
+
 			//System.out.println("Received from client request " +input.toString());
-			
+
 			String query ="SELECT addapplications(?,?)";
-			
+
 			//System.out.println(query);
-			
+
 			System.out.println("Added to database: " + "name, api_key -> "+
 			input.getName()+ ","+input.getAPIKey());
 			try {
 				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 				statement.setString(1, input.getName());
 				statement.setString(2, input.getAPIKey());
-				
+
 				statement.executeQuery();
 			} catch (SQLException e) {
 				System.err.println("Could not add application");
@@ -109,28 +110,28 @@ public class ApplicationsResource{
 	@Produces({MediaType.APPLICATION_JSON})
 	public List<Application> getAllApps(@Context HttpServletRequest request){
 		Tables.start();
-		ArrayList<Application> result = new ArrayList<>(); 
+		ArrayList<Application> result = new ArrayList<>();
 		Application add = new Application();
 		String query = "SELECT * FROM application";
-		
+
 		try {
 		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
-		
+
 		ResultSet resultSet = statement.executeQuery();
-		
+
 		while(resultSet.next()) {
 			//System.out.println(resultSet.getString(1));
 			add = new Application();
 			add.setName(resultSet.getString(2));
 			add.setAPIKey( resultSet.getString(3));
 			add.setID(resultSet.getInt(1));
-			
+
 			result.add(add);
 			}
 		} catch (SQLException e) {
 			System.err.println("Could not retrive all apps" + e);
 		}
-	
+
 		return result;
 		
 	}

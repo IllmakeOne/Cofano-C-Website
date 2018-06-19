@@ -1,4 +1,4 @@
-package nl.utwente.di14.Cofano_C.data;
+package nl.utwente.di14.Cofano_C.data.containers;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,12 +11,12 @@ import nl.utwente.di14.Cofano_C.util.RequestHelper;
 
 import java.io.IOException;
 
-@WebServlet(description="Application Data Servlet", urlPatterns={"/addterminal"})
+@WebServlet(description="Application Data Servlet", urlPatterns={"/addcontainer"})
 
-public class AddTerminal extends HttpServlet {
+public class AddContainer extends HttpServlet {
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/addterminal.jsp");
+		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/containers/edit.jsp");
 	}
 }
