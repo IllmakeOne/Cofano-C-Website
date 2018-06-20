@@ -23,6 +23,7 @@
                     columns: [
                         { data: 'title' },
                         { data: 'message' },
+                        { data: 'type'},
                         {
                             data: 'added_at',
                             render: function (data, type, row, meta) {
@@ -60,6 +61,7 @@
             <tr>
                 <th data-priority="1">Title</th>
                 <th data-priority="1">Message</th>
+                <th data-priority="1">Type</th>
                 <th>Added at</th>
             </tr>
             </thead>

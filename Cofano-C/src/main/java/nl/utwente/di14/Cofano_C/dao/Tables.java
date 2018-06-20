@@ -3,6 +3,9 @@ package nl.utwente.di14.Cofano_C.dao;
 
 
 import java.sql.Timestamp;
+
+import javax.servlet.http.HttpServletRequest;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -55,14 +58,15 @@ public class Tables {
 	}
 	
 	
-	public static void addHistoryEntry(String title, String who, String message, Timestamp timestamp) {
+	public static void addHistoryEntry(String title, String who, String message, Timestamp timestamp, String type) {
 		
-		String query ="SELECT addhistory(?,?,?)";
+		String query ="SELECT addhistory(?,?,?,?)";
 		try {
 			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 			statement.setString(1, title);
 			statement.setString(2, who+" " + title+" " +message);
 			statement.setTimestamp(3, timestamp);
+			statement.setString(4, type);
 			statement.executeQuery();
 			//ResultSet result= statement.executeQuery();
 		} catch (SQLException e) {
@@ -91,6 +95,47 @@ public class Tables {
 		
 	}
 	
+	public static String testRequste(HttpServletRequest request) {
+		String result = "";
+		String user ="";
+		if(request.getSession().getAttribute("userEmail")!=null) {
+			return (String)request.getSession().getAttribute("userEmail");
+		} else if(request.getHeader("Authorization")!= null) {
+			user = request.getHeader("Authorization");
+		} else {
+			//returns false if the request isnt from a google user or from an application with an Authorization header
+			System.out.println("nono in the first if");
+			return result;
+		}
+		//System.out.println(request);
+		String query ="SELECT testrequest(?)";
+		try {
+			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			statement.setString(1, user);
+			ResultSet rez =statement.executeQuery();
+			if(rez.next()) {
+				result = rez.getString(1);
+			}
+			
+		} catch (SQLException e) {
+			System.err.println("Could test request IN Tables");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
+		//System.out.println("at the end "+ result);
+		return result;
+	}
+	
+//	public static String decideName(HttpServletRequest request) {
+//		String stringy ="";
+//		if(request.getSession().getAttribute("userEmail")!=null) {
+//			stringy = (String)request.getSession().getAttribute("userEmail") ;
+//		} else if(request.getHeader("Authorization")!= null) {
+//			stringy = request.getHeader("Authorization");
+//		}
+//		
+//		return stringy;
+//	}
 	
 	
 

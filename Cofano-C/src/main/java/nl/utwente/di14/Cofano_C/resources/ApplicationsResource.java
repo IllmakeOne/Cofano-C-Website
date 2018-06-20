@@ -33,37 +33,54 @@ import javax.ws.rs.core.MediaType;
 public class ApplicationsResource extends ServletContainer {
 
 	
+	private String myname = "Application";
+	
+	
 	@POST
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void addApp(Application input, @Context HttpServletRequest request) {
 		Tables.start();
 
-		String title = "ADD";
-
-			Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"), input.toString()
-			, new Timestamp(System.currentTimeMillis()));
-
-
-			//System.out.println("Received from client request " +input.toString());
-
-			String query ="SELECT addapplications(?,?)";
-
-			//System.out.println(query);
-
-			System.out.println("Added to database: " + "name, api_key -> "+
-			input.getName()+ ","+input.getAPIKey());
-			try {
-				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
-				statement.setString(1, input.getName());
-				statement.setString(2, input.getAPIKey());
-
-				statement.executeQuery();
-			} catch (SQLException e) {
-				System.err.println("Could not add application");
-				System.err.println(e.getSQLState());
-				e.printStackTrace();
+		String doer = Tables.testRequste(request);
+		
+		//tests if the person is allowed to make any modificaitons
+		if(!doer.equals("")) {
+			String title = "ADD";
+			
+			//if there is no conflict
+			if(testConflict(input) == false) {
+					Tables.addHistoryEntry(title, doer, input.toString()
+					, new Timestamp(System.currentTimeMillis()), myname );
+		
+		
+					//System.out.println("Received from client request " +input.toString());
+		
+					String query ="SELECT addapplications(?,?)";
+		
+					//System.out.println(query);
+		
+					System.out.println("Added to database: " + "name, api_key -> "+
+					input.getName()+ ","+input.getAPIKey());
+					try {
+						PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+						statement.setString(1, input.getName());
+						statement.setString(2, input.getAPIKey());
+		
+						statement.executeQuery();
+					} catch (SQLException e) {
+						System.err.println("Could not add application");
+						System.err.println(e.getSQLState());
+						e.printStackTrace();
+					}
+			} else {
+				//TODO
+				//waht happends hwne there is a conflict
 			}
+		}else {
+			//System.out.println("denied " + input);
+			//inform client side it is a conflict
+		}
 	}
 	
 	
@@ -91,9 +108,9 @@ public class ApplicationsResource extends ServletContainer {
 			}
 		//add the deletion to the history table
 		String title = "DELETE";
-		Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"),
-				add.toString()
-				, new Timestamp(System.currentTimeMillis()));
+//		Tables.addHistoryEntry(title, doer,
+//				add.toString()
+//				, new Timestamp(System.currentTimeMillis()),myname );
 			
 			query ="DELETE FROM application WHERE aid = ?";
 			try {
@@ -115,30 +132,58 @@ public class ApplicationsResource extends ServletContainer {
 	public List<Application> getAllApps(@Context HttpServletRequest request){
 		Tables.start();
 		ArrayList<Application> result = new ArrayList<>();
-		Application add = new Application();
-		String query = "SELECT * FROM application";
-
+		String name = Tables.testRequste(request);
+		if(!name.equals("")) {
+			//System.out.println("acces granted to "+
+		//(String)request.getSession().getAttribute("userEmail"));
+		
+			Application add = new Application();
+			String query = "SELECT * FROM application";
+	
+			try {
+			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+	
+			ResultSet resultSet = statement.executeQuery();
+	
+			while(resultSet.next()) {
+				//System.out.println(resultSet.getString(1));
+				add = new Application();
+				add.setName(resultSet.getString(2));
+				add.setAPIKey( resultSet.getString(3));
+				add.setID(resultSet.getInt(1));
+	
+				result.add(add);
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not retrive all apps" + e);
+			}
+		} 
+		return result;
+	}
+	
+	
+	public boolean testConflict(Application test) {
+		boolean result = true;
+		String query = "SELECT * FROM appsconflict(?,?)";
+		
 		try {
 		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
-
+		statement.setString(1, test.getName());
+		statement.setString(2, test.getAPIKey());
 		ResultSet resultSet = statement.executeQuery();
-
-		while(resultSet.next()) {
-			//System.out.println(resultSet.getString(1));
-			add = new Application();
-			add.setName(resultSet.getString(2));
-			add.setAPIKey( resultSet.getString(3));
-			add.setID(resultSet.getInt(1));
-
-			result.add(add);
-			}
-		} catch (SQLException e) {
-			System.err.println("Could not retrive all apps" + e);
+			
+		if(!resultSet.next()) {
+			result = false;
+		} else {
+			result = true;
 		}
-
-		return result;
 		
+		} catch (SQLException e) {
+			System.err.println("Could not test conflcit IN apps" + e);
+		}
+		return result;
 	}
+		
 	
 	
 
