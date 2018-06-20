@@ -28,15 +28,10 @@ import javax.ws.rs.core.MediaType;
 
 //@WebFilter(value = "/applications/*", initParams = @WebInitParam(name = "javax.ws.rs.Application", value = "javax.ws.rs.Application"))
 
-@Path("/")
+@Path("/applications")
 
 public class ApplicationsResource extends ServletContainer {
 
-	@GET
-	public String hello() {
-
-		return "hello";
-	}
 	
 	@POST
 	@Path("add")
