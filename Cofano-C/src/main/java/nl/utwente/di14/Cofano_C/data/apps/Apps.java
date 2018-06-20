@@ -17,5 +17,6 @@ public class Apps extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/apps/overview.jsp");
+		//Sprint 4 :)
 	}
 }
