@@ -95,35 +95,47 @@ public class Tables {
 		
 	}
 	
-	public static boolean testRequste(HttpServletRequest request) {
-		boolean result = false;
+	public static String testRequste(HttpServletRequest request) {
+		String result = "";
 		String user ="";
 		if(request.getSession().getAttribute("userEmail")!=null) {
-			return true;
-		} else if(request.getHeader("Authentication")!= null) {
-			user = request.getHeader("Authentication");
+			return (String)request.getSession().getAttribute("userEmail");
+		} else if(request.getHeader("Authorization")!= null) {
+			user = request.getHeader("Authorization");
 		} else {
-			//returns false if the request isnt from a google user or from an application with an Authentication header
+			//returns false if the request isnt from a google user or from an application with an Authorization header
+			System.out.println("nono in the first if");
 			return result;
 		}
 		//System.out.println(request);
-		String key = "";
 		String query ="SELECT testrequest(?)";
 		try {
 			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 			statement.setString(1, user);
 			ResultSet rez =statement.executeQuery();
-			rez.next();
-			result = rez.getBoolean(1);
+			if(rez.next()) {
+				result = rez.getString(1);
+			}
 			
 		} catch (SQLException e) {
 			System.err.println("Could test request IN Tables");
 			System.err.println(e.getSQLState());
 			e.printStackTrace();
 		}
+		//System.out.println("at the end "+ result);
 		return result;
 	}
 	
+//	public static String decideName(HttpServletRequest request) {
+//		String stringy ="";
+//		if(request.getSession().getAttribute("userEmail")!=null) {
+//			stringy = (String)request.getSession().getAttribute("userEmail") ;
+//		} else if(request.getHeader("Authorization")!= null) {
+//			stringy = request.getHeader("Authorization");
+//		}
+//		
+//		return stringy;
+//	}
 	
 	
 
