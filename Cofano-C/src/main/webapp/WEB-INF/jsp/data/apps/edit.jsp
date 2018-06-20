@@ -41,7 +41,7 @@
     <jsp:body>
         <div class="row">
             <div class="col-sm-8">
-                <h2 style="margin: 20px" >Add Application</h2>
+                <h2 style="margin: 20px" >${action} Application</h2>
             </div>
         </div>
         <div class="col-sm-10">	
