@@ -97,14 +97,21 @@ public class Tables {
 	
 	public static boolean testRequste(HttpServletRequest request) {
 		boolean result = false;
-		String user = (String)request.getSession().getAttribute("userEmail");
-		System.out.println(request);
+		String user ="";
+		if(request.getSession().getAttribute("userEmail")!=null) {
+			return true;
+		} else if(request.getHeader("Authentication")!= null) {
+			user = request.getHeader("Authentication");
+		} else {
+			//returns false if the request isnt from a google user or from an application with an Authentication header
+			return result;
+		}
+		//System.out.println(request);
 		String key = "";
-		String query ="SELECT testrequest(?,?)";
+		String query ="SELECT testrequest(?)";
 		try {
 			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 			statement.setString(1, user);
-			statement.setString(2, key);
 			ResultSet rez =statement.executeQuery();
 			rez.next();
 			result = rez.getBoolean(1);

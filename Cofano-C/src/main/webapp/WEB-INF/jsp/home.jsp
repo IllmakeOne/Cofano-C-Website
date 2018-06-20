@@ -5,13 +5,22 @@
     <h1 class="h2">Dashboard</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group mr-2">
-            <button class="btn btn-sm btn-outline-secondary">Share</button>
-            <button class="btn btn-sm btn-outline-secondary">Export</button>
+         <div class="col-sm-6">
+         		 <div class="dropdown">
+	  				<button class="btn btn-primary dropdown-toggle btn" type="button" data-toggle="dropdown">+
+					  <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addship">Ship</a></li>
+			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addapp">Application</a></li>
+				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addcontainer">Container Type</a></li>
+			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addterminal">Terminal</a></li>
+				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}">UNDG</a></li>
+			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addport">Port</a></li>
+				 </ul>
+				</div>
+				</div>
         </div>
-        <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            <span data-feather="calendar"></span>
-            This week
-        </button>
+         
     </div>
 </div>
 

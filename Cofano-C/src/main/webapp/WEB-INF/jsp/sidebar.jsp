@@ -39,20 +39,7 @@
       <div class="col-sm-8">  <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
             <span>DATA</span>
             </h6></div>
-            <div class="col-sm-4">
-         		 <div class="dropdown">
-	  				<button class="btn btn-primary dropdown-toggle btn-sm" type="button" data-toggle="dropdown">+
-					  <span class="caret"></span></button>
-				<ul class="dropdown-menu">
-				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addship">Ship</a></li>
-			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addapp">Application</a></li>
-				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addcontainer">Container Type</a></li>
-			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addterminal">Terminal</a></li>
-				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}">UNDG</a></li>
-			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addport">Port</a></li>
-				 </ul>
-				</div>
-				</div>
+          
 	</div>
 			
         <ul class="nav flex-column">

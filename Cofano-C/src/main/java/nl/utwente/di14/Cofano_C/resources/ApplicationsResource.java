@@ -37,6 +37,7 @@ public class ApplicationsResource{
 	public void addApp(Application input, @Context HttpServletRequest request) {
 		Tables.start();
 
+		if(testConflict(input) == false) {
 		String title = "ADD";
 
 			Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"), input.toString()
@@ -62,6 +63,10 @@ public class ApplicationsResource{
 				System.err.println(e.getSQLState());
 				e.printStackTrace();
 			}
+		} else {
+			//System.out.println("denied " + input);
+			//inform client side it is a conflict
+		}
 	}
 	
 	
@@ -115,8 +120,8 @@ public class ApplicationsResource{
 		ArrayList<Application> result = new ArrayList<>();
 		
 		if(Tables.testRequste(request)) {
-			System.out.println("acces granted to "+
-		(String)request.getSession().getAttribute("userEmail"));
+			//System.out.println("acces granted to "+
+		//(String)request.getSession().getAttribute("userEmail"));
 		
 			Application add = new Application();
 			String query = "SELECT * FROM application";
@@ -143,8 +148,28 @@ public class ApplicationsResource{
 					(String)request.getSession().getAttribute("userEmail"));
 		}
 		return result;
+	}
+	
+	public boolean testConflict(Application test) {
+		boolean result = true;
+		String query = "SELECT * FROM appsconflict(?,?)";
 		
+		try {
+		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+		statement.setString(1, test.getName());
+		statement.setString(2, test.getAPIKey());
+		ResultSet resultSet = statement.executeQuery();
+			
+		if(!resultSet.next()) {
+			result = false;
+		} else {
+			result = true;
+		}
 		
+		} catch (SQLException e) {
+			System.err.println("Could not test conflcit IN apps" + e);
+		}
+		return result;
 	}
 		
 	
