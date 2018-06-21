@@ -6,6 +6,11 @@ import java.sql.Timestamp;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.postgresql.util.PGobject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -125,16 +130,16 @@ public class Tables {
 			System.out.println("nono in the first if");
 			return result;
 		}
-		//System.out.println(request);
+		//System.out.println(user);
 		String query ="SELECT testrequest(?)";
 		try {
 			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 			statement.setString(1, user);
 			ResultSet rez =statement.executeQuery();
 			if(rez.next()) {
-				result = rez.getString(1);
-			}
-			
+				
+				result = tidyup(rez.getString(1));
+			}  
 		} catch (SQLException e) {
 			System.err.println("Could test request IN Tables");
 			System.err.println(e.getSQLState());
@@ -156,6 +161,35 @@ public class Tables {
 //	}
 	
 	
+	public static String tidyup(String str) {
+		String[] aux = str.split(",");
+		return aux[0].substring(1)+" " +aux[1].substring(0, aux[1].length()-1);
+	}
+	
+	
+	
+	public static PGobject objToPGobj(Object obj) {
+
+		ObjectMapper mapper = new ObjectMapper();
+		
+		String workplis="";
+		try {
+			workplis = mapper.writeValueAsString(obj);
+		} catch (JsonProcessingException e1) {
+			System.out.println("coulnt not make from obj to json IN tables objtopgobj");
+		}
+		
+		PGobject jsonObject = new PGobject();
+		
+		jsonObject.setType("json");
+		try {
+			jsonObject.setValue(workplis);
+		} catch (SQLException e) {
+			System.out.println("coulnt not make from json to PGobject IN tables objtopgobj");
+		}
+		
+		return jsonObject;
+	}
 
 	
 

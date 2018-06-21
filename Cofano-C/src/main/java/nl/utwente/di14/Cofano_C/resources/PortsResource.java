@@ -13,6 +13,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+
+import org.glassfish.jersey.server.monitoring.RequestEventListener;
+import org.postgresql.util.PGobject;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -35,7 +39,8 @@ public class PortsResource {
 		String doer = Tables.testRequste(request);
 		if(!doer.equals("")) {
 			//if there is no conflict
-			if(testConflict(input) == false) {
+			int con = testConflict(input);
+			if(con == 0) {
 			//	System.out.println("Received from client request " +input.toString());
 				
 				String query ="SELECT addport(?,?)";
@@ -61,6 +66,28 @@ public class PortsResource {
 				if(request.getSession().getAttribute("userEmail")!=null) {
 					//inform clientside it creates a conflicts
 				} else {
+					String query ="SELECT addconflict(?,?,?,?)";
+					//gets here if the request is from API
+					//add to conflicts table
+					try {
+						//Create prepared statement
+						PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+						//add the data to the statement's query
+						statement.setInt(1, Integer.parseInt(doer.split(" ")[0]));
+						statement.setString(2, "port");
+						statement.setObject(3, Tables.objToPGobj(input));
+						statement.setInt(4, con);
+						
+						statement.executeQuery();
+						
+						//add to history
+						Tables.addHistoryEntry("CON", doer, input.toString(),myname);
+						
+					} catch (SQLException e) {
+						System.err.println("Could not add port");
+						System.err.println(e.getSQLState());
+						e.printStackTrace();
+					}
 					
 				}
 			}
@@ -99,14 +126,14 @@ public class PortsResource {
 			} catch (SQLException e) {
 				System.err.println("Could not retrieve all ports" + e);
 			}
-		}
+		} 
 
 		return result;
 
 	}
 	
-	public boolean testConflict(Port test) {
-		boolean result = true;
+	public int testConflict(Port test) {
+		int result = 0 ;
 		String query = "SELECT * FROM portconflict(?,?)";
 		
 		try {
@@ -117,9 +144,9 @@ public class PortsResource {
 		ResultSet resultSet = statement.executeQuery();
 			
 		if(!resultSet.next()) {
-			result = false;
+			result = 0;
 		} else {
-			result = true;
+			result = resultSet.getInt("pid");
 		}
 		
 		} catch (SQLException e) {
