@@ -50,8 +50,7 @@ public class PortsResource {
 					statement.executeQuery();
 					
 					//add to history
-					Tables.addHistoryEntry(title, doer, input.toString()
-							, new Timestamp(System.currentTimeMillis()),myname);
+					Tables.addHistoryEntry(title, doer, input.toString(),myname);
 					
 				} catch (SQLException e) {
 					System.err.println("Could not add port");
@@ -59,7 +58,11 @@ public class PortsResource {
 					e.printStackTrace();
 				}
 			} else {
-				//TODO
+				if(request.getSession().getAttribute("userEmail")!=null) {
+					//inform clientside it creates a conflicts
+				} else {
+					
+				}
 			}
 		}
 			

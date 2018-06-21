@@ -75,17 +75,35 @@ public class Tables {
 			e.printStackTrace();
 		}
 		
-		resetLastlogin(who, timestamp);
+		resetLastlogin(who);
+	}
+	
+	public static void addHistoryEntry(String title, String who, String message, String type) {
+		
+		String query ="SELECT addhistory(?,?,?)";
+		try {
+			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			statement.setString(1, title);
+			statement.setString(2, who+" " + title+" " +message);
+			statement.setString(3, type);
+			statement.executeQuery();
+			//ResultSet result= statement.executeQuery();
+		} catch (SQLException e) {
+			System.err.println("Could not add hisotry IN Tables");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
+		
+		resetLastlogin(who);
 	}
 
 	
-	public static void resetLastlogin(String user,Timestamp time) {
+	public static void resetLastlogin(String user) {
 		
-		String query ="SELECT updatelastlogin(?,?)";
+		String query ="SELECT updatelastlogin(?)";
 		try {
 			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 			statement.setString(1, user);
-			statement.setTimestamp(2, time);
 			statement.executeQuery();
 		} catch (SQLException e) {
 			System.err.println("Could not update last login IN Tables");
