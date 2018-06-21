@@ -8,13 +8,13 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Handles log outs
+ * Handles log outs.
  */
 @WebServlet(description = "Logout Servlet", urlPatterns = {"/logout"})
 public class Logout extends HttpServlet {
 
     /**
-     * Handles the HTTP servlet GET requests
+     * Handles the HTTP servlet GET requests.
      *
      * @param request  the HTTP servlet request
      * @param response the HTTP servlet response
