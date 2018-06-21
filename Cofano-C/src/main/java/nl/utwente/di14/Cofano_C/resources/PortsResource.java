@@ -81,7 +81,7 @@ public class PortsResource {
 						statement.executeQuery();
 						
 						//add to history
-						Tables.addHistoryEntry("CON", doer, input.toString(),myname);
+						Tables.addHistoryEntry("CON", doer, input.toString()+" con with "+con,myname);
 						
 					} catch (SQLException e) {
 						System.err.println("Could not add port");

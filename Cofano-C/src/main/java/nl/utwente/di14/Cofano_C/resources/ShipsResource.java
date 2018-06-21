@@ -36,11 +36,12 @@ public class ShipsResource {
 		String title = "ADD";
 		String doer = Tables.testRequste(request);
 		if(!doer.equals("")) {
-			System.out.println(doer);
+			//System.out.println(doer);
 			//if there is no conflict
-			if(testConflict(input) == false) {
-				
-				System.out.println("Received from client request " +input.toString());
+			int con = testConflict(input);
+			//System.out.println(con);
+			if(con == 0) {	
+				//System.out.println("Received from client request " +input.toString());
 				
 				String query ="SELECT addships(?,?,?,?,?)";
 				
@@ -48,8 +49,8 @@ public class ShipsResource {
 					//Create prepared statement
 					PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 					//add the data to the statement's query
-					statement.setString(1, input.getName());
-					statement.setString(2,input.getImo());
+					statement.setString(2, input.getName());
+					statement.setString(1,input.getImo());
 					statement.setString(3, input.getCallsign());
 					statement.setString(4, input.getMmsi());
 					statement.setBigDecimal(5, input.getDepth());
@@ -65,8 +66,35 @@ public class ShipsResource {
 					e.printStackTrace();
 				}
 			} else {
-				//TODO
-				//waht happends when conflict
+				//System.out.println("conflcit in ships");
+				if(request.getSession().getAttribute("userEmail")!=null) {
+					//inform clientside it creates a conflicts
+				} else {
+					String query ="SELECT addconflict(?,?,?,?)";
+					//gets here if the request is from API
+					//add to conflicts table
+					try {
+						//Create prepared statement
+						PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+						//add the data to the statement's query
+						statement.setInt(1, Integer.parseInt(doer.split(" ")[0]));
+						statement.setString(2, "ship");
+						statement.setObject(3, Tables.objToPGobj(input));
+						statement.setInt(4, con);
+						
+						statement.executeQuery();
+						
+						//add to history
+						Tables.addHistoryEntry("CON", doer, input.toString()+" con with "+con,myname);
+						
+					} catch (SQLException e) {
+						System.err.println("Could not add port");
+						System.err.println(e.getSQLState());
+						e.printStackTrace();
+					}
+					
+				}
+			
 			}
 		}
 			
@@ -111,8 +139,8 @@ public class ShipsResource {
 		
 	}
 	
-	public boolean testConflict(Ship test) {
-		boolean result = true;
+	public int testConflict(Ship test) {
+		int result = 0;
 		String query = "SELECT * FROM shipconflict(?,?,?)";
 		
 		try {
@@ -120,14 +148,16 @@ public class ShipsResource {
 		statement.setString(1, test.getImo());
 		statement.setString(2, test.getCallsign());
 		statement.setString(3, test.getMmsi());
+		//System.out.println(statement);
 		
 		ResultSet resultSet = statement.executeQuery();
 			
 		if(!resultSet.next()) {
-			result = false;
+			result = 0;
 		} else {
-			result = true;
+			result = resultSet.getInt("sid");
 		}
+		
 		
 		} catch (SQLException e) {
 			System.err.println("Could not test conflcit IN apps" + e);

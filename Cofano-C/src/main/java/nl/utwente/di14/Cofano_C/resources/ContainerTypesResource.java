@@ -76,7 +76,8 @@ public class ContainerTypesResource {
 		if(!doer.equals("")) {
 			System.out.println(doer);
 			//if there is no conflict
-			if(testConflict(input) == false) {		
+			int con = testConflict(input);
+			if(con == 0) {		
 			
 				System.out.println("Received from client request " +input.toString());
 				
@@ -104,15 +105,39 @@ public class ContainerTypesResource {
 					e.printStackTrace();
 				}	
 			} else {
-				System.out.println("conflcit in contaiers");
-				//TODO
+				if(request.getSession().getAttribute("userEmail")!=null) {
+					//inform clientside it creates a conflicts
+				} else {
+					String query ="SELECT addconflict(?,?,?,?)";
+					//gets here if the request is from API
+					//add to conflicts table
+					try {
+						//Create prepared statement
+						PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+						//add the data to the statement's query
+						statement.setInt(1, Integer.parseInt(doer.split(" ")[0]));
+						statement.setString(2, "container_type");
+						statement.setObject(3, Tables.objToPGobj(input));
+						statement.setInt(4, con);
+						
+						statement.executeQuery();
+						
+						//add to history
+						Tables.addHistoryEntry("CON", doer, input.toString()+" con with "+con,myname);
+						
+					} catch (SQLException e) {
+						System.err.println("Could not add port");
+						System.err.println(e.getSQLState());
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 	}
 			
 
-	public boolean testConflict(ContainerType test) {
-		boolean result = true;
+	public int testConflict(ContainerType test) {
+		int result = 0;
 		String query = "SELECT * FROM containerconflict(?,?)";
 		
 		try {
@@ -123,9 +148,9 @@ public class ContainerTypesResource {
 		ResultSet resultSet = statement.executeQuery();
 			
 		if(!resultSet.next()) {
-			result = false;
+			result = 0;
 		} else {
-			result = true;
+			result = resultSet.getInt("cid");
 		}
 		
 		} catch (SQLException e) {

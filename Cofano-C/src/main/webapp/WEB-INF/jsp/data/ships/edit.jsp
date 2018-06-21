@@ -21,10 +21,10 @@
             	var mmsi = document.getElementById("addmmsi");
             	var depth = document.getElementById("adddepth");
             	
-            	if(imo.value == ""){
-            		alert("Please fill in at least IMO");	
+            	if(imo.value == "" || name.value == ""){
+            		alert("Please fill in at least IMO and name");	
             	} else {
-            		var json = {"imo": imo.value, "name":name.value,"callsign":callsign.value,
+            		var json = {"name":name.value,"imo": imo.value,"callsign":callsign.value,
             				"mmsi":mmsi.value,"depth":depth.value};
             	
             		let	xmlhttp = new XMLHttpRequest();
