@@ -4,15 +4,16 @@ package nl.utwente.di14.Cofano_C.resources;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
-import nl.utwente.di14.Cofano_C.exceptions.NotFoundException;
 import nl.utwente.di14.Cofano_C.model.*;
+import org.glassfish.jersey.servlet.ServletContainer;
 
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -25,8 +26,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 
+//@WebFilter(value = "/applications/*", initParams = @WebInitParam(name = "javax.ws.rs.Application", value = "javax.ws.rs.Application"))
+
 @Path("/applications")
-public class ApplicationsResource{
+
+public class ApplicationsResource extends ServletContainer {
+
 	
 	private String myname = "Application";
 	
