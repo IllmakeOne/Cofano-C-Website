@@ -183,7 +183,6 @@ public class ShipsResource {
 	@Path("/{shipId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateApp(@PathParam("shipId") int shipId, Ship ship) {
-		System.out.println("JOOOOOSOSKSOKSOSKSOKS");
 
 		String query = "UPDATE ship SET imo = ?, name = ?, callsign = ?, mmsi = ?, ship_depth = ? WHERE sid = ?";
 		try {
