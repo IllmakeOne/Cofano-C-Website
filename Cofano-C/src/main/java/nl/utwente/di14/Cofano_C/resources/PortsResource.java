@@ -2,8 +2,6 @@ package nl.utwente.di14.Cofano_C.resources;
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.Port;
-import nl.utwente.di14.Cofano_C.model.Ship;
-import nl.utwente.di14.Cofano_C.model.Terminal;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -16,7 +14,6 @@ import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 
 
@@ -32,7 +29,7 @@ public class PortsResource {
 		Tables.start();
 		
 		String title = "ADD";
-		String doer = Tables.testRequste(request);
+		String doer = Tables.testRequest(request);
 		if(!doer.equals("")) {
 			//if there is no conflict
 			if(testConflict(input) == false) {
@@ -76,7 +73,7 @@ public class PortsResource {
 		String query = "SELECT * " +
 				"FROM port";
 		
-		String name = Tables.testRequste(request);
+		String name = Tables.testRequest(request);
 	//	System.out.println(name);
 		if(!name.equals("")) {
 

@@ -2,9 +2,7 @@ package nl.utwente.di14.Cofano_C.resources;
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.exceptions.ConflictException;
-import nl.utwente.di14.Cofano_C.model.ContainerType;
 import nl.utwente.di14.Cofano_C.model.Port;
-import nl.utwente.di14.Cofano_C.model.Ship;
 import nl.utwente.di14.Cofano_C.model.Terminal;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +33,7 @@ public class TerminalsResource {
 	public void addShip(Terminal input, @Context HttpServletRequest request) {
 		Tables.start();
 		
-		String title = "ADD";String doer = Tables.testRequste(request);
+		String title = "ADD";String doer = Tables.testRequest(request);
 		if(!doer.equals("")) {
 			System.out.println(doer);
 			//if there is no conflict
@@ -87,7 +85,7 @@ public class TerminalsResource {
 		ArrayList<Port> result = new ArrayList<>();
 		String query = "SELECT pid, name FROM port";
 		
-		String name = Tables.testRequste(request);
+		String name = Tables.testRequest(request);
 		if(!name.equals("")) {
 	
 			try {
@@ -117,7 +115,7 @@ public class TerminalsResource {
 		ArrayList<Terminal> result = new ArrayList<>();
 		String query = "SELECT * " +
 				"FROM terminal";
-		String name = Tables.testRequste(request);
+		String name = Tables.testRequest(request);
 		if(!name.equals("")) {
 
 			try {

@@ -12,8 +12,6 @@ import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.*;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -36,7 +34,7 @@ public class ApplicationsResource extends ServletContainer {
 	public void addApp(Application input, @Context HttpServletRequest request) {
 		Tables.start();
 
-		String doer = Tables.testRequste(request);
+		String doer = Tables.testRequest(request);
 		
 		//tests if the person is allowed to make any modificaitons
 		if(!doer.equals("")) {
@@ -171,7 +169,7 @@ public class ApplicationsResource extends ServletContainer {
 	public List<Application> getAllApps(@Context HttpServletRequest request){
 		Tables.start();
 		ArrayList<Application> result = new ArrayList<>();
-		String name = Tables.testRequste(request);
+		String name = Tables.testRequest(request);
 		if(!name.equals("")) {
 			//System.out.println("acces granted to "+
 		//(String)request.getSession().getAttribute("userEmail"));

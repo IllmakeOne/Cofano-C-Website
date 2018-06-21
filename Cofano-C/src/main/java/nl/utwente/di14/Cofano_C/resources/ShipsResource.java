@@ -8,8 +8,6 @@ import java.util.ArrayList;
 
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
-import nl.utwente.di14.Cofano_C.model.Application;
-import nl.utwente.di14.Cofano_C.model.ContainerType;
 import nl.utwente.di14.Cofano_C.model.Ship;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +32,7 @@ public class ShipsResource {
 		Tables.start();
 		
 		String title = "ADD";
-		String doer = Tables.testRequste(request);
+		String doer = Tables.testRequest(request);
 		if(!doer.equals("")) {
 			System.out.println(doer);
 			//if there is no conflict
@@ -81,7 +79,7 @@ public class ShipsResource {
 		String query = "SELECT * " +
 				"FROM ship";
 		
-		String name = Tables.testRequste(request);
+		String name = Tables.testRequest(request);
 		if(!name.equals("")) {
 		
 			try {

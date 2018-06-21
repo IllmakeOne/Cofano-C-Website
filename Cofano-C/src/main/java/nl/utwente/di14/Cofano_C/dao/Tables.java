@@ -12,6 +12,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * This class is the Data Access Object for all the database tables.
+ * It is also responsible for creating history entries and recording when a user last made a change in the system.
+ */
 public class Tables {
 
 	private static String host = "farm05.ewi.utwente.nl";
@@ -20,10 +24,11 @@ public class Tables {
 	private static Connection con;
 
 
-	/*
-	 * start the connection
-	 */
-	public static boolean start() {
+    /**
+     * This method starts a connections to the database using PostgreSQL drivers.
+     * @return true if a connection was established.
+     */
+    public static boolean start() {
 
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -39,26 +44,38 @@ public class Tables {
 		return true;
 	}
 
-	/*
-	 * closes down the connection
-	 */
+    /**
+     * Shuts down the connection in a safe manner.
+     */
 	public static void shutDown() {
 		try {
 			if(con != null) {
 				con.close();
 			}
 		} catch (Exception e) {
-			System.err.println("could not shut donw safely");
+			System.err.println("could not shut down safely");
 		}
 	}
 
 
-	public static Connection getCon() {
+    /**
+     * Getter for the conneciton
+     * @return the current<code>Connection</code>
+     */
+    public static Connection getCon() {
 		return con;
 	}
 
 
-	public static void addHistoryEntry(String title, String who, String message, Timestamp timestamp, String type) {
+    /**
+     * Method for adding an entry to the history table
+     * @param title Contains the type of change (ADD, DELETE etc.)
+     * @param who user or application that made the change
+     * @param message The information that was changed
+     * @param timestamp The time of change
+     * @param type The name of the table where a change was made
+     */
+    public static void addHistoryEntry(String title, String who, String message, Timestamp timestamp, String type) {
 
 		String query ="SELECT addhistory(?,?,?,?)";
 		try {
@@ -70,7 +87,7 @@ public class Tables {
 			statement.executeQuery();
 			//ResultSet result= statement.executeQuery();
 		} catch (SQLException e) {
-			System.err.println("Could not add hisotry IN Tables");
+			System.err.println("Could not add history in Tables");
 			System.err.println(e.getSQLState());
 			e.printStackTrace();
 		}
@@ -78,7 +95,14 @@ public class Tables {
 		resetLastlogin(who);
 	}
 
-	public static void addHistoryEntry(String title, String who, String message, String type) {
+    /**
+     * Method for adding an entry to the history table without providing a timestamp
+     * @param title Contains the type of change (ADD, DELETE etc.)
+     * @param who user or application that made the change
+     * @param message The information that was changed
+     * @param type The name of the table where a change was made
+     */
+    public static void addHistoryEntry(String title, String who, String message, String type) {
 
 		String query ="SELECT addhistory(?,?,?)";
 		try {
@@ -89,7 +113,7 @@ public class Tables {
 			statement.executeQuery();
 			//ResultSet result= statement.executeQuery();
 		} catch (SQLException e) {
-			System.err.println("Could not add hisotry IN Tables");
+			System.err.println("Could not add history in Tables");
 			System.err.println(e.getSQLState());
 			e.printStackTrace();
 		}
@@ -98,7 +122,11 @@ public class Tables {
 	}
 
 
-	public static void resetLastlogin(String user) {
+    /**
+     * Updates the users last login timestamp
+     * @param user The user who's last login should be updated
+     */
+    public static void resetLastlogin(String user) {
 
 		String query ="SELECT updatelastlogin(?)";
 		try {
@@ -113,7 +141,12 @@ public class Tables {
 
 	}
 
-	public static String testRequste(HttpServletRequest request) {
+    /**
+     * Check if the request is valid. I.e. check if it's either a valid Google user or a valid API.
+     * @param request the <code>HttpServletRequest</code> to be checked
+     * @return the name of the API of the request was from an API
+     */
+    public static String testRequest(HttpServletRequest request) {
 		String result = "";
 		String user ="";
 		if(request.getSession().getAttribute("userEmail")!=null) {
@@ -121,7 +154,7 @@ public class Tables {
 		} else if(request.getHeader("Authorization")!= null) {
 			user = request.getHeader("Authorization");
 		} else {
-			//returns false if the request isnt from a google user or from an application with an Authorization header
+			//returns false if the request isn't from a google user or from an application with an Authorization header
 			System.out.println("nono in the first if");
 			return result;
 		}

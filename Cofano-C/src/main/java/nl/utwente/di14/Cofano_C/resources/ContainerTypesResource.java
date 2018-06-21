@@ -3,15 +3,12 @@ package nl.utwente.di14.Cofano_C.resources;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
-import nl.utwente.di14.Cofano_C.model.Application;
 import nl.utwente.di14.Cofano_C.model.ContainerType;
-import nl.utwente.di14.Cofano_C.model.Ship;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -35,7 +32,7 @@ public class ContainerTypesResource {
 		String query = "SELECT * " +
 				"FROM container_type";
 		
-		String name = Tables.testRequste(request);
+		String name = Tables.testRequest(request);
 		if(!name.equals("")) {
 	
 			try {
@@ -72,7 +69,7 @@ public class ContainerTypesResource {
 		Tables.start();
 		
 		String title = "ADD";
-		String doer = Tables.testRequste(request);
+		String doer = Tables.testRequest(request);
 		if(!doer.equals("")) {
 			System.out.println(doer);
 			//if there is no conflict
