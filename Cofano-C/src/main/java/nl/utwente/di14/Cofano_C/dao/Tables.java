@@ -16,9 +16,10 @@ import java.sql.SQLException;
  * This class is the Data Access Object for all the database tables.
  * It is also responsible for creating history entries and recording when a user last made a change in the system.
  */
+@SuppressWarnings("unused")
 public class Tables {
 
-	private static String host = "farm05.ewi.utwente.nl";
+	private static final String host = "farm05.ewi.utwente.nl";
 	private static String dbName = "docker";
 	private static String url = "jdbc:postgresql://" + host + ":7028/" + dbName;
 	private static Connection con;
@@ -26,9 +27,8 @@ public class Tables {
 
     /**
      * This method starts a connections to the database using PostgreSQL drivers.
-     * @return true if a connection was established.
      */
-    public static boolean start() {
+    public static void start() {
 
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -40,8 +40,6 @@ public class Tables {
 		catch (SQLException e) {
 			System.err.println("error loading DB" + e);
 		}
-
-		return true;
 	}
 
     /**
@@ -59,7 +57,7 @@ public class Tables {
 
 
     /**
-     * Getter for the conneciton
+     * Getter for the connection
      * @return the current<code>Connection</code>
      */
     public static Connection getCon() {
@@ -79,7 +77,7 @@ public class Tables {
 
 		String query ="SELECT addhistory(?,?,?,?)";
 		try {
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
 			statement.setString(1, title);
 			statement.setString(2, who+" " + title+" " +message);
 			statement.setTimestamp(3, timestamp);
@@ -92,7 +90,7 @@ public class Tables {
 			e.printStackTrace();
 		}
 
-		resetLastlogin(who);
+		resetLastLogin(who);
 	}
 
     /**
@@ -106,7 +104,7 @@ public class Tables {
 
 		String query ="SELECT addhistory(?,?,?)";
 		try {
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
 			statement.setString(1, title);
 			statement.setString(2, who+" " + title+" " +message);
 			statement.setString(3, type);
@@ -118,7 +116,7 @@ public class Tables {
 			e.printStackTrace();
 		}
 
-		resetLastlogin(who);
+		resetLastLogin(who);
 	}
 
 
@@ -126,11 +124,11 @@ public class Tables {
      * Updates the users last login timestamp
      * @param user The user who's last login should be updated
      */
-    public static void resetLastlogin(String user) {
+    private static void resetLastLogin(String user) {
 
 		String query ="SELECT updatelastlogin(?)";
 		try {
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
 			statement.setString(1, user);
 			statement.executeQuery();
 		} catch (SQLException e) {
@@ -148,20 +146,20 @@ public class Tables {
      */
     public static String testRequest(HttpServletRequest request) {
 		String result = "";
-		String user ="";
+		String user;
 		if(request.getSession().getAttribute("userEmail")!=null) {
 			return (String)request.getSession().getAttribute("userEmail");
 		} else if(request.getHeader("Authorization")!= null) {
 			user = request.getHeader("Authorization");
 		} else {
 			//returns false if the request isn't from a google user or from an application with an Authorization header
-			System.out.println("nono in the first if");
+			System.out.println("Error in the first if");
 			return result;
 		}
 		//System.out.println(request);
 		String query ="SELECT testrequest(?)";
 		try {
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
 			statement.setString(1, user);
 			ResultSet rez =statement.executeQuery();
 			if(rez.next()) {
