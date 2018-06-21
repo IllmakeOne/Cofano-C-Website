@@ -1,7 +1,7 @@
 package nl.utwente.di14.Cofano_C.resources;
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
-//import nl.utwente.di14.Cofano_C.exceptions.ConflictException;
+import nl.utwente.di14.Cofano_C.exceptions.ConflictException;
 import nl.utwente.di14.Cofano_C.model.ContainerType;
 import nl.utwente.di14.Cofano_C.model.Port;
 import nl.utwente.di14.Cofano_C.model.Ship;
