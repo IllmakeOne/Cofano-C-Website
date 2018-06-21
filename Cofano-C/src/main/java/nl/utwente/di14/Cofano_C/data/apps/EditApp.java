@@ -13,10 +13,20 @@ import java.io.IOException;
 import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
 
 
+/**
+ * Data object for editing apps.
+ */
 @WebServlet(description = "Application Data Servlet", urlPatterns = {"/application/*"})
-
 public class EditApp extends HttpServlet {
 
+    /**
+     * Handles the GET request.
+     *
+     * @param request  the HTTP request
+     * @param response the HTTP response
+     * @throws IOException      when there is an <code>IOException</code>
+     * @throws ServletException when there is a <code>ServletException</code>
+     */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
