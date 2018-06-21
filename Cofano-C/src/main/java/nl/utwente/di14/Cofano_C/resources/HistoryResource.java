@@ -28,7 +28,7 @@ public class HistoryResource {
 				"FROM history";
 		if(request.getSession().getAttribute("userEmail")!=null) {
 			try {
-				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
 	
 				ResultSet resultSet = statement.executeQuery();
 	

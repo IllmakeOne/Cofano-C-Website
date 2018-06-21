@@ -36,7 +36,7 @@ public class ContainerTypesResource {
 		if(!name.equals("")) {
 	
 			try {
-				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
 	
 				ResultSet resultSet = statement.executeQuery();
 	
@@ -81,7 +81,7 @@ public class ContainerTypesResource {
 				
 				try {
 					//Create prepared statement
-					PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+					PreparedStatement statement = Tables.getCon().prepareStatement(query);
 					//add the data to the statement's query
 					statement.setString(1, input.getDisplayName());
 					statement.setString(2,input.getIsoCode());
@@ -113,17 +113,13 @@ public class ContainerTypesResource {
 		String query = "SELECT * FROM containerconflict(?,?)";
 		
 		try {
-		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+		PreparedStatement statement = Tables.getCon().prepareStatement(query);
 		statement.setString(1, test.getDisplayName());
 		statement.setString(2, test.getIsoCode());
 		
 		ResultSet resultSet = statement.executeQuery();
-			
-		if(!resultSet.next()) {
-			result = false;
-		} else {
-			result = true;
-		}
+
+            result = resultSet.next();
 		
 		} catch (SQLException e) {
 			System.err.println("Could not test conflcit IN apps" + e);

@@ -36,7 +36,7 @@ public class UsersResources {
 				"FROM public.user";
 		
 		try {
-		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+		PreparedStatement statement = Tables.getCon().prepareStatement(query);
 		ResultSet resultSet = statement.executeQuery();
 		
 		while(resultSet.next()) {

@@ -50,7 +50,7 @@
                 	    if (this.readyState == 4 && this.status == 200) {
                 	    	console.log(this);
                 	   		 }
-                	   }
+                	   };
             		console.log("sent");
             		xmlhttp.open("POST", restServlet+"add", true);
             		xmlhttp.setRequestHeader('Content-Type', 'application/json');
@@ -69,8 +69,7 @@
             		}
             		*/
             	}
-            };    
-            
+            }
             $(document).keypress(function (e) {
             	  if(e.which == 13 && e.target.nodeName != "TEXTAREA") return false;
             	});

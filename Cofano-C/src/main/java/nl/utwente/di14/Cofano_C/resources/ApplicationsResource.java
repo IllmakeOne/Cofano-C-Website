@@ -55,7 +55,7 @@ public class ApplicationsResource extends ServletContainer {
 					System.out.println("Added to database: " + "name, api_key -> "+
 					input.getName()+ ","+input.getAPIKey());
 					try {
-						PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+						PreparedStatement statement = Tables.getCon().prepareStatement(query);
 						statement.setString(1, input.getName());
 						statement.setString(2, input.getAPIKey());
 		
@@ -86,7 +86,7 @@ public class ApplicationsResource extends ServletContainer {
 		Application add = new Application();
 		String query = "SELECT * FROM application WHERE aid = ?";
 		try {
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
 			statement.setInt(1, appid);
 			ResultSet resultSet = statement.executeQuery();
 			//create an application object 
@@ -106,7 +106,7 @@ public class ApplicationsResource extends ServletContainer {
 			
 			query ="DELETE FROM application WHERE aid = ?";
 			try {
-				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
 				statement.setLong(1, appid);
 				statement.executeUpdate();
 			} catch (SQLException e) {
@@ -126,7 +126,7 @@ public class ApplicationsResource extends ServletContainer {
 		String query = "SELECT * FROM application WHERE aid = ?";
 
 		try {
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
 			statement.setInt(1, appid);
 			ResultSet resultSet = statement.executeQuery();
 
@@ -178,7 +178,7 @@ public class ApplicationsResource extends ServletContainer {
 			String query = "SELECT * FROM application";
 	
 			try {
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
 	
 			ResultSet resultSet = statement.executeQuery();
 	
@@ -204,16 +204,12 @@ public class ApplicationsResource extends ServletContainer {
 		String query = "SELECT * FROM appsconflict(?,?)";
 		
 		try {
-		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+		PreparedStatement statement = Tables.getCon().prepareStatement(query);
 		statement.setString(1, test.getName());
 		statement.setString(2, test.getAPIKey());
 		ResultSet resultSet = statement.executeQuery();
-			
-		if(!resultSet.next()) {
-			result = false;
-		} else {
-			result = true;
-		}
+
+            result = resultSet.next();
 		
 		} catch (SQLException e) {
 			System.err.println("Could not test conflcit IN apps" + e);

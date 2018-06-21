@@ -39,7 +39,7 @@ public class PortsResource {
 				
 				try {
 					//Create prepared statement
-					PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+					PreparedStatement statement = Tables.getCon().prepareStatement(query);
 					//add the data to the statement's query
 					statement.setString(1, input.getName());
 					statement.setString(2,input.getUnlo());
@@ -78,7 +78,7 @@ public class PortsResource {
 		if(!name.equals("")) {
 
 			try {
-				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
 	
 				ResultSet resultSet = statement.executeQuery();
 	
@@ -107,17 +107,13 @@ public class PortsResource {
 		String query = "SELECT * FROM portconflict(?,?)";
 		
 		try {
-		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+		PreparedStatement statement = Tables.getCon().prepareStatement(query);
 		statement.setString(1, test.getName());
 		statement.setString(2, test.getUnlo());
 		
 		ResultSet resultSet = statement.executeQuery();
-			
-		if(!resultSet.next()) {
-			result = false;
-		} else {
-			result = true;
-		}
+
+            result = resultSet.next();
 		
 		} catch (SQLException e) {
 			System.err.println("Could not test conflcit IN apps" + e);

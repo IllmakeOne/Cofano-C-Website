@@ -37,8 +37,7 @@
 
             		window.location.replace("ships");	
             	}
-            };    
-            
+            }
             $(document).keypress(function (e) {
             	  if(e.which == 13 && e.target.nodeName != "TEXTAREA") return false;
             	});
