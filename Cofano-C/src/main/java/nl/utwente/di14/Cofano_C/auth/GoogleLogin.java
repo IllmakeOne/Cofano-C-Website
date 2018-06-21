@@ -20,28 +20,30 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 
 
 /**
- * Handles google OAuth2 login requests
+ * Handles google OAuth2 login requests.
  */
 @WebServlet(description = "GoogleLogin Servlet", urlPatterns = {"/googlelogin"})
 public class GoogleLogin extends HttpServlet {
     /**
-     * Initialized necessary instance variables
+     * Initialized necessary instance variables.
      */
     private static final Collection<String> SCOPES = Arrays.asList("email", "profile");
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
     /**
-     * Handles a new login request
+     * Handles a new login request.
      *
      * @param request  The HTTP request
      * @param response The HTTP response
      * @throws IOException thrown when an IO exception occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
-        String state = new BigInteger(130, new SecureRandom()).toString(32);  // prevent request forgery
+        String state = new BigInteger(130, new SecureRandom()).toString(32);
+        // prevent request forgery
         request.getSession().setAttribute("state", state);
 
         request.getSession().setAttribute("loginDestination", "/");
@@ -56,12 +58,14 @@ public class GoogleLogin extends HttpServlet {
 
         // Callback url should be the one registered in Google Developers Console
         GenericUrl callbackUrl = new GenericUrl(request.getRequestURL().toString());
-        callbackUrl.setRawPath(getServletContext().getInitParameter("cofano.url") + "/oauth2callback");
+        callbackUrl.setRawPath(getServletContext().
+                getInitParameter("cofano.url") + "/oauth2callback");
         String redirectUrl =
                 flow.newAuthorizationUrl()
                         .setRedirectUri(callbackUrl.toString())
                         .setState(state)            // Prevent request forgery
                         .build();
-        response.sendRedirect(redirectUrl + "&hd=student.utwente.nl"); // TODO HERE WE MUST SET COFANO ONLY
+        response.sendRedirect(redirectUrl + "&hd=student.utwente.nl");
+        // TODO HERE WE MUST SET COFANO ONLY
     }
 }
