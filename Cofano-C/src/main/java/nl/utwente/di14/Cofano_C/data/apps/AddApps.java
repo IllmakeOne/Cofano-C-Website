@@ -10,10 +10,20 @@ import nl.utwente.di14.Cofano_C.util.RequestHelper;
 
 import java.io.IOException;
 
+/**
+ * Data object for adding apps.
+ */
 @WebServlet(description = "Application Data Servlet", urlPatterns = {"/applications/add"})
-
 public class AddApps extends HttpServlet {
 
+    /**
+     * Handles the GET request.
+     *
+     * @param request  the HTTP request
+     * @param response the HTTP response
+     * @throws IOException      when there is an <code>IOException</code>
+     * @throws ServletException when there is a <code>ServletException</code>
+     */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
