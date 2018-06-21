@@ -28,7 +28,7 @@
                                 if (type == "sort" || type == 'type') {
                                     return data;
                                 }
-                                return '<a class="btn btn-info btn-sm" href="'+ data +'" role="button">' +
+                                return '<a class="btn btn-info btn-sm" href="${base}/application/'+ data +'" role="button">' +
                                             '<span data-feather="edit-2"></span>' +
                                        '</a>&nbsp;' +
                                         '<a class="btn btn-danger btn-sm" href="'+ data +'" role="button">' +
@@ -78,24 +78,23 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Applications</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group mr-2">
-    	    <div class="col-sm-4">
-         		 <div class="dropdown">
-	  				<button class="btn btn-primary dropdown-toggle btn" type="button" data-toggle="dropdown">+
-					  <span class="caret"></span></button>
-					<ul class="dropdown-menu">
-					    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addship">Ship</a></li>
-			    		<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addapp">Application</a></li>
-					    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addcontainer">Container Type</a></li>
-				    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addterminal">Terminal</a></li>
-					    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}">UNDG</a></li>
-			    		<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addport">Port</a></li>
-					 </ul>
-				</div>
-			</div>
-        </div>
-         
-    </div>
+                <div class="btn-group mr-2">
+                    <div class="col-sm-4">
+                         <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle btn" type="button" data-toggle="dropdown">+
+                              <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addship">Ship</a></li>
+                                <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addapp">Application</a></li>
+                                <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addcontainer">Container Type</a></li>
+                                <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addterminal">Terminal</a></li>
+                                <li class="dropdown-item"><a href="${(empty base) ? '.' : base}">UNDG</a></li>
+                                <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addport">Port</a></li>
+                             </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <table class="table table-striped table-sm datatables" style="width:100%">
