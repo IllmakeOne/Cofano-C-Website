@@ -15,13 +15,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -106,6 +100,51 @@ public class ApplicationsResource extends ServletContainer {
 				e.printStackTrace();
 			}
 			query = "";
+	}
+
+
+	@GET
+	@Path("/{appid}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Application getApp(@PathParam("appid") int appid, @Context HttpServletRequest request) {
+		Application app = new Application();
+		String query = "SELECT * FROM application WHERE aid = ?";
+
+		try {
+			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			statement.setInt(1, appid);
+			ResultSet resultSet = statement.executeQuery();
+
+			while(resultSet.next()) {
+				app.setName(resultSet.getString(2));
+				app.setAPIKey( resultSet.getString(3));
+				app.setID(resultSet.getInt(1));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+
+		return app;
+	}
+
+	@PUT
+	@Path("/{appid}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateApp(@PathParam("appid") int appid, Application app) {
+
+		String query = "UPDATE application SET name = ?, api_key = ? WHERE aid = ?";
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setString(1, app.getName());
+			statement.setString(2, app.getAPIKey());
+			statement.setInt(3, appid);
+			statement.executeQuery();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 	

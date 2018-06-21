@@ -33,7 +33,7 @@
                             }
                         },
                     ],
-                    order: [[ 2, "desc" ]],
+                    order: [[ 3, "desc" ]],
                     responsive: true
                 });
             } );
