@@ -11,12 +11,15 @@ import nl.utwente.di14.Cofano_C.util.RequestHelper;
 
 import java.io.IOException;
 
-@WebServlet(description="Application Data Servlet", urlPatterns={"/addship"})
+@WebServlet(description="Application Data Servlet", urlPatterns={"/ships/add"})
 
 public class AddShip extends HttpServlet {
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		request.setAttribute("action", "Add");
+		request.setAttribute("method", "post");
+		request.setAttribute("formUrl", getServletContext().getInitParameter("cofano.url") + "/api/ships/add" );
 		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/ships/edit.jsp");
 	}
 }

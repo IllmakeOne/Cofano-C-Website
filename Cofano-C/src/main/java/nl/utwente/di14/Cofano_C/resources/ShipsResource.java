@@ -13,11 +13,7 @@ import nl.utwente.di14.Cofano_C.model.ContainerType;
 import nl.utwente.di14.Cofano_C.model.Ship;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -133,6 +129,77 @@ public class ShipsResource {
 			System.err.println("Could not test conflcit IN apps" + e);
 		}
 		return result;
+	}
+
+
+	@DELETE
+	@Path("/{shipId}")
+	public void deletShip(@PathParam("shipId") int shipId, @Context HttpServletRequest request) {
+		Tables.start();
+
+		String query ="DELETE FROM ship WHERE sid = ?";
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setLong(1, shipId);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("Was not able to delete APP");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
+	}
+
+
+	@GET
+	@Path("/{shipId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Ship getShip(@PathParam("shipId") int shipId, @Context HttpServletRequest request) {
+		Ship ship = new Ship();
+		String query = "SELECT * FROM ship WHERE sid = ?";
+
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setInt(1, shipId);
+			ResultSet resultSet = statement.executeQuery();
+
+			while(resultSet.next()) {
+				ship = new Ship();
+				ship.setName(resultSet.getString(3));
+				ship.setImo(resultSet.getString(2));
+				ship.setID(resultSet.getInt(1));
+				ship.setDepth(resultSet.getBigDecimal(6));
+				ship.setCallsign(resultSet.getString(4));
+				ship.setMmsi(resultSet.getString(5));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+
+		return ship;
+	}
+
+	@PUT
+	@Path("/{shipId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateApp(@PathParam("shipId") int shipId, Ship ship) {
+		System.out.println("JOOOOOSOSKSOKSOSKSOKS");
+
+		String query = "UPDATE ship SET imo = ?, name = ?, callsign = ?, mmsi = ?, ship_depth = ? WHERE sid = ?";
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setString(1, ship.getImo());
+			statement.setString(2, ship.getName());
+			statement.setString(3, ship.getCallsign());
+			statement.setString(4, ship.getMmsi());
+			statement.setBigDecimal(5, ship.getDepth());
+			statement.setInt(6, shipId);
+			statement.executeQuery();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	

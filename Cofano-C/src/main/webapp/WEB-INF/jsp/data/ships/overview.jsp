@@ -13,46 +13,119 @@
 
     <jsp:attribute name="footer">
         <script type="text/javascript" src="${base}/DataTables/datatables.min.js"></script>
+        <script type="text/javascript" src="${base}/js/dataTables.cellEdit.js"></script>
         <script type="text/javascript">
             $(document).ready( function () {
-                $('.datatables').DataTable({
+                var table = $('.datatables').DataTable({
                     ajax: {
                         url: "${base}/api/ships",
                         dataSrc: '',
                     },
                     columns: [
-                        { data: 'id' },
-                        { data: 'name' },
-                        { data: 'imo' },
-                        { data: 'callsign' },
-                        { data: 'mmsi' },
-                        { data: 'depth' }
+                        {
+                            data: 'id',
+                            render: function (data, type, row, meta) {
+                                if (type == "sort" || type == 'type') {
+                                    return data;
+                                }
+                                return '<a class="btn btn-info btn-sm" href="${base}/ship/'+ data +'" role="button">' +
+                                    '<span data-feather="edit-2"></span>' +
+                                    '</a>&nbsp;' +
+                                    '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data + '" data-delete-name="' + row.name + '" role="button">' +
+                                    '<span data-feather="trash-2"></span>' +
+                                    '</button>' ;
+                            }
+                        },
+                        { data: 'name', render: $.fn.dataTable.render.text() },
+                        { data: 'imo', render: $.fn.dataTable.render.text() },
+                        { data: 'callsign', render: $.fn.dataTable.render.text() },
+                        { data: 'mmsi', render: $.fn.dataTable.render.text() },
+                        { data: 'depth', render: $.fn.dataTable.render.text() },
                     ],
-                    responsive: true
+                    responsive: true,
+                    drawCallback: function( settings ) {
+                        feather.replace();
+                    },
                 });
-            } );
+
+                function inlineEditCallback (updatedCell, updatedRow, oldValue) {
+                    $.ajax({
+                        type: "put",
+                        url: "${base}/api/ships/" + updatedRow.data().id,
+                        data: JSON.stringify(updatedRow.data()),
+                        success: function(data) {
+                            $("#error").hide();
+                        },
+                        error: function(data) {
+                            $("#error").show();
+                        },
+                        contentType: "application/json",
+                        dataType: 'json'
+                    });
+                }
+
+                table.MakeCellsEditable({
+                    "onUpdate": inlineEditCallback,
+                    "columns": [1,2,3,4,5],
+                    "inputCss": 'form-cotrol',
+                    "confirmationButton": { // could also be true
+                        "confirmCss": 'btn btn-sm btn-primary',
+                        "cancelCss": 'btn btn-sm btn-danger'
+                    },
+                });
+
+                var deletingRow;
+                $(document).on('click', '.btn-delete', function () {
+                    $('#delete-name').text($(this).data('delete-name'))
+                    $('#delete-confirm').data('delete-url', "${base}/api/ships/" + $(this).data('delete-id'))
+                    $('#deleteModal').modal('show')
+                    deletingRow = $(this).parents('tr');
+                });
+
+                $(document).on('click', '#delete-confirm', function () {
+                    $.ajax({
+                        type: "delete",
+                        url: $('#delete-confirm').data('delete-url'),
+                        beforeSend: function( xhr ) {
+                            $("#delete-error").hide();
+                        },
+                        success: function(data) {
+                            $('#deleteModal').modal('hide')
+                            table
+                                .row( deletingRow )
+                                .remove()
+                                .draw();
+                        },
+                        error: function(data) {
+                            $("#delete-error").show();
+                        },
+                    });
+                });
+            });
         </script>
     </jsp:attribute>
 
     <jsp:body>
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Ships</h1>
-            <div class="btn-group mr-2">
-    	   	 <div class="col-sm-4">
-         		 <div class="dropdown">
-	  				<button class="btn btn-primary dropdown-toggle btn" type="button" data-toggle="dropdown">+
-					  <span class="caret"></span></button>
-					<ul class="dropdown-menu">
-					    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addship">Ship</a></li>
-			    		<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addapp">Application</a></li>
-					    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addcontainer">Container Type</a></li>
-				    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addterminal">Terminal</a></li>
-					    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}">UNDG</a></li>
-			    		<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addport">Port</a></li>
-					 </ul>
-				</div>
-				</div>
-       	 	</div>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group mr-2">
+                    <div class="col-sm-4">
+                         <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle btn" type="button" data-toggle="dropdown">+
+                              <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addship">Ship</a></li>
+                                <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addapp">Application</a></li>
+                                <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addcontainer">Container Type</a></li>
+                                <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addterminal">Terminal</a></li>
+                                <li class="dropdown-item"><a href="${(empty base) ? '.' : base}">UNDG</a></li>
+                                <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addport">Port</a></li>
+                             </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <table class="table table-striped table-sm datatables" style="width:100%">
@@ -69,6 +142,32 @@
             <tbody>
             </tbody>
         </table>
+
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="delete modal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm deletion</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="delete-error" style="display:none">
+                            <strong>Holy guacamole!</strong> Something went wrong while deleting
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <p>Are you really sure you want to delete ship with name <code id="delete-name"></code>.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-delete-url="" id="delete-confirm">Yes delete it</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
     </jsp:body>
