@@ -128,7 +128,7 @@ public class TerminalsResource {
 						//	resultSet.getString(4) + " " + resultSet.getString(5) + " " + resultSet.getString(6));
 	
 					Terminal terminal = new Terminal();
-					terminal.setId(resultSet.getInt("tid"));
+					terminal.setID(resultSet.getInt("tid"));
 					terminal.setName(resultSet.getString("name"));
 					terminal.setTerminalCode(resultSet.getString("terminal_code"));
 					terminal.setType(resultSet.getString("type"));
