@@ -89,7 +89,7 @@ public class ShipsResource {
 				ship = new Ship();
 				ship.setName(resultSet.getString(3));
 				ship.setImo(resultSet.getString(2));
-				ship.setID(resultSet.getInt(1));
+				ship.setId(resultSet.getInt(1));
 				ship.setDepth(resultSet.getBigDecimal(6));
 				ship.setCallsign(resultSet.getString(4));
 				ship.setMmsi(resultSet.getString(5));
@@ -160,7 +160,7 @@ public class ShipsResource {
 				ship = new Ship();
 				ship.setName(resultSet.getString(3));
 				ship.setImo(resultSet.getString(2));
-				ship.setID(resultSet.getInt(1));
+				ship.setId(resultSet.getInt(1));
 				ship.setDepth(resultSet.getBigDecimal(6));
 				ship.setCallsign(resultSet.getString(4));
 				ship.setMmsi(resultSet.getString(5));
