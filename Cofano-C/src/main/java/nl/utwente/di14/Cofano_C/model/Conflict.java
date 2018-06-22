@@ -10,7 +10,7 @@ public class Conflict {
 
     private int id;
 
-    private String table_type;
+    private String tableType;
     private String columnName;
     private String value;
 
@@ -23,11 +23,11 @@ public class Conflict {
     public Conflict() {
     }
 
-    public Conflict(int iD, String table_type, String columnName, String value, int createdBy, int solvedBy, Timestamp addedAt,
+    public Conflict(int iD, String tableType, String columnName, String value, int createdBy, int solvedBy, Timestamp addedAt,
                     Timestamp updatedAt) {
         super();
         id = iD;
-        this.table_type = table_type;
+        this.tableType = tableType;
         this.columnName = columnName;
         this.createdBy = createdBy;
         this.solvedBy = solvedBy;
@@ -38,7 +38,7 @@ public class Conflict {
 
 
     public String toString(String whodid, String whoRepaired) {
-        return "Conflict:  Created by : " + whodid + "; Solved by: " + whoRepaired + "; In table: " + table_type +
+        return "Conflict:  Created by : " + whodid + "; Solved by: " + whoRepaired + "; In table: " + tableType +
                 "; on column: " + columnName + "; with Value of: " + value +
                 "; Created on: " + addedAt + "; Solved on: " + updatedAt;
     }
@@ -50,14 +50,6 @@ public class Conflict {
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    public String getTable_type() {
-        return table_type;
-    }
-
-    public void setTable_type(String table_type) {
-        this.table_type = table_type;
     }
 
     public Timestamp getUpdatedAt() {
@@ -78,11 +70,11 @@ public class Conflict {
 
 
     public void setTableType(String type) {
-        this.table_type = type;
+        this.tableType = type;
     }
 
     public String getTableType() {
-        return this.table_type;
+        return this.tableType;
     }
 
 
