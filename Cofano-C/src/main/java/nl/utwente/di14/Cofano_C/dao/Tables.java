@@ -11,6 +11,8 @@ import org.postgresql.util.PGobject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import nl.utwente.di14.Cofano_C.model.ContainerType;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -83,14 +85,15 @@ public class Tables {
 		resetLastlogin(who);
 	}
 	
-	public static void addHistoryEntry(String title, String who, String message, String type) {
+	public static void addHistoryEntry(String title, String who, String message, String type,boolean approved) {
 		
-		String query ="SELECT addhistory(?,?,?)";
+		String query ="SELECT addhistory(?,?,?,?)";
 		try {
 			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 			statement.setString(1, title);
 			statement.setString(2, who+" " + title+" " +message);
 			statement.setString(3, type);
+			statement.setBoolean(4, approved);
 			statement.executeQuery();
 			//ResultSet result= statement.executeQuery();
 		} catch (SQLException e) {
@@ -164,6 +167,31 @@ public class Tables {
 	public static String tidyup(String str) {
 		String[] aux = str.split(",");
 		return aux[0].substring(1)+" " +aux[1].substring(0, aux[1].length()-1);
+	}
+	
+	public static void addtoConflicts(String table, String doer,int ownid,int con) {
+		
+		
+		String query ="SELECT addconflict(?,?,?,?)";
+		//gets here if the request is from API
+		//add to conflicts table
+		try {
+			//Create prepared statement
+			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			//add the data to the statement's query
+			statement.setString(1, doer);
+			statement.setString(2, table);
+			statement.setObject(3,ownid);
+			statement.setInt(4, con);
+			
+			statement.executeQuery();
+				
+			
+		} catch (SQLException e) {
+			System.err.println("Could not add conflict in tables");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
 	}
 	
 	

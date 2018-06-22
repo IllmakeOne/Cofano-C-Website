@@ -26,7 +26,7 @@
             // Populate dropdown with list of provinces
             $.getJSON(restServlet + "portids", function (data) {
               $.each(data, function (key, entry) {
-                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.id+" "+entry.name));
+                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.name + " " + entry.id));
               })
             });
             
