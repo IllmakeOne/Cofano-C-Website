@@ -11,36 +11,36 @@ public class Conflict {
     private int id;
 
     private String table_type;
-    private String column_name;
+    private String columnName;
     private String value;
 
-    private int created_by;
-    private int solved_by;
+    private int createdBy;
+    private int solvedBy;
 
-    private Timestamp added_at;
-    private Timestamp updated_at;
+    private Timestamp addedAt;
+    private Timestamp updatedAt;
 
     public Conflict() {
     }
 
-    public Conflict(int iD, String table_type, String column_name, String value, int created_by, int solved_by, Timestamp added_at,
-                    Timestamp updated_at) {
+    public Conflict(int iD, String table_type, String columnName, String value, int createdBy, int solvedBy, Timestamp addedAt,
+                    Timestamp updatedAt) {
         super();
         id = iD;
         this.table_type = table_type;
-        this.column_name = column_name;
-        this.created_by = created_by;
-        this.solved_by = solved_by;
-        this.added_at = added_at;
-        this.updated_at = updated_at;
+        this.columnName = columnName;
+        this.createdBy = createdBy;
+        this.solvedBy = solvedBy;
+        this.addedAt = addedAt;
+        this.updatedAt = updatedAt;
         this.value = value;
     }
 
 
     public String toString(String whodid, String whoRepaired) {
         return "Conflict:  Created by : " + whodid + "; Solved by: " + whoRepaired + "; In table: " + table_type +
-                "; on column: " + column_name + "; with Value of: " + value +
-                "; Created on: " + added_at + "; Solved on: " + updated_at;
+                "; on column: " + columnName + "; with Value of: " + value +
+                "; Created on: " + addedAt + "; Solved on: " + updatedAt;
     }
 
 
@@ -60,12 +60,12 @@ public class Conflict {
         this.table_type = table_type;
     }
 
-    public Timestamp getUpdated_at() {
-        return updated_at;
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(Timestamp updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public void setId(int id) {
@@ -87,29 +87,29 @@ public class Conflict {
 
 
     public void setTableAtt(String att) {
-        this.column_name = att;
+        this.columnName = att;
     }
 
     public String getTableAtt() {
-        return this.column_name;
+        return this.columnName;
     }
 
 
     public void setCreatedBy(int create) {
-        this.created_by = create;
+        this.createdBy = create;
     }
 
     public int getCreatedBy() {
-        return this.created_by;
+        return this.createdBy;
     }
 
 
     public void setScolvedBy(int solve) {
-        this.solved_by = solve;
+        this.solvedBy = solve;
     }
 
     public int getScolvedBy() {
-        return this.solved_by;
+        return this.solvedBy;
     }
 
 
