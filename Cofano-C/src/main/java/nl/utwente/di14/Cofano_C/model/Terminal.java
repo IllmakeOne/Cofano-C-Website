@@ -2,8 +2,7 @@ package nl.utwente.di14.Cofano_C.model;
 
 public class Terminal {
 	
-	private int ID;
-	
+	private int id;
 	private String name;
 	private String terminalCode;
 	private String type;
@@ -17,7 +16,7 @@ public class Terminal {
 	
 	public Terminal(int iD, String name, String terminalCode, String type, String unlo, int portId) {
 		super();
-		ID = iD;
+		id = iD;
 		this.name = name;
 		this.terminalCode = terminalCode;
 		this.type = type;
@@ -28,7 +27,7 @@ public class Terminal {
 	@Override
 	public String toString() {
 		return "Terminal:  Name: " + name + "; TerminalCode: " + terminalCode + "; Type: " + type+
-				"; Unlo: " + unlo + "; port ID: " + portId;
+				"; Unlo: " + unlo + "; port id: " + portId;
 	}
 	
 	public String getName() {
@@ -55,12 +54,12 @@ public class Terminal {
 	public void setUnlo(String unlo) {
 		this.unlo = unlo;
 	}
-	public int getID() {
-		return ID;
+	public int getId() {
+		return id;
 	}
 
-	public void setID(int iD) {
-		ID = iD;
+	public void setId(int iD) {
+		id = iD;
 	}
 	public int getPortId() {
 		return portId;
