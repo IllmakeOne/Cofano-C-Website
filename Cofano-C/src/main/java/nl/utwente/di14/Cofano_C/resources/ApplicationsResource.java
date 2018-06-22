@@ -93,7 +93,7 @@ public class ApplicationsResource extends ServletContainer {
 			while(resultSet.next()) {
 				add.setName(resultSet.getString(2));
 				add.setAPIKey( resultSet.getString(3));
-				add.setID(resultSet.getInt(1));
+				add.setId(resultSet.getInt(1));
 				}
 			} catch (SQLException e) {
 				System.err.println("Coulnd retrive app about to be deleted" + e);
@@ -133,7 +133,7 @@ public class ApplicationsResource extends ServletContainer {
 			while(resultSet.next()) {
 				app.setName(resultSet.getString(2));
 				app.setAPIKey( resultSet.getString(3));
-				app.setID(resultSet.getInt(1));
+				app.setId(resultSet.getInt(1));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -187,7 +187,7 @@ public class ApplicationsResource extends ServletContainer {
 				add = new Application();
 				add.setName(resultSet.getString(2));
 				add.setAPIKey( resultSet.getString(3));
-				add.setID(resultSet.getInt(1));
+				add.setId(resultSet.getInt(1));
 	
 				result.add(add);
 				}
