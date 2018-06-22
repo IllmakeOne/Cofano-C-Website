@@ -44,7 +44,7 @@ public class ContainerTypesResource {
 					
 					ContainerType container = new ContainerType();
 					container.setDisplayName(resultSet.getString("display_name"));
-					container.setID(resultSet.getInt("cid"));
+					container.setId(resultSet.getInt("cid"));
 					container.setIsoCode(resultSet.getString("iso_code"));
 					container.setDescription(resultSet.getString("description"));
 					container.setLength(resultSet.getInt("c_length"));

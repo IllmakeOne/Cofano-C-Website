@@ -1,49 +1,53 @@
 package nl.utwente.di14.Cofano_C.model;
 
 public class ContainerType {
-	
-
-	private int ID;
-	
-	private String displayName;
-	private String isoCode;
-	private String description;
-	private int length;
-	private int height;
-	private boolean reefer;
 
 
-	@Override 
-	public String toString() {
-		return "  ContainerType:  displayName: "+displayName+"; isoCode: "+isoCode+"; Description: "+description+
-				"; Lenght: "+length+"; Height: "+ height+"; Refeer: " +reefer;
-	}
+    private int id;
+
+    private String displayName;
+    private String isoCode;
+    private String description;
+    private int length;
+    private int height;
+    private boolean reefer;
 
 
-    public ContainerType(String name, String isocode, String decription, int length, int height, boolean reefer, int ID) {
+    @Override
+    public String toString() {
+        return "  ContainerType:  displayName: " + displayName + "; isoCode: " + isoCode + "; Description: " + description +
+                "; Lenght: " + length + "; Height: " + height + "; Refeer: " + reefer;
+    }
+
+
+    public ContainerType(String name, String isocode, String decription, int length, int height, boolean reefer, int id) {
         this.displayName = name;
         this.isoCode = isocode;
         this.description = decription;
         this.length = length;
         this.height = height;
         this.reefer = reefer;
-        this.ID = ID;
+        this.id = id;
     }
 
     public ContainerType() {
 
-	}
-
-	public void setReefer (boolean reefer) { this.reefer = reefer; }
-
-	public boolean getReefer() { return this.reefer; }
-
-    public void setID(int ID) {
-        this.ID = ID;
     }
 
-    public int getID() {
-        return this.ID;
+    public void setReefer(boolean reefer) {
+        this.reefer = reefer;
+    }
+
+    public boolean getReefer() {
+        return this.reefer;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     public void setLength(int length) {
