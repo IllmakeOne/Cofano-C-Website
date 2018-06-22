@@ -44,8 +44,8 @@ public class ShipsResource {
 					//add the data to the statement's query
 					statement.setString(1, input.getName());
 					statement.setString(2,input.getImo());
-					statement.setString(3, input.getCallsign());
-					statement.setString(4, input.getMmsi());
+					statement.setString(3, input.getCallSign());
+					statement.setString(4, input.getMMSI());
 					statement.setBigDecimal(5, input.getDepth());
 					
 					statement.executeQuery();
@@ -91,8 +91,8 @@ public class ShipsResource {
 				ship.setImo(resultSet.getString(2));
 				ship.setId(resultSet.getInt(1));
 				ship.setDepth(resultSet.getBigDecimal(6));
-				ship.setCallsign(resultSet.getString(4));
-				ship.setMmsi(resultSet.getString(5));
+				ship.setCallSign(resultSet.getString(4));
+				ship.setMMSI(resultSet.getString(5));
 				
 				result.add(ship);
 				}
@@ -112,8 +112,8 @@ public class ShipsResource {
 		try {
 		PreparedStatement statement = Tables.getCon().prepareStatement(query);
 		statement.setString(1, test.getImo());
-		statement.setString(2, test.getCallsign());
-		statement.setString(3, test.getMmsi());
+		statement.setString(2, test.getCallSign());
+		statement.setString(3, test.getMMSI());
 		
 		ResultSet resultSet = statement.executeQuery();
 
@@ -162,8 +162,8 @@ public class ShipsResource {
 				ship.setImo(resultSet.getString(2));
 				ship.setId(resultSet.getInt(1));
 				ship.setDepth(resultSet.getBigDecimal(6));
-				ship.setCallsign(resultSet.getString(4));
-				ship.setMmsi(resultSet.getString(5));
+				ship.setCallSign(resultSet.getString(4));
+				ship.setMMSI(resultSet.getString(5));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -184,8 +184,8 @@ public class ShipsResource {
 			PreparedStatement statement = Tables.getCon().prepareStatement(query);
 			statement.setString(1, ship.getImo());
 			statement.setString(2, ship.getName());
-			statement.setString(3, ship.getCallsign());
-			statement.setString(4, ship.getMmsi());
+			statement.setString(3, ship.getCallSign());
+			statement.setString(4, ship.getMMSI());
 			statement.setBigDecimal(5, ship.getDepth());
 			statement.setInt(6, shipId);
 			statement.executeQuery();
