@@ -37,9 +37,9 @@ public class HistoryResource {
 					//		+ resultSet.getString(3) + " " + resultSet.getString(4));
 	
 					HistoryEntry entry = new HistoryEntry();
-					entry.setID(resultSet.getInt("hid"));
+					entry.setId(resultSet.getInt("hid"));
 					entry.setTitle(resultSet.getString("title"));
-					entry.setAdded_at(resultSet.getTimestamp("added_at"));
+					entry.setAddedAt(resultSet.getTimestamp("added_at"));
 					entry.setMessage(resultSet.getString("message"));
 					entry.setType(resultSet.getString("type"));
 	
