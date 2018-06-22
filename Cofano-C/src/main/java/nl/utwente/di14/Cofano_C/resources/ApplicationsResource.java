@@ -76,7 +76,6 @@ public class ApplicationsResource extends ServletContainer {
 	}
 	
 	
-	//NOT WORKING
 	@DELETE
 	@Path("/{appid}")
 	public void deleteApp(@PathParam("appid") int appid, @Context HttpServletRequest request) {

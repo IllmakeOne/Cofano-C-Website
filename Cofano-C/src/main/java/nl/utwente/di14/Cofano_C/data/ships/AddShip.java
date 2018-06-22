@@ -16,7 +16,7 @@ import java.io.IOException;
 @WebServlet(description = "Application Data Servlet", urlPatterns = {"/addship"})
 public class AddShip extends HttpServlet {
 
-    /**
+	    /**
      * Handles the GET request.
      *
      * @param request  the HTTP request
@@ -24,10 +24,11 @@ public class AddShip extends HttpServlet {
      * @throws IOException      when there is an <code>IOException</code>
      * @throws ServletException when there is a <code>ServletException</code>
      */
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
-        RequestHelper.show(request, response, getServletContext(),
-                "/WEB-INF/jsp/data/ships/edit.jsp");
-    }
+@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		request.setAttribute("action", "Add");
+		request.setAttribute("method", "post");
+		request.setAttribute("formUrl", getServletContext().getInitParameter("cofano.url") + "/api/ships/add" );
+		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/ships/edit.jsp");
+	}
 }
