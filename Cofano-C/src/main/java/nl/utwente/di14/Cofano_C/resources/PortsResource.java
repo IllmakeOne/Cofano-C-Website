@@ -86,7 +86,7 @@ public class PortsResource {
 					//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
 	
 					Port port = new Port();
-					port.setID(resultSet.getInt("pid"));
+					port.setId(resultSet.getInt("pid"));
 					port.setName(resultSet.getString("name"));
 					port.setUnlo(resultSet.getString("unlo"));
 	

@@ -96,7 +96,7 @@ public class TerminalsResource {
 				while(resultSet.next()) {
 					
 					Port terminal = new Port();
-					terminal.setID(resultSet.getInt("pid"));
+					terminal.setId(resultSet.getInt("pid"));
 					terminal.setName(resultSet.getString("name"));
 	
 					result.add(terminal);
