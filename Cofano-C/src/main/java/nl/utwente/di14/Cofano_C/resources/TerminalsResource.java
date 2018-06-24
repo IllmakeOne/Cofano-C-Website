@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class TerminalsResource {
 
 
-    private String myname = "Terminal";
+    private String myName = "Terminal";
 
     @POST
     @Path("add")
@@ -33,7 +33,7 @@ public class TerminalsResource {
         if (!doer.equals("")) {
             System.out.println(doer);
             //if there is no conflict
-            if (testConflict(input) == false) {
+            if (!testConflict(input)) {
 
                 System.out.println("Received from client request " + input.toString());
 
@@ -52,8 +52,8 @@ public class TerminalsResource {
                     statement.executeQuery();
 
                     //add to history
-                    Tables.addHistoryEntry(title, doer, input.toString()
-                            , new Timestamp(System.currentTimeMillis()), myname);
+                    Tables.addHistoryEntry(title, doer, input.toString(),
+                            new Timestamp(System.currentTimeMillis()), myName);
                 } catch (SQLException e) {
                     System.err.println("Could not add terminal");
                     System.err.println(e.getSQLState());
@@ -121,9 +121,6 @@ public class TerminalsResource {
                 ResultSet resultSet = statement.executeQuery();
 
                 while (resultSet.next()) {
-                    //System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3) +" " +
-                    //	resultSet.getString(4) + " " + resultSet.getString(5) + " " + resultSet.getString(6));
-
                     Terminal terminal = new Terminal();
                     terminal.setID(resultSet.getInt("tid"));
                     terminal.setName(resultSet.getString("name"));

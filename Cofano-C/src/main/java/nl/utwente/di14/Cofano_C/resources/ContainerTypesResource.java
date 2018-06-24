@@ -16,7 +16,7 @@ import java.util.ArrayList;
 @Path("/containers")
 public class ContainerTypesResource {
 
-    private String myname = "Container";
+    private String myName = "Container";
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
@@ -67,7 +67,7 @@ public class ContainerTypesResource {
         if (!doer.equals("")) {
             System.out.println(doer);
             //if there is no conflict
-            if (testConflict(input) == false) {
+            if (!testConflict(input)) {
 
                 System.out.println("Received from client request " + input.toString());
 
@@ -87,8 +87,8 @@ public class ContainerTypesResource {
                     statement.executeQuery();
 
                     //add to history
-                    Tables.addHistoryEntry(title, doer, input.toString()
-                            , new Timestamp(System.currentTimeMillis()), myname);
+                    Tables.addHistoryEntry(title, doer, input.toString(),
+                            new Timestamp(System.currentTimeMillis()), myName);
                 } catch (SQLException e) {
                     System.err.println("Could not add contaynertype");
                     System.err.println(e.getSQLState());
@@ -102,7 +102,7 @@ public class ContainerTypesResource {
     }
 
 
-    public boolean testConflict(ContainerType test) {
+    private boolean testConflict(ContainerType test) {
         boolean result = true;
         String query = "SELECT * FROM containerconflict(?,?)";
 
@@ -116,7 +116,7 @@ public class ContainerTypesResource {
             result = resultSet.next();
 
         } catch (SQLException e) {
-            System.err.println("Could not test conflcit IN apps" + e);
+            System.err.println("Could not test conflict IN apps" + e);
         }
         return result;
     }

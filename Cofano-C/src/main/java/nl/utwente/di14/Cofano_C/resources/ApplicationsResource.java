@@ -1,6 +1,14 @@
 package nl.utwente.di14.Cofano_C.resources;
 
 
+import nl.utwente.di14.Cofano_C.dao.Tables;
+import nl.utwente.di14.Cofano_C.model.Application;
+import org.glassfish.jersey.servlet.ServletContainer;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,24 +16,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.utwente.di14.Cofano_C.dao.Tables;
-import nl.utwente.di14.Cofano_C.model.*;
-import org.glassfish.jersey.servlet.ServletContainer;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
-
-//@WebFilter(value = "/applications/*", initParams = @WebInitParam(name = "javax.ws.rs.Application", value = "javax.ws.rs.Application"))
 
 @Path("/applications")
-
 public class ApplicationsResource extends ServletContainer {
-
-
-    private String myname = "Application";
 
 
     @POST
@@ -41,7 +34,8 @@ public class ApplicationsResource extends ServletContainer {
             String title = "ADD";
 
             //if there is no conflict
-            if (testConflict(input) == false) {
+            if (!testConflict(input)) {
+                String myname = "Application";
                 Tables.addHistoryEntry(title, doer, input.toString()
                         , new Timestamp(System.currentTimeMillis()), myname);
 
@@ -67,10 +61,9 @@ public class ApplicationsResource extends ServletContainer {
                 }
             } else {
                 //TODO
-                //waht happends hwne there is a conflict
+                //what happens when there is a conflict
             }
         } else {
-            //System.out.println("denied " + input);
             //inform client side it is a conflict
         }
     }
@@ -81,7 +74,7 @@ public class ApplicationsResource extends ServletContainer {
     public void deleteApp(@PathParam("appid") int appid, @Context HttpServletRequest request) {
         Tables.start();
 
-        //retrive the App about to be deleted
+        //retrieve the App about to be deleted
         Application add = new Application();
         String query = "SELECT * FROM application WHERE aid = ?";
         try {
@@ -210,7 +203,7 @@ public class ApplicationsResource extends ServletContainer {
             result = resultSet.next();
 
         } catch (SQLException e) {
-            System.err.println("Could not test conflcit IN apps" + e);
+            System.err.println("Could not test conflict IN apps" + e);
         }
         return result;
     }

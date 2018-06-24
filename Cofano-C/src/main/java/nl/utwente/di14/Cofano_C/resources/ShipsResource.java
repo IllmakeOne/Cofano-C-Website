@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class ShipsResource {
 
 
-    private String myname = "Ship";
+    private String myName = "Ship";
 
     @POST
     @Path("add")
@@ -30,7 +30,7 @@ public class ShipsResource {
         if (!doer.equals("")) {
             System.out.println(doer);
             //if there is no conflict
-            if (testConflict(input) == false) {
+            if (!testConflict(input)) {
 
                 System.out.println("Received from client request " + input.toString());
 
@@ -49,8 +49,8 @@ public class ShipsResource {
                     statement.executeQuery();
 
                     //add to history
-                    Tables.addHistoryEntry(title, doer, input.toString()
-                            , new Timestamp(System.currentTimeMillis()), myname);
+                    Tables.addHistoryEntry(title, doer, input.toString(),
+                            new Timestamp(System.currentTimeMillis()), myName);
                 } catch (SQLException e) {
                     System.err.println("Could not add ship");
                     System.err.println(e.getSQLState());
@@ -58,7 +58,7 @@ public class ShipsResource {
                 }
             } else {
                 //TODO
-                //waht happends when conflict
+                //what happens when conflict
             }
         }
 
@@ -103,7 +103,7 @@ public class ShipsResource {
 
     }
 
-    public boolean testConflict(Ship test) {
+    private boolean testConflict(Ship test) {
         boolean result = true;
         String query = "SELECT * FROM shipconflict(?,?,?)";
 

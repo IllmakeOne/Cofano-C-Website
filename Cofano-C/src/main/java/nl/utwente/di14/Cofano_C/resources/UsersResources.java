@@ -33,7 +33,6 @@ public class UsersResources {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                //	System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
                 add = new User();
                 add.setEmail(resultSet.getString("email"));
                 add.setId(resultSet.getInt("uid"));

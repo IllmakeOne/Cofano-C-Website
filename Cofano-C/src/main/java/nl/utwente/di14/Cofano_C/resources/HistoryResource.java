@@ -33,9 +33,6 @@ public class HistoryResource {
                 ResultSet resultSet = statement.executeQuery();
 
                 while (resultSet.next()) {
-                    //System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " "
-                    //		+ resultSet.getString(3) + " " + resultSet.getString(4));
-
                     HistoryEntry entry = new HistoryEntry();
                     entry.setId(resultSet.getInt("hid"));
                     entry.setTitle(resultSet.getString("title"));

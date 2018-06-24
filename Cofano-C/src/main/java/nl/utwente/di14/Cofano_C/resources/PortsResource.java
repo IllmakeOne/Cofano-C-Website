@@ -16,8 +16,6 @@ import java.util.ArrayList;
 @Path("/ports")
 public class PortsResource {
 
-    private String myname = "Port";
-
     @POST
     @Path("add")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -28,7 +26,7 @@ public class PortsResource {
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
             //if there is no conflict
-            if (testConflict(input) == false) {
+            if (!testConflict(input)) {
                 //	System.out.println("Received from client request " +input.toString());
 
                 String query = "SELECT addport(?,?)";
@@ -43,7 +41,8 @@ public class PortsResource {
                     statement.executeQuery();
 
                     //add to history
-                    Tables.addHistoryEntry(title, doer, input.toString(), myname);
+                    String myName = "Port";
+                    Tables.addHistoryEntry(title, doer, input.toString(), myName);
 
                 } catch (SQLException e) {
                     System.err.println("Could not add port");
@@ -52,9 +51,8 @@ public class PortsResource {
                 }
             } else {
                 if (request.getSession().getAttribute("userEmail") != null) {
-                    //inform clientside it creates a conflicts
+                    //inform client side it creates a conflicts
                 } else {
-
                 }
             }
         }
@@ -70,7 +68,6 @@ public class PortsResource {
                 "FROM port";
 
         String name = Tables.testRequest(request);
-        //	System.out.println(name);
         if (!name.equals("")) {
 
             try {
@@ -79,13 +76,10 @@ public class PortsResource {
                 ResultSet resultSet = statement.executeQuery();
 
                 while (resultSet.next()) {
-                    //System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
-
                     Port port = new Port();
                     port.setId(resultSet.getInt("pid"));
                     port.setName(resultSet.getString("name"));
                     port.setUnlo(resultSet.getString("unlo"));
-
 
                     result.add(port);
                 }
@@ -98,7 +92,7 @@ public class PortsResource {
 
     }
 
-    public boolean testConflict(Port test) {
+    private boolean testConflict(Port test) {
         boolean result = true;
         String query = "SELECT * FROM portconflict(?,?)";
 
@@ -112,7 +106,7 @@ public class PortsResource {
             result = resultSet.next();
 
         } catch (SQLException e) {
-            System.err.println("Could not test conflcit IN apps" + e);
+            System.err.println("Could not test conflict IN apps" + e);
         }
         return result;
     }
