@@ -16,9 +16,12 @@ import nl.utwente.di14.Cofano_C.model.Ship;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -133,7 +136,124 @@ public class ContainerTypesResource {
 		return rez;
 	}
 			
+	@DELETE
+	@Path("/{appid}")
+	public void deleteContainer(@PathParam("appid") int appid, @Context HttpServletRequest request) {
+		Tables.start();
+		
+		//retrive the App about to be deleted
+		if(request.getSession().getAttribute("userEmail")!=null){
+			ContainerType add = new ContainerType();
+			String query = "SELECT * FROM container_type WHERE aid = ?";
+			try {
+				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				statement.setInt(1, appid);
+				ResultSet resultSet = statement.executeQuery();
+				//create an application object 
+				while(resultSet.next()) {
+					add.setDisplayName(resultSet.getString("display_name"));
+					add.setID(resultSet.getInt("cid"));
+					add.setIsoCode(resultSet.getString("iso_code"));
+					add.setDescription(resultSet.getString("description"));
+					add.setLength(resultSet.getInt("c_length"));
+					add.setHeight(resultSet.getInt("c_height"));
+					add.setReefer(resultSet.getBoolean("reefer"));
+					}
+				} catch (SQLException e) {
+					System.err.println("Coulnd retrive app about to be deleted" + e);
+				}
+			//add the deletion to the history table
+			String title = "DELETE";
+			Tables.addHistoryEntry(title, Tables.testRequste(request),	add.toString(), myname, true);
+				query ="SELECT deletecontainer_types(?)";
+				try {
+					PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+					statement.setLong(1, appid);
+					statement.executeUpdate();
+				} catch (SQLException e) {
+					System.err.println("Was not able to delete container");
+					System.err.println(e.getSQLState());
+					e.printStackTrace();
+				}
+		}
+	}
 	
+	@GET
+	@Path("/{appid}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ContainerType getContainer(@PathParam("appid") int appid, @Context HttpServletRequest request) {
+		ContainerType add = new ContainerType();
+		String query = "SELECT * FROM application WHERE aid = ?";
+
+		if(request.getSession().getAttribute("userEmail")!=null){
+			try {
+				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				statement.setInt(1, appid);
+				ResultSet resultSet = statement.executeQuery();
+	
+				while(resultSet.next()) {
+					add.setDisplayName(resultSet.getString("display_name"));
+					add.setID(resultSet.getInt("cid"));
+					add.setIsoCode(resultSet.getString("iso_code"));
+					add.setDescription(resultSet.getString("description"));
+					add.setLength(resultSet.getInt("c_length"));
+					add.setHeight(resultSet.getInt("c_height"));
+					add.setReefer(resultSet.getBoolean("reefer"));
+				}
+			} catch (SQLException e) {
+				System.err.println("could not get specific contaienr");
+				e.printStackTrace();
+			}
+		}
+		return add;
+	}
+	
+	@PUT
+	@Path("/{appid}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateContainer(@PathParam("appid") int appid, ContainerType con,@Context HttpServletRequest request) {
+
+		ContainerType add = new ContainerType();
+
+		if(request.getSession().getAttribute("userEmail")!=null){
+			String query = "SELECT * FROM container_type WHERE aid = ?";
+			try {
+				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				statement.setInt(1, appid);
+				ResultSet resultSet = statement.executeQuery();
+				//create an application object 
+				while(resultSet.next()) {
+					add.setDisplayName(resultSet.getString("display_name"));
+					add.setID(resultSet.getInt("cid"));
+					add.setIsoCode(resultSet.getString("iso_code"));
+					add.setDescription(resultSet.getString("description"));
+					add.setLength(resultSet.getInt("c_length"));
+					add.setHeight(resultSet.getInt("c_height"));
+					add.setReefer(resultSet.getBoolean("reefer"));
+					}
+				} catch (SQLException e) {
+					System.err.println("Coulnd retrive app about to be deleted" + e);
+				}
+				query = "SELECT editcontainer_types(?,?,?,?,?,?)";
+				try {
+					PreparedStatement statement = Tables.getCon().prepareStatement(query);
+					statement.setInt(1, appid);
+					statement.setString(2, con.getDescription());
+					statement.setString(3, con.getIsoCode());
+					statement.setString(4, con.getDescription());
+					statement.setInt(5, con.getHeight());
+					statement.setBoolean(6, con.getReefer());
+					statement.executeQuery();
+		
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			
+			Tables.addHistoryEntry("UPDATE", Tables.testRequste(request), 
+					add.toString()+ " to " + con.toString(), myname, true);
+		}
+
+	}
 
 
 	public int testConflict(ContainerType test) {

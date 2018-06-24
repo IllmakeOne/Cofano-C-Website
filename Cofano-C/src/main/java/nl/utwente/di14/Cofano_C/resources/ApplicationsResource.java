@@ -99,11 +99,7 @@ public class ApplicationsResource extends ServletContainer {
 				}
 			//add the deletion to the history table
 			String title = "DELETE";
-			String doer = Tables.testRequste(request);
-	//		Tables.addHistoryEntry(title, doer,
-	//				add.toString()
-	//				, new Timestamp(System.currentTimeMillis()),myname );
-			//Tables.addHistoryEntry(title, doer, add.toString(),myname,);
+			Tables.addHistoryEntry(title, Tables.testRequste(request),	add.toString(), myname, true);
 				query ="SELECT deleteapplications(?)";
 				try {
 					PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
@@ -164,7 +160,28 @@ public class ApplicationsResource extends ServletContainer {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		
+		
+			Application add = new Application();
+			query = "SELECT * FROM application WHERE aid = ?";
+			try {
+				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				statement.setInt(1, appid);
+				ResultSet resultSet = statement.executeQuery();
+				//create an application object 
+				while(resultSet.next()) {
+					add.setName(resultSet.getString(2));
+					add.setAPIKey( resultSet.getString(3));
+					add.setID(resultSet.getInt(1));
+					}
+				} catch (SQLException e) {
+					System.err.println("Coulnd retrive app about to be deleted" + e);
+				}
+			
+			Tables.addHistoryEntry("UPDATE", Tables.testRequste(request),
+					add.toString() +" to "+app.toString(), myname, true);
 		}
+		
 
 	}
 	
