@@ -10,80 +10,53 @@
     <jsp:attribute name="footer">
         <script type="text/javascript">
             
+            var restServlet = "${base}/api/containers/add";
             
-            
-            
-            
-            $("form").submit(function(event){
-                event.preventDefault();
-                $.ajax({
-                    type: $("form").attr('method'),
-                    url: $("form").attr('action'),
-                    data: JSON.stringify({"displayName": $("#addname").val(),
-                    	"isoCode": $("#addiso").val(),
-                    	"description": $("#adddescrip").val(),
-                    	"length": $("#addlenght").val(),
-                    	"height": $("#addheight").val(),
-                    	"reefer": $('#' + "addreefer").is(":checked")
-                    	}),
-                    success: function(data) {
-                        window.location.replace("${base}/containers");
-                    },
-                    error: function(data) {
-                        $("#error").show().text("Something went wrong: " + data)
-                    },
-                    contentType: "application/json",
-                    dataType: 'json'
-                });
-                return false; // prevent default
-            });
-            
-            function retrieveContainer(id) {
-                if ($('form').attr('method') === "put" && id !== "undefined") {
-                    $("#loading").show();
-                    $.getJSON( "${base}/api/containers/" + id, function(con) {
-                    	$("#addname").val(con.displayName);
-                    	$("#addiso").val(con.isoCode);
-                    	$("#adddescrip").val(con.description);
-                    	$("#addlenght").val(con.length);
-                    	$("#addheight").val(con.height);
-                    	//$("#addreefer").val(con.reefer);
-                    })
-                    .fail(function() {
-                        $("#error").show().text("Could not load information")
-                    })
-                    .always(function() {
-                        $("#loading").hide();
-                    });
-                }
-            }
-            document.onload = retrieveContainer($('form').data('id'));
-            
+            function addContainer(){
+            	
+            	
+            	var name = document.getElementById("addname");
+            	var iso = document.getElementById("addiso");
+            	var descr = document.getElementById("adddescrip");
+            	var lenght = document.getElementById("addlenght");
+            	var height = document.getElementById("addheight");
+            	var reefer = false;
+            	
+            	if($('#' + "addreefer").is(":checked")){
+            		reefer = true;
+            	}
+            	
+            	if(name.value == "" || iso.value == ""){
+            		alert("Please fill in at least name and ISO");	
+            	} else {
+            		var json = {"displayName": name.value, "isoCode":iso.value,"description":descr.value,
+            				"length":lenght.value,"height":height.value,"reefer":reefer};
+            	
+            		let	xmlhttp = new XMLHttpRequest();
+            		xmlhttp.open("POST", restServlet, true);
+            		xmlhttp.setRequestHeader('Content-Type', 'application/json');
+            		
+            		xmlhttp.send(JSON.stringify(json));	
           
+            		alert("Entry added to Database!");
+
+            		window.location.replace("containers");	
+            	}
+            };    
             
-            
+            $(document).keypress(function (e) {
+            	  if(e.which == 13 && e.target.nodeName != "TEXTAREA") return false;
+            	});
         </script>
     </jsp:attribute>
 
-   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">${fn:escapeXml(action)} Application<c:if test="${not empty con}">: ${fn:escapeXml(con)}</c:if></h1>
-            <div class="btn-toolbar mb-2 mb-md-0">
-                <div class="btn-group mr-2">
-                    <a class="btn btn-sm btn-outline-secondary" href="${base}/containers">Go back</a>
-                </div>
+    <jsp:body>
+        <div class="row">
+            <div class="col-sm-8">
+                <h2 style="margin: 20px" >Add Container Type</h2>
             </div>
         </div>
-        
-         <div class="alert alert-danger" id="error" role="alert" style="display:none">
-            A simple danger alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
-        </div>
-
-        <div class="alert alert-info" id="loading" role="alert" style="display:none">
-            Loading
-        </div>
-        
-          <form <c:if test="${not empty con}">data-id="${fn:escapeXml(con)}"</c:if>action="${formUrl}" method="${method}">
-          <div class="col-sm-10">
+        <div class="col-sm-12">	
           <div class="table-responsive" style="margin: 35px">
             <table class="table table-striped table-sm">
               <thead>
@@ -96,39 +69,44 @@
                 <tr>
                   <td>Display Name</td> 
                   <td>
-		     		 <input type="text" placeholder=" 54JS " id="addname" autocomplete="off">
+                	<form	>
+		     			 <input type="text" placeholder=" 54JS " id="addname" autocomplete="off">
+		    		</form>
                   </td>
                 </tr>
-                
  				<tr>
                   <td>ISO Code</td> 
-                      <td>
+                  <td><form>
 		     			 <input type="text" placeholder=" 23B4 " id="addiso" autocomplete="off">
+		    		</form>
 		    		</td>
                 </tr>
-                
+                <tr>
                 <tr>
                   <td>Description</td> 
                   <td>
-		     		 <input type="text" placeholder=" Big squery thingy " id="adddescrip" autocomplete="off">
+                	<form	>
+		     			 <input type="text" placeholder=" Big squery thingy " id="adddescrip" autocomplete="off">
+		    		</form>
                   </td>
                 </tr>
-                
+                <tr>
                 <tr>
                   <td>Length</td> 
                   <td>
-		     		<input type="number" min="1" max="999" placeholder=" 10" id="addlenght" autocomplete="off">
+                	<form	>
+		     			 <input type="number" min="1" max="999" placeholder=" 10" id="addlenght" autocomplete="off">
+		    		</form>
                   </td>
                 </tr>
-                
                 <tr>
                   <td>Height</td> 
                   <td>
-		     		 <input type="number" min="1" max="999" placeholder=" 5 " id="addheight" autocomplete="off">
+                	<form	>
+		     			 <input type="number" min="1" max="999" placeholder=" 5 " id="addheight" autocomplete="off">
+		    		</form>
                   </td>
                 </tr>
-                
-                <tr>
                   <td>Reefer</td> 
                   <td>
 					 <input class="form-check-input" type="checkbox" value="" id="addreefer" required>
@@ -136,20 +114,12 @@
                   </td>
                 </tr>
                 
-                 <td></td> 
-                 <td>
-                        <button type="submit" class="btn btn-sm btn-outline">
-                            <c:choose>
-                                <c:when test="${method eq 'put'}">
-                                    Edit
-                                </c:when>
-                                <c:otherwise>
-                                    Add
-                                </c:otherwise>
-                            </c:choose>
-                            information
-                        </button>
-                      </td>
+                  <td></td> 
+                  <td>
+                  	<button type="button" class="btn" onclick="addContainer()">
+					    	Add Information 
+					</button>
+		    		</td>
                 </tr>
               
               </tbody>
@@ -157,7 +127,5 @@
           </div>   
     
         </div>
-        
-        </form>
     </jsp:body>
 </t:dashboard>
