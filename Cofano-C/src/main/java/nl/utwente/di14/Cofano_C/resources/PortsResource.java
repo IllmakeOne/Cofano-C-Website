@@ -2,8 +2,6 @@ package nl.utwente.di14.Cofano_C.resources;
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.Port;
-import nl.utwente.di14.Cofano_C.model.Ship;
-import nl.utwente.di14.Cofano_C.model.Terminal;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -16,7 +14,6 @@ import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 
 
@@ -32,7 +29,7 @@ public class PortsResource {
 		Tables.start();
 		
 		String title = "ADD";
-		String doer = Tables.testRequste(request);
+		String doer = Tables.testRequest(request);
 		if(!doer.equals("")) {
 			//if there is no conflict
 			if(testConflict(input) == false) {
@@ -42,7 +39,7 @@ public class PortsResource {
 				
 				try {
 					//Create prepared statement
-					PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+					PreparedStatement statement = Tables.getCon().prepareStatement(query);
 					//add the data to the statement's query
 					statement.setString(1, input.getName());
 					statement.setString(2,input.getUnlo());
@@ -76,12 +73,12 @@ public class PortsResource {
 		String query = "SELECT * " +
 				"FROM port";
 		
-		String name = Tables.testRequste(request);
+		String name = Tables.testRequest(request);
 	//	System.out.println(name);
 		if(!name.equals("")) {
 
 			try {
-				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
 	
 				ResultSet resultSet = statement.executeQuery();
 	
@@ -89,7 +86,7 @@ public class PortsResource {
 					//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
 	
 					Port port = new Port();
-					port.setID(resultSet.getInt("pid"));
+					port.setId(resultSet.getInt("pid"));
 					port.setName(resultSet.getString("name"));
 					port.setUnlo(resultSet.getString("unlo"));
 	
@@ -110,17 +107,13 @@ public class PortsResource {
 		String query = "SELECT * FROM portconflict(?,?)";
 		
 		try {
-		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+		PreparedStatement statement = Tables.getCon().prepareStatement(query);
 		statement.setString(1, test.getName());
 		statement.setString(2, test.getUnlo());
 		
 		ResultSet resultSet = statement.executeQuery();
-			
-		if(!resultSet.next()) {
-			result = false;
-		} else {
-			result = true;
-		}
+
+            result = resultSet.next();
 		
 		} catch (SQLException e) {
 			System.err.println("Could not test conflcit IN apps" + e);
