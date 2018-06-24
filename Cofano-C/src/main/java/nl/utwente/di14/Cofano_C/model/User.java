@@ -1,76 +1,75 @@
 package nl.utwente.di14.Cofano_C.model;
+
 import java.sql.Timestamp;
 
+/**
+ * Model for the user objects.
+ */
 public class User {
 
-	private int ID;
-	
-	private String name;
-	private String email;
-	
-	private boolean email_notification;
-	private boolean darkmode;
-	
-	private Timestamp lastLogedIn;
-	
-	@Override
-	public String toString() {
-		return "User:  Name: "+name+"; email: "+email+"; email_notification: "+ email_notification+
-				"; darkmode: "+darkmode + "; lastLogedIn: "+lastLogedIn; 
-	}
-	
-	public User() {
-	}
+    private int id;
+    private String name;
+    private String email;
+    private boolean emailNotification;
+    private boolean darkMode;
+    private Timestamp lastLoggedIn;
 
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String toString() {
+        return "User:  Name: " + name + "; email: " + email + "; emailNotification: " + emailNotification +
+                "; darkMode: " + darkMode + "; lastLoggedIn: " + lastLoggedIn;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public User() {
+    }
 
-	public Timestamp getLastLogedIn() {
-		return lastLogedIn;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setLastLogedIn(Timestamp lastLogedIn) {
-		this.lastLogedIn = lastLogedIn;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public Timestamp getLastLoggedIn() {
+        return lastLoggedIn;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setLastLoggedIn(Timestamp lastLoggedIn) {
+        this.lastLoggedIn = lastLoggedIn;
+    }
 
-	public boolean isEmail_notification() {
-		return email_notification;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setEmail_notification(boolean email_notification) {
-		this.email_notification = email_notification;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public boolean isDarkmode() {
-		return darkmode;
-	}
+    public boolean isEmailNotification() {
+        return emailNotification;
+    }
 
-	public void setDarkmode(boolean darkmode) {
-		this.darkmode = darkmode;
-	}
+    public void setEmailNotification(boolean emailNotification) {
+        this.emailNotification = emailNotification;
+    }
 
-	public int getID() {
-		return ID;
-	}
+    public boolean isDarkMode() {
+        return darkMode;
+    }
 
-	public void setID(int iD) {
-		ID = iD;
-	}
-	
+    public void setDarkMode(boolean darkMode) {
+        this.darkMode = darkMode;
+    }
 
-	
-	
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int iD) {
+        id = iD;
+    }
+
+
 }
