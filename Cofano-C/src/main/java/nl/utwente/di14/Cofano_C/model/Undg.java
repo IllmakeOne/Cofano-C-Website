@@ -3,14 +3,10 @@ package nl.utwente.di14.Cofano_C.model;
 public class Undg {
 
     private int id;
-
     private int descriptionId;
-
     private boolean transportForbidden;
     private boolean collective;
     private boolean notApplicable;
-
-
     private String classificationCode;
     private String unNo;
     private String classification;
