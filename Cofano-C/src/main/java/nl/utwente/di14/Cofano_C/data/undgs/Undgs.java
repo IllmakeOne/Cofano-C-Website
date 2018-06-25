@@ -9,11 +9,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(description="Terminals Data Servlet", urlPatterns={"/undgs"})
-
+/**
+ * Data object for UNDG's.
+ */
+@WebServlet(description = "Terminals Data Servlet", urlPatterns = {"/undgs"})
 public class Undgs extends HttpServlet {
-	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/undgs.jsp");
-	}
+
+    /**
+     * Handles the GET request.
+     *
+     * @param request  the HTTP request
+     * @param response the HTTP response
+     * @throws IOException      when there is an <code>IOException</code>
+     * @throws ServletException when there is a <code>ServletException</code>
+     */
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        RequestHelper.show(request, response, getServletContext(),
+                "/WEB-INF/jsp/data/undgs.jsp");
+    }
 }

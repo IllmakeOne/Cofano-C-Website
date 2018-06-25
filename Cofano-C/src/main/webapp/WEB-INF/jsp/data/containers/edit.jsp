@@ -42,8 +42,7 @@
 
             		window.location.replace("containers");	
             	}
-            };    
-            
+            }
             $(document).keypress(function (e) {
             	  if(e.which == 13 && e.target.nodeName != "TEXTAREA") return false;
             	});
