@@ -1,14 +1,11 @@
 package nl.utwente.di14.Cofano_C.resources;
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
+import nl.utwente.di14.Cofano_C.model.ContainerType;
 import nl.utwente.di14.Cofano_C.model.Port;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -153,6 +150,69 @@ public class PortsResource {
 			System.err.println("Could not test conflcit IN port " + e);
 		}
 		return result;
+	}
+
+
+	@DELETE
+	@Path("/{portId}")
+	public void deletPort(@PathParam("portId") int portId, @Context HttpServletRequest request) {
+		Tables.start();
+
+		String query ="DELETE FROM port WHERE pid = ?";
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setLong(1, portId);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("Was not able to delete Port");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
+	}
+
+
+	@GET
+	@Path("/{portId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Port getPort(@PathParam("portId") int portId, @Context HttpServletRequest request) {
+		Port port = new Port();
+		String query = "SELECT * FROM port WHERE pid = ?";
+
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setInt(1, portId);
+			ResultSet resultSet = statement.executeQuery();
+
+			while(resultSet.next()) {
+				port.setName(resultSet.getString("name"));
+				port.setUnlo(resultSet.getString("unlo"));
+				port.setId(resultSet.getInt("pid"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+
+		return port;
+	}
+
+	@PUT
+	@Path("/{portId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateContainer(@PathParam("portId") int portId, Port port) {
+		String query = "UPDATE port SET name = ?, unlo = ? WHERE pid = ?";
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setString(1, port.getName());
+			statement.setString(2, port.getUnlo());
+			statement.setInt(3, portId);
+
+			statement.executeQuery();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 	/*

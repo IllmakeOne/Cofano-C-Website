@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * Data object for adding a ship.
  */
-@WebServlet(description = "Application Data Servlet", urlPatterns = {"/addship"})
+@WebServlet(description = "Application Data Servlet", urlPatterns = {"/ships/add"})
 public class AddShip extends HttpServlet {
 
 	    /**

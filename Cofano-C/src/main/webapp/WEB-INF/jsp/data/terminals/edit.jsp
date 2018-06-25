@@ -29,7 +29,6 @@
                 return false; // prevent default
             });
 
-<<<<<<< HEAD
             function retrieveTerminal(id) {
                 var pid;
                 if ($('form').attr('method') === "put" && id !== "undefined") {
@@ -49,10 +48,6 @@
                             $("#loading").hide();
                         });
                 }
-=======
-            dropdown.append('<option selected="true" disabled>Choose an Port id</option>');
-            dropdown.prop('selectedIndex', 0);
->>>>>>> sprint4
 
                 // Populate dropdown with list of ports
                 $.getJSON("${base}/api/terminals/portids", function (data) {
@@ -61,66 +56,12 @@
                         if (pid !== "undefined") {
                             $("#pid").val(pid);
                         }
-
-<<<<<<< HEAD
                     })
                 });
 
 
             }
             document.onload = retrieveTerminal($('form').data('id'));
-=======
-            // Populate dropdown with list of provinces
-            $.getJSON(restServlet + "portids", function (data) {
-              $.each(data, function (key, entry) {
-                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.name + " " + entry.id));
-              })
-            });
-            
-            function addTerminal(){
-            	
-            	
-            	var name = document.getElementById("addname");
-            	var terminalcode = document.getElementById("addterminalcode");
-            	var type = document.getElementById("caddtype");
-            	var unlo = document.getElementById("addunlo");
-            	var portid = document.getElementById("pid-dropdown");
-            	
-            	if(name.value == "" || portid.value == 0){
-            		alert("Please fill in at least a name and a valid port id");
-            	} else {
-            		var json = {"name": name.value, "portId":portid.value,"type":type.value,
-            				"terminalCode":terminalcode.value,"unlo":unlo.value};
-            	
-            		let	xmlhttp = new XMLHttpRequest();
-            		xmlhttp.onreadystatechange = function() {
-                	    if (this.readyState == 4 && this.status == 200) {
-                	    	console.log(this);
-                	   		 }
-                	   };
-            		console.log("sent");
-            		xmlhttp.open("POST", restServlet+"add", true);
-            		xmlhttp.setRequestHeader('Content-Type', 'application/json');
-            		
-            		xmlhttp.send(JSON.stringify(json));	
-
-        			alert("Entry added to Database!");
-        			window.location.replace("terminals");
-          
-            		/*
-            		if(false){
-            			
-            		} else {
-            			alert("Entry added to Database!");
-            			window.location.replace("terminals");
-            		}
-            		*/
-            	}
-            }
-            $(document).keypress(function (e) {
-            	  if(e.which == 13 && e.target.nodeName != "TEXTAREA") return false;
-            	});
->>>>>>> sprint4
         </script>
         <%--<script type="text/javascript">--%>
             <%----%>
