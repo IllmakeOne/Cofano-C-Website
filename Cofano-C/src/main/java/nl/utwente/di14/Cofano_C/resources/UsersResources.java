@@ -37,9 +37,9 @@ public class UsersResources {
 				//	System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
 				add = new User();
 				add.setEmail(resultSet.getString("email"));
-				add.setID(resultSet.getInt("uid"));
+				add.setId(resultSet.getInt("uid"));
 				add.setName(resultSet.getString("name"));
-				add.setLastLogedIn(resultSet.getTimestamp("last_login"));
+				add.setLastLoggedIn(resultSet.getTimestamp("last_login"));
 				
 				end.add(add);
 				}

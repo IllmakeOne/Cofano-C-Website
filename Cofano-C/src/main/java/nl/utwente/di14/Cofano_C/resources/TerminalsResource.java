@@ -35,7 +35,7 @@ public class TerminalsResource {
 		
 		int ownID = 0;
 		String title = "ADD";
-		String doer = Tables.testRequste(request);
+		String doer = Tables.testRequest(request);
 		int con = testConflict(input);
 		
 		if(request.getSession().getAttribute("userEmail")!=null && con == 0 ) {
@@ -138,7 +138,7 @@ public class TerminalsResource {
 		String query = "SELECT * " +
 				"FROM terminal "+
 				"WHERE approved = true";
-		String name = Tables.testRequste(request);
+		String name = Tables.testRequest(request);
 		if(!name.equals("")) {
 
 			try {
