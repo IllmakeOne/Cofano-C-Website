@@ -206,7 +206,7 @@
             <table class="table table-striped table-sm">
               <thead>
                 <tr>
-                  <th><h5>id</h5></th>
+                  <th><h5>ID</h5></th>
                   <th><h5>Boat</h5></th>
                   <th><h5>Name</h5></th>
                   <th><h5>Changes</h5></th>
@@ -294,7 +294,7 @@
     	    	console.log("made it");
     	        myObj = JSON.parse(this.responseText);
     	        txt += " <div class=\"table-responsive\" style=\"margin: 5px\"> <table id=\"items\" class=\"table table-striped \"><thead>"
-      	         + "<tr><th><h5>id</h5></th>"+
+      	         + "<tr><th><h5>ID</h5></th>"+
       	         "<th><h5>Name</h5></th><th>"+ 
       	         "<h5>IMO</h5></th>"+
       	         "<th><h5>CallSign</h5></th>"
@@ -303,7 +303,7 @@
       	         "<th><h5>Changes</h5></th></tr> </thead>";
 	      	    for (x in myObj) {
 	   	            txt += "<tr><td>" + myObj[x].id + "</td><td>" 
-	   	            +  myObj[x].name + "</td><td>" + myObj[x].imo + "</td>" + "</td><td>" + myObj[x].callSign +
+	   	            +  myObj[x].name + "</td><td>" + myObj[x].imo + "</td>" + "</td><td>" + myObj[x].callsign +
 	   	         "</td><td>" + myObj[x].mmsi + "</td><td>" + myObj[x].depth +
 	   	    	  "<td><div class=\"btn-group\"> <button type=\"button\" class=\"btn btn-outline-light btn-sm \">" +
 				 "<img src=\"img/edit.svg\" class=\"img-rounded\"></button>"+
@@ -312,7 +312,7 @@
 						 
 	
 	   	        }
-        	        txt += "</table></div>";
+        	        txt += "</table></div>"        
         	        document.getElementById("items").innerHTML = txt;
         	    }
 

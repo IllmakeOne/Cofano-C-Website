@@ -63,7 +63,7 @@
                 <th>Terminal Code</th>
                 <th>Type</th>
                 <th>Unlo</th>
-                <th>Port id</th>
+                <th>Port ID</th>
             </tr>
             </thead>
             <tbody>

@@ -7,27 +7,38 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * This is the data object class for the 'Dashboard' web servlet.
- */
-@WebServlet(description = "Dashboard Servlet", urlPatterns = {"/dashboard"})
+@WebServlet(description="Dashboard Servlet", urlPatterns={"/dashboard"})
+
 public class Dashboard extends HttpServlet {
 
-    /**
-     * This method handles the <code>HttpServletRequest</code>s.
-     *
-     * @param req  the HTTP Servlet request
-     * @param resp the HTTP Servlet response
-     * @throws ServletException when there is a servlet exception
-     * @throws IOException      when there is an IO exception
-     */
-    @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-        if (req.getSession().getAttribute("token") != null) {
-            req.getRequestDispatcher("index.jsp").forward(req, resp);
-        } else {
-            resp.sendRedirect(getServletContext().getInitParameter("cofano.url") + "/login");
-        }
-    }
+	@Override
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		if (req.getSession().getAttribute("token") != null) {
+			req.getRequestDispatcher("index.jsp").forward(req, resp);
+		} else {
+			resp.sendRedirect(getServletContext().getInitParameter("cofano.url") + "/login");
+		}
+	}
+
+//	@Override
+//	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+//		response.setContentType("text/html");
+//		PrintWriter out = response.getWriter();
+//		String docType =
+//				"<!DOCTYPE HTML>\n";
+//		String title = "Dashboard coming soon...";
+//		out.println(docType +
+//				"<HTML>\n" +
+//				"<HEAD><TITLE>" + title + "</TITLE>" +
+//				"</HEAD>\n" +
+//				"<BODY BGCOLOR=\"#FDF5E6\">\n" +
+//				"<H1>" + title + "</H1>\n" +
+//
+//				" <P>HOERAAAAA: " + request.getSession().getAttribute("userEmail") + "</P>\n" +
+//				" <P>HOERAAAAA: " + request.getSession().getAttribute("userName") + "</P>\n" +
+//				" <P>HOERAAAAA: " + request.getSession().getAttribute("userFamilyName") + "</P>\n" +
+//				" <a href='./logout'>Loguit</a>\n" +
+//
+//				"</BODY></HTML>");
+//	}
 }

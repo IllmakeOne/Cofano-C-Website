@@ -3,11 +3,13 @@ package nl.utwente.di14.Cofano_C.resources;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
+import nl.utwente.di14.Cofano_C.model.Application;
 import nl.utwente.di14.Cofano_C.model.ContainerType;
 import nl.utwente.di14.Cofano_C.model.Port;
 import nl.utwente.di14.Cofano_C.model.Ship;
@@ -35,11 +37,11 @@ public class ContainerTypesResource {
 				"FROM container_type "+
 				"WHERE approved = true";
 		
-		String name = Tables.testRequest(request);
+		String name = Tables.testRequste(request);
 		if(!name.equals("")) {
 	
 			try {
-				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 	
 				ResultSet resultSet = statement.executeQuery();
 	
@@ -47,7 +49,7 @@ public class ContainerTypesResource {
 					
 					ContainerType container = new ContainerType();
 					container.setDisplayName(resultSet.getString("display_name"));
-					container.setId(resultSet.getInt("cid"));
+					container.setID(resultSet.getInt("cid"));
 					container.setIsoCode(resultSet.getString("iso_code"));
 					container.setDescription(resultSet.getString("description"));
 					container.setLength(resultSet.getInt("c_length"));
@@ -139,7 +141,7 @@ public class ContainerTypesResource {
 		String query = "SELECT * FROM containerconflict(?,?)";
 		
 		try {
-		PreparedStatement statement = Tables.getCon().prepareStatement(query);
+		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 		statement.setString(1, test.getDisplayName());
 		statement.setString(2, test.getIsoCode());
 		
