@@ -141,7 +141,6 @@
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
 
         <div class="alert alert-danger" id="error" role="alert" style="display:none">
             A simple danger alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
@@ -213,72 +212,5 @@
                 </div>
             </div>
         </form>
-=======
-        <div class="col-sm-12">	
-          <div class="table-responsive" style="margin: 35px">
-            <table class="table table-striped table-sm">
-              <thead>
-                <tr>
-                  <th><h5>Field</h5></th>
-                  <th><h5>Data</h5></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Name</td> 
-                  <td>
-                	<form	>
-		     			 <input type="text" placeholder=Timisoara id="addname" autocomplete="off">
-		    		</form>
-                  </td>
-                </tr>
- 				<tr>
-                  <td>Port id</td>
-                  <td>
-                  <!--<form><input type="number" placeholder=23 id="addportid" autocomplete="off"></form>-->
-		    		<select id="pid-dropdown" name="pid"></select>
-		    		</td>
-                </tr>
-                <tr>
-                <tr>
-                  <td>Terminal Code</td> 
-                  <td>
-                	<form	>
-		     			 <input type="text" placeholder=" 00BF97" id="addterminalcode" autocomplete="off">
-		    		</form>
-                  </td>
-                </tr>
-                <tr>
-                <tr>
-                  <td>Type</td> 
-                  <td>
-                	<form	>
-		     			 <input type="text"  placeholder=" UNKNOWN" id="caddtype" autocomplete="off">
-		    		</form>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Unlo</td> 
-                  <td>
-                	<form	>
-		     			 <input type="text" placeholder=" 123123XP" id="addunlo" autocomplete="off">
-		    		</form>
-                  </td>
-                  </tr>
-                  <tr>
-                	<td> </td>
-                  <td>
-                  	<button type="button" class="btn" onclick="addTerminal()">
-					    	Add Information 
-					</button>
-		    		</td>
-                </tr>
-              
-              </tbody>
-            </table>
-          </div>   
-    
-			</div>
->>>>>>> sprint4
     </jsp:body>
 </t:dashboard>
