@@ -171,16 +171,25 @@ public class TerminalsResource {
 	@Path("/{terminalId}")
 	public void deletTerminal(@PathParam("terminalId") int terminalId, @Context HttpServletRequest request) {
 		Tables.start();
+		
+		String doer = Tables.testRequest(request);
+		
+		if(!doer.equals("")) {
+			
+			Terminal aux = getTerminal(terminalId, request);
 
-		String query ="DELETE FROM terminal WHERE tid = ?";
-		try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-			statement.setLong(1, terminalId);
-			statement.executeUpdate();
-		} catch (SQLException e) {
-			System.err.println("Was not able to delete Terminal");
-			System.err.println(e.getSQLState());
-			e.printStackTrace();
+			String query ="DELETE FROM terminal WHERE tid = ?";
+			try {
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				statement.setLong(1, terminalId);
+				statement.executeUpdate();
+			} catch (SQLException e) {
+				System.err.println("Was not able to delete Terminal");
+				System.err.println(e.getSQLState());
+				e.printStackTrace();
+			}
+			
+			Tables.addHistoryEntry("DELETE", doer, aux.toString(), myname, true);
 		}
 	}
 
