@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.utwente.di14.Cofano_C.App;
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.*;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -150,6 +151,8 @@ public class ApplicationsResource extends ServletContainer {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateApp(@PathParam("appid") int appid, Application app,@Context HttpServletRequest request) {
 
+		Application aux = getApp(appid, request);
+		
 		if(request.getSession().getAttribute("userEmail")!=null){
 			String query = "SELECT editapplications(?,?,?)";
 			try {
@@ -163,8 +166,11 @@ public class ApplicationsResource extends ServletContainer {
 				e.printStackTrace();
 			}
 		}
+		
+		Tables.addHistoryEntry("UPDATE", Tables.testRequest(request), aux.toString()+ " -->" +app.toString(), myname, false);
 
 	}
+	
 	
 	
 	
