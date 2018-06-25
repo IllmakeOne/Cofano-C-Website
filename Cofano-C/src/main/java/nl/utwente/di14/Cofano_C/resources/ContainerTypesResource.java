@@ -23,11 +23,12 @@ public class ContainerTypesResource {
 	private String myname= "container_type";
 	
 	/**
-	 * @return a JSON array of all approved ports
+	 * @return a JSON array of all approved ContainerTypes
 	 */
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
-	public ArrayList<ContainerType> getAllContainerTypes(@Context HttpServletRequest request){
+	public ArrayList<ContainerType> getAllContainerTypes(
+				@Context HttpServletRequest request){
 		Tables.start();
 		ArrayList<ContainerType> result = new ArrayList<>();
 		String query = "SELECT * " +
@@ -36,14 +37,11 @@ public class ContainerTypesResource {
 		
 		String name = Tables.testRequest(request);
 		if(!name.equals("")) {
-	
 			try {
-				PreparedStatement statement = Tables.getCon().prepareStatement(query);
-	
+				PreparedStatement statement =
+						Tables.getCon().prepareStatement(query);
 				ResultSet resultSet = statement.executeQuery();
-	
 				while(resultSet.next()) {
-					
 					ContainerType container = new ContainerType();
 					container.setDisplayName(resultSet.getString("display_name"));
 					container.setId(resultSet.getInt("cid"));
@@ -56,23 +54,22 @@ public class ContainerTypesResource {
 					result.add(container);
 				}
 			} catch (SQLException e) {
-				System.err.println("Could not retrieve all containers" + e);
+				System.err.println("Could not retrieve all approved containers" + e);
 			}
 		}
-
 		return result;
-
 	}
 	
 	/**
 	 * This is used for displaying unapproved entries, which await deletion or approval
 	 * this method only returns something if the request is comming from our website
-	 * @return an JSON array of unapproved entries
+	 * @return an JSON array of unapproved ContainerType entries
 	 */
 	@GET
 	@Path("unapproved")
 	@Produces({MediaType.APPLICATION_JSON})
-	public ArrayList<ContainerType> getAllContainerTypesUN(@Context HttpServletRequest request){
+	public ArrayList<ContainerType> getAllContainerTypesUN(
+			@Context HttpServletRequest request){
 		Tables.start();
 		ArrayList<ContainerType> result = new ArrayList<>();
 		String query = "SELECT * " +
@@ -80,14 +77,10 @@ public class ContainerTypesResource {
 				"WHERE approved = false";
 		
 		if(request.getSession().getAttribute("userEmail")!=null) {
-	
 			try {
 				PreparedStatement statement = Tables.getCon().prepareStatement(query);
-	
 				ResultSet resultSet = statement.executeQuery();
-	
 				while(resultSet.next()) {
-					
 					ContainerType container = new ContainerType();
 					container.setDisplayName(resultSet.getString("display_name"));
 					container.setId(resultSet.getInt("cid"));
@@ -100,14 +93,49 @@ public class ContainerTypesResource {
 					result.add(container);
 				}
 			} catch (SQLException e) {
-				System.err.println("Could not retrieve all containers" + e);
+				System.err.println("Could not retrieve all unapproved containers" + e);
 			}
 		}
-
 		return result;
-
 	}
 	
+	/**
+	 * this method retrives a specific entry from the DB
+	 * @param containerId 
+	 * @return return the entry as an ContainerType object
+	 */
+	@GET
+	@Path("/{containerId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ContainerType getContainer(@PathParam("containerId") int containerId,
+			@Context HttpServletRequest request) {
+		ContainerType container = new ContainerType();
+		String query = "SELECT * FROM container_type WHERE cid = ?";
+		
+		if(!Tables.testRequest(request).equals("")) {
+	
+			try {
+				PreparedStatement statement =
+						Tables.getCon().prepareStatement(query);
+				statement.setInt(1, containerId);
+				ResultSet resultSet = statement.executeQuery();
+				while(resultSet.next()) {
+					container.setDisplayName(resultSet.getString("display_name"));
+					container.setIsoCode(resultSet.getString("iso_code"));
+					container.setDescription(resultSet.getString("description"));
+					container.setLength(resultSet.getInt("c_length"));
+					container.setHeight(resultSet.getInt("c_height"));
+					container.setReefer(resultSet.getBoolean("reefer"));
+					container.setId(resultSet.getInt("cid"));
+				}
+			} catch (SQLException e) {
+				System.err.println("could not get specific ContainerType");
+				e.printStackTrace();
+			}
+		}
+		return container;
+	}
+
 	/**
 	 * this function adds an entry to the database
 	 * if it is from a user it is directly added and approve
@@ -121,14 +149,10 @@ public class ContainerTypesResource {
 	public void addContainer(ContainerType input, @Context HttpServletRequest request) {
 		Tables.start();
 		
-		
 		int ownID = 0;
 		String title = "ADD";
 		String doer = Tables.testRequest(request);
-
 		int con = testConflict(input);
-		
-		
 		if(request.getSession().getAttribute("userEmail")!=null && con == 0 ) {
 			//if its from a cofano employee and it doesnt create conflcit, add straight to db
 			ownID = addEntry(input,true);
@@ -148,16 +172,15 @@ public class ContainerTypesResource {
 			//if it creates a conflcit, add it to conflict table
 			Tables.addtoConflicts(myname, doer, ownID, con);
 			//add to history
-			Tables.addHistoryEntry("CON", doer, ownID + " " + input.toString()+" con with "+con,myname,false);
+			Tables.addHistoryEntry("CON", doer, 
+					ownID + " " + input.toString()+" con with "+con,myname,false);
 		}
-		
-		
 	}
 	
 
 	/**
 	 * this method adds a ContainerType entry to the Database
-	 * @param entry the Container type about to be added 
+	 * @param entry the ContainerType about to be added 
 	 * @param app if the port is approved or not 
 	 * @return the ID which is assigned to this container by the database
 	 */
@@ -167,7 +190,8 @@ public class ContainerTypesResource {
 		//gets here if the request is from API
 		//add to conflicts table
 		try {
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			PreparedStatement statement =
+							Tables.getCon().prepareStatement(query);
 			//add the data to the statement's query
 			statement.setString(1, entry.getDisplayName());
 			statement.setString(2,entry.getIsoCode());
@@ -198,7 +222,6 @@ public class ContainerTypesResource {
 			@Context HttpServletRequest request) {
 		Tables.start();
 		String doer = Tables.testRequest(request);
-		
 		if(!doer.equals("")) {
 			ContainerType aux = getContainer(containerId, request);		
 			String query ="SELECT  deletecontainer_types(?)";
@@ -216,45 +239,6 @@ public class ContainerTypesResource {
 		}
 	}
 
-
-	/**
-	 * this method retrives a specific entry from the DB
-	 * @param containerId 
-	 * @return return the entry as an Container Type object
-	 */
-	@GET
-	@Path("/{containerId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public ContainerType getContainer(@PathParam("containerId") int containerId,
-			@Context HttpServletRequest request) {
-		ContainerType container = new ContainerType();
-		String query = "SELECT * FROM container_type WHERE cid = ?";
-		
-		if(!Tables.testRequest(request).equals("")) {
-
-			try {
-				PreparedStatement statement =
-						Tables.getCon().prepareStatement(query);
-				statement.setInt(1, containerId);
-				ResultSet resultSet = statement.executeQuery();
-	
-				while(resultSet.next()) {
-					container.setDisplayName(resultSet.getString("display_name"));
-					container.setIsoCode(resultSet.getString("iso_code"));
-					container.setDescription(resultSet.getString("description"));
-					container.setLength(resultSet.getInt("c_length"));
-					container.setHeight(resultSet.getInt("c_height"));
-					container.setReefer(resultSet.getBoolean("reefer"));
-					container.setId(resultSet.getInt("cid"));
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-
-		return container;
-	}
 
 	/**
 	 * this method changes an entry in the database
@@ -289,31 +273,36 @@ public class ContainerTypesResource {
 			}
 			
 			Tables.addHistoryEntry("UPDATE", doer,
-aux.toString() + "-->" + container.toString(), myname, false);
+				aux.toString() + "-->" + container.toString(), myname, false);
 		}
 
 	}
 			
 	
 
-
+	/**
+	 * this tests if there a new ContainerType creates a conflict in the DB if it is added
+	 * it creates a conflict if the display_name or iso_code is the same as another entry in the DB
+	 * @param test the ContainerType which is tested
+	 * @return the id of the port it is on conflict with , or 0 if there is no conflict
+	 */
 	public int testConflict(ContainerType test) {
 		int result = 0;
 		String query = "SELECT * FROM containerconflict(?,?)";
 		
 		try {
-		PreparedStatement statement = Tables.getCon().prepareStatement(query);
-		statement.setString(1, test.getDisplayName());
-		statement.setString(2, test.getIsoCode());
-		
-		ResultSet resultSet = statement.executeQuery();
+			PreparedStatement statement =
+					Tables.getCon().prepareStatement(query);
+			statement.setString(1, test.getDisplayName());
+			statement.setString(2, test.getIsoCode());
 			
-		if(!resultSet.next()) {
-			result = 0;
-		} else {
-			result = resultSet.getInt("cid");
-		}
-		
+			ResultSet resultSet = statement.executeQuery();
+				
+			if(!resultSet.next()) {
+				result = 0;
+			} else {
+				result = resultSet.getInt("cid");
+			}
 		} catch (SQLException e) {
 			System.err.println("Could not test conflcit IN apps" + e);
 		}

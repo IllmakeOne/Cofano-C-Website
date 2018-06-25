@@ -30,6 +30,66 @@ public class ApplicationsResource extends ServletContainer {
 	
 	
 	/**
+	 * @return a JSON array of all approved Application
+	 */
+	@GET
+	@Produces({MediaType.APPLICATION_JSON})
+	public List<Application> getAllApps(@Context HttpServletRequest request){
+		Tables.start();
+		ArrayList<Application> result = new ArrayList<>();
+		
+		if(request.getSession().getAttribute("userEmail")!=null) {
+			Application add = new Application();
+			String query = "SELECT * FROM application";
+			try {
+			PreparedStatement statement = 
+					Tables.getCon().prepareStatement(query);
+			ResultSet resultSet = statement.executeQuery();
+			while(resultSet.next()) {
+				//System.out.println(resultSet.getString(1));
+				add = new Application();
+				add.setName(resultSet.getString(2));
+				add.setAPIKey( resultSet.getString(3));
+				add.setId(resultSet.getInt(1));
+				result.add(add);
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not retrive all apps" + e);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * this method retrives a specific entry from the DB
+	 * @param appid
+	 * @return return the entry as an Application object
+	 */
+	@GET
+	@Path("/{appid}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Application getApp(@PathParam("appid") int appid, @Context HttpServletRequest request) {
+		Application app = new Application();
+		String query = "SELECT * FROM application WHERE aid = ?";
+		if(request.getSession().getAttribute("userEmail")!=null){
+			try {
+				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				statement.setInt(1, appid);
+				ResultSet resultSet = statement.executeQuery();
+	
+				while(resultSet.next()) {
+					app.setName(resultSet.getString(2));
+					app.setAPIKey( resultSet.getString(3));
+					app.setId(resultSet.getInt(1));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return app;
+	}
+
+	/**
 	 * this function adds an entry to the database
 	 * if it is from a user it is directly added and approved
 	 * if not, it is added but not approved
@@ -43,7 +103,6 @@ public class ApplicationsResource extends ServletContainer {
 		Tables.start();
 
 		String doer = Tables.testRequest(request);
-		
 		//tests if the person is allowed to make any modificaitons
 		if(request.getSession().getAttribute("userEmail")!=null){
 			String title = "ADD";
@@ -52,10 +111,10 @@ public class ApplicationsResource extends ServletContainer {
 				//if there is no conflict
 					Tables.addHistoryEntry(title, doer, input.toString()
 					, new Timestamp(System.currentTimeMillis()), myname );
-		
-					String query ="SELECT addapplications(?,?)";
+							String query ="SELECT addapplications(?,?)";
 					try {
-						PreparedStatement statement = Tables.getCon().prepareStatement(query);
+						PreparedStatement statement = 
+								Tables.getCon().prepareStatement(query);
 						statement.setString(1, input.getName());
 						statement.setString(2, input.getAPIKey());
 		
@@ -83,26 +142,12 @@ public class ApplicationsResource extends ServletContainer {
 		
 		//retrive the App about to be deleted
 		if(request.getSession().getAttribute("userEmail")!=null){
-			Application add = new Application();
-			String query = "SELECT * FROM application WHERE aid = ?";
-			try {
-				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
-				statement.setInt(1, appid);
-				ResultSet resultSet = statement.executeQuery();
-				//create an application object 
-				while(resultSet.next()) {
-					add.setName(resultSet.getString(2));
-					add.setAPIKey( resultSet.getString(3));
-					add.setId(resultSet.getInt(1));
-					}
-				} catch (SQLException e) {
-					System.err.println("Coulnd retrive app about to be deleted" + e);
-				}
+			Application add = getApp(appid, request);
 			//add the deletion to the history table
 			String title = "DELETE";
 			String doer = Tables.testRequest(request);
 			Tables.addHistoryEntry(title, doer, add.toString(), myname, true);
-				query ="SELECT deleteapplications(?)";
+				String query ="SELECT deleteapplications(?)";
 				try {
 					PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
 					statement.setLong(1, appid);
@@ -112,43 +157,9 @@ public class ApplicationsResource extends ServletContainer {
 					System.err.println(e.getSQLState());
 					e.printStackTrace();
 				}
-				
-				query = "";
 		}
 	}
 
-
-	/**
-	 * this method retrives a specific entry from the DB
-	 * @param appid
-	 * @return return the entry as an Application object
-	 */
-	@GET
-	@Path("/{appid}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Application getApp(@PathParam("appid") int appid, @Context HttpServletRequest request) {
-		Application app = new Application();
-		String query = "SELECT * FROM application WHERE aid = ?";
-
-		if(request.getSession().getAttribute("userEmail")!=null){
-			try {
-				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
-				statement.setInt(1, appid);
-				ResultSet resultSet = statement.executeQuery();
-	
-				while(resultSet.next()) {
-					app.setName(resultSet.getString(2));
-					app.setAPIKey( resultSet.getString(3));
-					app.setId(resultSet.getInt(1));
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-
-		return app;
-	}
 
 	/**
 	 * this method changes an entry in the database
@@ -158,10 +169,9 @@ public class ApplicationsResource extends ServletContainer {
 	@PUT
 	@Path("/{appid}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateApp(@PathParam("appid") int appid, Application app,@Context HttpServletRequest request) {
-
+	public void updateApp(@PathParam("appid") int appid, 
+			Application app,@Context HttpServletRequest request) {
 		Application aux = getApp(appid, request);
-		
 		if(request.getSession().getAttribute("userEmail")!=null){
 			String query = "SELECT editapplications(?,?,?)";
 			try {
@@ -175,47 +185,8 @@ public class ApplicationsResource extends ServletContainer {
 				e.printStackTrace();
 			}
 		}
-		
-		Tables.addHistoryEntry("UPDATE", Tables.testRequest(request), aux.toString()+ " -->" +app.toString(), myname, false);
-
-	}
-	
-	
-	/**
-	 * This is used for displaying unapproved entries, which await deletion or approval
-	 * this method only returns something if the request is comming from our website
-	 * @return an JSON array of unapproved entries
-	 */
-	@GET
-	@Produces({MediaType.APPLICATION_JSON})
-	public List<Application> getAllApps(@Context HttpServletRequest request){
-		Tables.start();
-		ArrayList<Application> result = new ArrayList<>();
-		
-		if(request.getSession().getAttribute("userEmail")!=null) {
-		
-			Application add = new Application();
-			String query = "SELECT * FROM application";
-	
-			try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-	
-			ResultSet resultSet = statement.executeQuery();
-	
-			while(resultSet.next()) {
-				//System.out.println(resultSet.getString(1));
-				add = new Application();
-				add.setName(resultSet.getString(2));
-				add.setAPIKey( resultSet.getString(3));
-				add.setId(resultSet.getInt(1));
-	
-				result.add(add);
-				}
-			} catch (SQLException e) {
-				System.err.println("Could not retrive all apps" + e);
-			}
-		}
-		return result;
+		Tables.addHistoryEntry("UPDATE", Tables.testRequest(request), 
+				aux.toString()+ " -->" +app.toString(), myname, false);
 	}
 	
 	
@@ -228,15 +199,12 @@ public class ApplicationsResource extends ServletContainer {
 	public boolean testConflict(Application test) {
 		boolean result = true;
 		String query = "SELECT * FROM appsconflict(?,?)";
-		
 		try {
-		PreparedStatement statement = Tables.getCon().prepareStatement(query);
-		statement.setString(1, test.getName());
-		statement.setString(2, test.getAPIKey());
-		ResultSet resultSet = statement.executeQuery();
-
-            result = resultSet.next();
-		
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setString(1, test.getName());
+			statement.setString(2, test.getAPIKey());
+			ResultSet resultSet = statement.executeQuery();
+	        result = resultSet.next();
 		} catch (SQLException e) {
 			System.err.println("Could not test conflcit IN apps" + e);
 		}

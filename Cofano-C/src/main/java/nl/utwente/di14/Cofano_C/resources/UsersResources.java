@@ -52,7 +52,6 @@ public class UsersResources {
 				System.err.println("Could not retrive all apps" + e);
 			}
 		}
-
 		return end;
 	}
 }

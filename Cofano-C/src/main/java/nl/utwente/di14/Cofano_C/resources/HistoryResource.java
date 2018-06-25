@@ -19,23 +19,25 @@ import java.util.ArrayList;
 public class HistoryResource {
 
 
+	/**
+	 * @return a JSON array of all hisotry entries
+	 */
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
-	public ArrayList<HistoryEntry> getAllContainerTypes(@Context HttpServletRequest request){
+	public ArrayList<HistoryEntry> getAllHisotryEntries(
+			@Context HttpServletRequest request){
 		Tables.start();
 		ArrayList<HistoryEntry> result = new ArrayList<>();
 		String query = "SELECT * " +
 				"FROM history";
 		if(request.getSession().getAttribute("userEmail")!=null) {
 			try {
-				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
 	
 				ResultSet resultSet = statement.executeQuery();
 	
 				while(resultSet.next()) {
-					//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " "
-					//		+ resultSet.getString(3) + " " + resultSet.getString(4));
-	
 					HistoryEntry entry = new HistoryEntry();
 					entry.setId(resultSet.getInt("hid"));
 					entry.setTitle(resultSet.getString("title"));

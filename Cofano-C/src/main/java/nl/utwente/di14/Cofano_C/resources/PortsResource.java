@@ -37,17 +37,13 @@ public class PortsResource {
 				"WHERE approved = true";
 		
 		String name = Tables.testRequest(request);
-	//	System.out.println(name);
 		if(!name.equals("")) {
 	
 			try {
-				PreparedStatement statement = Tables.getCon().prepareStatement(query);
-	
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
 				ResultSet resultSet = statement.executeQuery();
-	
 				while(resultSet.next()) {
-					//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
-	
 					Port port = new Port();
 					port.setId(resultSet.getInt("pid"));
 					port.setName(resultSet.getString("name"));
@@ -57,7 +53,7 @@ public class PortsResource {
 					result.add(port);
 				}
 			} catch (SQLException e) {
-				System.err.println("Could not retrieve all ports" + e);
+				System.err.println("Could not retrieve all approved ports" + e);
 			}
 		} 
 	
@@ -84,28 +80,57 @@ public class PortsResource {
 		if(request.getSession().getAttribute("userEmail")!=null) {
 	
 			try {
-				PreparedStatement statement = Tables.getCon().prepareStatement(query);
-	
+				PreparedStatement statement =
+						Tables.getCon().prepareStatement(query);
 				ResultSet resultSet = statement.executeQuery();
-	
 				while(resultSet.next()) {
-					//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
-	
 					Port port = new Port();
 					port.setId(resultSet.getInt("pid"));
 					port.setName(resultSet.getString("name"));
 					port.setUnlo(resultSet.getString("unlo"));
-	
-	
 					result.add(port);
 				}
 			} catch (SQLException e) {
-				System.err.println("Could not retrieve all ports" + e);
+				System.err.println("Could not retrieve all unapproved ports" + e);
 			}
 		} 
 	
 		return result;
 	
+	}
+
+
+
+	/**
+	 * this method retrives a specific entry from the DB
+	 * @param portId 
+	 * @return return the entry as an Port object
+	 */
+	@GET
+	@Path("/{portId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Port getPort(@PathParam("portId") int portId, 
+			@Context HttpServletRequest request) {
+		Port port = new Port();
+		String query = "SELECT * FROM port WHERE pid = ?";
+		if(!Tables.testRequest(request).equals("")) {
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				statement.setInt(1, portId);
+				ResultSet resultSet = statement.executeQuery();
+	
+				while(resultSet.next()) {
+					port.setName(resultSet.getString("name"));
+					port.setUnlo(resultSet.getString("unlo"));
+					port.setId(resultSet.getInt("pid"));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		return port;
 	}
 
 
@@ -149,7 +174,8 @@ public class PortsResource {
 			//if it creates a conflcit, add it to conflict table
 			Tables.addtoConflicts(myname, doer, ownID, con);
 			//add to history
-			Tables.addHistoryEntry("CON", doer, ownID + " " + input.toString()+" con with "+con,myname,false);
+			Tables.addHistoryEntry("CON", doer, ownID + " " 
+					+ input.toString()+" con with "+con,myname,false);
 
 		}
 			
@@ -170,7 +196,8 @@ public class PortsResource {
 		//add to conflicts table
 		try {
 			//Create prepared statement
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			PreparedStatement statement =
+					Tables.getCon().prepareStatement(query);
 			//add the data to the statement's query
 			statement.setString(1, entry.getName());
 			statement.setString(2,entry.getUnlo());
@@ -180,15 +207,15 @@ public class PortsResource {
 			res.next();
 			rez = res.getInt(1);
 		} catch (SQLException e) {
-			System.err.println("Could not add approved port ");
+			System.err.println("Could not add  port ");
 			System.err.println(e.getSQLState());
 			e.printStackTrace();
 		}
 		return rez;
 	}
-		
-		
-	
+
+
+
 	/**
 	 * this method deletes an entry from a table and also adds it to history
 	 * @param portId the id of the entry which is deleted
@@ -214,40 +241,9 @@ public class PortsResource {
 				System.err.println(e.getSQLState());
 				e.printStackTrace();
 			}
-			Tables.addHistoryEntry("DELETE", doer, aux.toString(), myname, true);
+			Tables.addHistoryEntry("DELETE", doer, 
+					aux.toString(), myname, true);
 		}
-	}
-
-	/**
-	 * this method retrives a specific entry from the DB
-	 * @param portId 
-	 * @return return the entry as an Port object
-	 */
-	@GET
-	@Path("/{portId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Port getPort(@PathParam("portId") int portId, 
-			@Context HttpServletRequest request) {
-		Port port = new Port();
-		String query = "SELECT * FROM port WHERE pid = ?";
-		if(!Tables.testRequest(request).equals("")) {
-			try {
-				PreparedStatement statement = 
-						Tables.getCon().prepareStatement(query);
-				statement.setInt(1, portId);
-				ResultSet resultSet = statement.executeQuery();
-	
-				while(resultSet.next()) {
-					port.setName(resultSet.getString("name"));
-					port.setUnlo(resultSet.getString("unlo"));
-					port.setId(resultSet.getInt("pid"));
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return port;
 	}
 
 	/**
@@ -275,10 +271,11 @@ public class PortsResource {
 				statement.executeQuery();
 	
 			} catch (SQLException e) {
+				System.err.println("could not update entry IN port");
 				e.printStackTrace();
 			}
 			Tables.addHistoryEntry("UPDATE", doer, 
-					aux.toString() + "-->" + port.toString(), myname, false);
+				aux.toString() + "-->" + port.toString(), myname, false);
 		}
 
 	}
@@ -289,14 +286,16 @@ public class PortsResource {
 	 * this tests if there a new Port creates a conflict in the DB if it is added
 	 * it creates a conflict if the name or unlo is the same as another entry in the DB
 	 * @param test the Port which is tested
-	 * @return the id of the port it is on conflict with , or 0 if there is no conflict
+	 * @return the id of the port it is on conflict with
+	 *  or 0 if there is no conflict
 	 */
 	public int testConflict(Port test) {
 		int result = 0 ;
 		String query = "SELECT * FROM portconflict(?,?)";
 		
 		try {
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			PreparedStatement statement = 
+					Tables.getCon().prepareStatement(query);
 			statement.setString(1, test.getName());
 			statement.setString(2, test.getUnlo());
 			
@@ -314,29 +313,4 @@ public class PortsResource {
 		return result;
 	}
 	
-	/*
-	public int getID(Port entry) {
-		int res = 0;
-		String query = "SELECT getexactport(?,?)";
-		//gets here if the request is from API
-		//add to conflicts table
-		try {
-			//Create prepared statement
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
-			//add the data to the statement's query
-			statement.setString(1, entry.getName());
-			statement.setString(2,entry.getUnlo());
-			
-			ResultSet rez = statement.executeQuery();	
-			rez.next();
-			res = rez.getInt(1);
-			
-		} catch (SQLException e) {
-			System.err.println("Could not get specific port ");
-			System.err.println(e.getSQLState());
-			e.printStackTrace();
-		}
-		return res;
-	}
-	*/
 }

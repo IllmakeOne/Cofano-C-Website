@@ -26,6 +26,111 @@ public class TerminalsResource {
 	
 	
 	/**
+	 * @return a JSON array of all approved Terminals
+	 */
+	@GET
+	@Produces({MediaType.APPLICATION_JSON})
+	public ArrayList<Terminal> getAllTerminals(@Context HttpServletRequest request){
+		Tables.start();
+		ArrayList<Terminal> result = new ArrayList<>();
+		String query = "SELECT * " +
+				"FROM terminal "+
+				"WHERE approved = true";
+		String name = Tables.testRequest(request);
+		if(!name.equals("")) {
+	
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				ResultSet resultSet = statement.executeQuery();
+				while(resultSet.next()) {
+					Terminal terminal = new Terminal();
+					terminal.setID(resultSet.getInt("tid"));
+					terminal.setName(resultSet.getString("name"));
+					terminal.setTerminalCode(resultSet.getString("terminal_code"));
+					terminal.setType(resultSet.getString("type"));
+					terminal.setUnlo(resultSet.getString("unlo"));
+					terminal.setPortId(resultSet.getInt("port_id"));
+					result.add(terminal);
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not retrieve all terminals" + e);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * This is used for displaying unapproved entries, which await deletion or approval
+	 * this method only returns something if the request is comming from our website
+	 * @return an JSON array of unapproved entries
+	 */
+	@GET
+	@Path("unapproved")
+	@Produces({MediaType.APPLICATION_JSON})
+	public ArrayList<Terminal> getAllTerminalsUN(@Context HttpServletRequest request){
+		Tables.start();
+		ArrayList<Terminal> result = new ArrayList<>();
+		String query = "SELECT * " +
+				"FROM terminal "+
+				"WHERE approved = false";
+		
+		if(request.getSession().getAttribute("userEmail")!=null) {
+	
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+	
+				ResultSet resultSet = statement.executeQuery();
+	
+				while(resultSet.next()) {
+					Terminal terminal = new Terminal();
+					terminal.setID(resultSet.getInt("tid"));
+					terminal.setName(resultSet.getString("name"));
+					terminal.setTerminalCode(resultSet.getString("terminal_code"));
+					terminal.setType(resultSet.getString("type"));
+					terminal.setUnlo(resultSet.getString("unlo"));
+					terminal.setPortId(resultSet.getInt("port_id"));
+					result.add(terminal);
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not retrieve all unapproved terminals" + e);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * this method retrives a specific entry from the DB
+	 * @param portId
+	 * @return return the entry as an Terminal object
+	 */
+	@GET
+	@Path("/{terminalId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Terminal getTerminal(@PathParam("terminalId") int terminalId,
+			@Context HttpServletRequest request) {
+		Terminal terminal = new Terminal();
+		String query = "SELECT * FROM terminal WHERE tid = ?";
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setInt(1, terminalId);
+			ResultSet resultSet = statement.executeQuery();
+			while(resultSet.next()) {
+				terminal.setName(resultSet.getString("name"));
+				terminal.setTerminalCode(resultSet.getString("terminal_code"));
+				terminal.setType(resultSet.getString("type"));
+				terminal.setUnlo(resultSet.getString("unlo"));
+				terminal.setPortId(resultSet.getInt("port_id"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return terminal;
+	}
+	
+
+	/**
 	 * this function adds an entry to the database
 	 * if it is from a user it is directly added and approve
 	 * if not, it is added but not approved
@@ -61,8 +166,8 @@ public class TerminalsResource {
 			//if it creates a conflcit, add it to conflict table
 			Tables.addtoConflicts(myname, doer, ownID, con);
 			//add to history
-			Tables.addHistoryEntry("CON", doer, ownID + " " + input.toString()+" con with "+con,myname,false);
-
+			Tables.addHistoryEntry("CON", doer, 
+					ownID + " " + input.toString()+" con with "+con,myname,false);
 		}	
 			
 	}
@@ -78,10 +183,10 @@ public class TerminalsResource {
 		//gets here if the request is from API
 		//add to conflicts table
 		String query ="SELECT addterminal(?,?,?,?,?,?)";
-		
 		try {
 			//Create prepared statement
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			PreparedStatement statement =
+					Tables.getCon().prepareStatement(query);
 			//add the data to the statement's query
 			statement.setString(1, entry.getName());
 			statement.setString(2,entry.getTerminalCode());
@@ -89,7 +194,6 @@ public class TerminalsResource {
 			statement.setString(4,entry.getUnlo());
 			statement.setInt(5,entry.getPortId());
 			statement.setBoolean(6, app);
-			
 			ResultSet res = statement.executeQuery();			
 			res.next();
 			rez = res.getInt(1);
@@ -105,6 +209,93 @@ public class TerminalsResource {
 	
 	
 	
+	/**
+	 * this method deletes an entry from a table and also adds it to history
+	 * @param terminalId the id of the entry which is deleted
+	 */
+	@DELETE
+	@Path("/{terminalId}")
+	public void deletTerminal(@PathParam("terminalId") int terminalId, 
+			@Context HttpServletRequest request) {
+		Tables.start();
+		String doer = Tables.testRequest(request);
+		if(!doer.equals("")) {
+			Terminal aux = getTerminal(terminalId, request);
+			String query ="SELECT deleteterminal(?)";
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				statement.setInt(1, terminalId);
+				statement.executeQuery();
+			} catch (SQLException e) {
+				System.err.println("Was not able to delete Terminal");
+				System.err.println(e.getSQLState());
+				e.printStackTrace();
+			}
+			Tables.addHistoryEntry("DELETE", doer, aux.toString(), myname, true);
+		}
+	}
+
+
+	/**
+	 * this method changes an entry in the database
+	 * @param terminalId the ID of the entry about to be changed
+	 * @param terminal the new information for the entry
+	 */
+	@PUT
+	@Path("/{terminalId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateTerminal(@PathParam("terminalId") int terminalId,
+			Terminal terminal,@Context HttpServletRequest request ) {
+		
+		String doer = Tables.testRequest(request);
+		if(!doer.equals("")) {
+			Terminal aux = getTerminal(terminalId, request);
+			String query = "SELECT editterminals(?,?,?,?,?)";
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				statement.setString(2, terminal.getName());
+				statement.setString(3, terminal.getTerminalCode());
+				statement.setString(4, terminal.getType());
+				statement.setString(5, terminal.getUnlo());
+				statement.setInt(1, terminalId);
+				statement.executeQuery();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			Tables.addHistoryEntry("UPDATE", doer, 
+					aux.toString() +"-->"+terminal.toString(), myname, false);
+		}
+	}
+	
+	
+	/**
+	 * this tests if there a new Port creates a conflict in the DB if it is added
+	 * it creates a conflcit if the name or terminal code is the same as another entry in the DB
+	 * @param test the Port which is tested
+	 * @return the id of the port it is on conflict with , or 0 if there is no conflict
+	 */
+	public int testConflict(Terminal test) {
+		int result = 0;
+		String query = "SELECT * FROM terminalconflict(?,?)";
+		try {
+			PreparedStatement statement = 
+					Tables.getCon().prepareStatement(query);
+			statement.setString(1, test.getName());
+			statement.setString(2, test.getTerminalCode());
+			ResultSet resultSet = statement.executeQuery();	
+			if(!resultSet.next()) {
+				result = 0;
+			} else {
+				result = resultSet.getInt("tid");
+			}
+		} catch (SQLException e) {
+			System.err.println("Could not test conflcit IN apps" + e);
+		}
+		return result;
+	}
+
 	/**
 	 * this function is used in the Adding of a terminal.
 	 * Terminal have a foreign key to Ports
@@ -137,219 +328,6 @@ public class TerminalsResource {
 			} catch (SQLException e) {
 				System.err.println("Could not retrieve all ports" + e);
 			}
-		}
-		return result;
-	}
-
-	
-	/**
-	 * @return a JSON array of all approved terminals
-	 */
-	@GET
-	@Produces({MediaType.APPLICATION_JSON})
-	public ArrayList<Terminal> getAllTerminals(@Context HttpServletRequest request){
-		Tables.start();
-		ArrayList<Terminal> result = new ArrayList<>();
-		String query = "SELECT * " +
-				"FROM terminal "+
-				"WHERE approved = true";
-		String name = Tables.testRequest(request);
-		if(!name.equals("")) {
-
-			try {
-				PreparedStatement statement = Tables.getCon().prepareStatement(query);
-	
-				ResultSet resultSet = statement.executeQuery();
-	
-				while(resultSet.next()) {
-					Terminal terminal = new Terminal();
-					terminal.setID(resultSet.getInt("tid"));
-					terminal.setName(resultSet.getString("name"));
-					terminal.setTerminalCode(resultSet.getString("terminal_code"));
-					terminal.setType(resultSet.getString("type"));
-					terminal.setUnlo(resultSet.getString("unlo"));
-					terminal.setPortId(resultSet.getInt("port_id"));
-	
-	
-					result.add(terminal);
-				}
-			} catch (SQLException e) {
-				System.err.println("Could not retrieve all terminals" + e);
-			}
-		}
-
-		return result;
-	}
-
-
-	/**
-	 * This is used for displaying unapproved entries, which await deletion or approval
-	 * this method only returns something if the request is comming from our website
-	 * @return an JSON array of unapproved entries
-	 */
-	@GET
-	@Path("unapproved")
-	@Produces({MediaType.APPLICATION_JSON})
-	public ArrayList<Terminal> getAllTerminalsUN(@Context HttpServletRequest request){
-		Tables.start();
-		ArrayList<Terminal> result = new ArrayList<>();
-		String query = "SELECT * " +
-				"FROM terminal "+
-				"WHERE approved = false";
-		
-		if(request.getSession().getAttribute("userEmail")!=null) {
-
-			try {
-				PreparedStatement statement = Tables.getCon().prepareStatement(query);
-	
-				ResultSet resultSet = statement.executeQuery();
-	
-				while(resultSet.next()) {
-					//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3) +" " +
-						//	resultSet.getString(4) + " " + resultSet.getString(5) + " " + resultSet.getString(6));
-	
-					Terminal terminal = new Terminal();
-					terminal.setID(resultSet.getInt("tid"));
-					terminal.setName(resultSet.getString("name"));
-					terminal.setTerminalCode(resultSet.getString("terminal_code"));
-					terminal.setType(resultSet.getString("type"));
-					terminal.setUnlo(resultSet.getString("unlo"));
-					terminal.setPortId(resultSet.getInt("port_id"));
-	
-	
-					result.add(terminal);
-				}
-			} catch (SQLException e) {
-				System.err.println("Could not retrieve all unapproved terminals" + e);
-			}
-		}
-
-		return result;
-	}
-
-	/**
-	 * this method deletes an entry from a table and also adds it to history
-	 * @param terminalId the id of the entry which is deleted
-	 */
-	@DELETE
-	@Path("/{terminalId}")
-	public void deletTerminal(@PathParam("terminalId") int terminalId, @Context HttpServletRequest request) {
-		Tables.start();
-		String doer = Tables.testRequest(request);
-		
-		if(!doer.equals("")) {
-			
-			Terminal aux = getTerminal(terminalId, request);
-
-			String query ="SELECT deleteterminal(?)";
-			try {
-				PreparedStatement statement = Tables.getCon().prepareStatement(query);
-				statement.setInt(1, terminalId);
-				statement.executeQuery();
-			} catch (SQLException e) {
-				System.err.println("Was not able to delete Terminal");
-				System.err.println(e.getSQLState());
-				e.printStackTrace();
-			}
-			
-			Tables.addHistoryEntry("DELETE", doer, aux.toString(), myname, true);
-		}
-	}
-
-
-	/**
-	 * this method retrives a specific entry from the DB
-	 * @param portId
-	 * @return return the entry as an Terminal object
-	 */
-	@GET
-	@Path("/{terminalId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Terminal getTerminal(@PathParam("terminalId") int terminalId, @Context HttpServletRequest request) {
-		Terminal terminal = new Terminal();
-		String query = "SELECT * FROM terminal WHERE tid = ?";
-
-		try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-			statement.setInt(1, terminalId);
-			ResultSet resultSet = statement.executeQuery();
-
-			while(resultSet.next()) {
-				terminal.setName(resultSet.getString("name"));
-				terminal.setTerminalCode(resultSet.getString("terminal_code"));
-				terminal.setType(resultSet.getString("type"));
-				terminal.setUnlo(resultSet.getString("unlo"));
-				terminal.setPortId(resultSet.getInt("port_id"));
-
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-
-		return terminal;
-	}
-
-	
-	/**
-	 * this method changes an entry in the database
-	 * @param terminalId the ID of the entry about to be changed
-	 * @param terminal the new information for the entry
-	 */
-	@PUT
-	@Path("/{terminalId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateTerminal(@PathParam("terminalId") int terminalId, Terminal terminal,@Context HttpServletRequest request ) {
-		
-		String doer = Tables.testRequest(request);
-		
-		if(!doer.equals("")) {
-		
-			Terminal aux = getTerminal(terminalId, request);
-			
-			String query = "SELECT editterminals(?,?,?,?,?)";
-			try {
-				PreparedStatement statement = Tables.getCon().prepareStatement(query);
-				statement.setString(2, terminal.getName());
-				statement.setString(3, terminal.getTerminalCode());
-				statement.setString(4, terminal.getType());
-				statement.setString(5, terminal.getUnlo());
-				statement.setInt(1, terminalId);
-	
-				statement.executeQuery();
-	
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			Tables.addHistoryEntry("UPDATE", doer, aux.toString() +"-->"+terminal.toString(), myname, false);
-		}
-	}
-	
-	
-	/**
-	 * this tests if there a new Port creates a conflict in the DB if it is added
-	 * @param test the Port which is tested
-	 * @return the id of the port it is on conflict with , or 0 if there is no conflict
-	 */
-	public int testConflict(Terminal test) {
-		int result = 0;
-		String query = "SELECT * FROM terminalconflict(?,?)";
-		
-		try {
-		PreparedStatement statement = Tables.getCon().prepareStatement(query);
-		statement.setString(1, test.getName());
-		statement.setString(2, test.getTerminalCode());
-		
-		ResultSet resultSet = statement.executeQuery();
-			
-		if(!resultSet.next()) {
-			result = 0;
-		} else {
-			result = resultSet.getInt("tid");
-		}
-		
-		} catch (SQLException e) {
-			System.err.println("Could not test conflcit IN apps" + e);
 		}
 		return result;
 	}
