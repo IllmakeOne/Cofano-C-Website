@@ -2,8 +2,6 @@ package nl.utwente.di14.Cofano_C.resources;
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.Port;
-import nl.utwente.di14.Cofano_C.model.Ship;
-import nl.utwente.di14.Cofano_C.model.Terminal;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -20,7 +18,6 @@ import org.postgresql.util.PGobject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 
 
@@ -37,7 +34,7 @@ public class PortsResource {
 		
 		int ownID = 0;
 		String title = "ADD";
-		String doer = Tables.testRequste(request);
+		String doer = Tables.testRequest(request);
 
 		int con = testConflict(input);
 		
@@ -78,12 +75,12 @@ public class PortsResource {
 				"FROM port " +
 				"WHERE approved = true";
 		
-		String name = Tables.testRequste(request);
+		String name = Tables.testRequest(request);
 	//	System.out.println(name);
 		if(!name.equals("")) {
 
 			try {
-				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
 	
 				ResultSet resultSet = statement.executeQuery();
 	
@@ -91,7 +88,7 @@ public class PortsResource {
 					//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
 	
 					Port port = new Port();
-					port.setID(resultSet.getInt("pid"));
+					port.setId(resultSet.getInt("pid"));
 					port.setName(resultSet.getString("name"));
 					port.setUnlo(resultSet.getString("unlo"));
 	
