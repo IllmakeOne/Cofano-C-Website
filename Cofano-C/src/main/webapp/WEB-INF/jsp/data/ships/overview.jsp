@@ -31,7 +31,7 @@
                                 return '<a class="btn btn-info btn-sm" href="${base}/ship/'+ data +'" role="button">' +
                                     '<span data-feather="edit-2"></span>' +
                                     '</a>&nbsp;' +
-                                    '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data + '" data-delete-name="' + row.name + '" role="button">' +
+                                    '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data + '" data-delete-name="' + escapeHtml(row.name) + '" role="button">' +
                                     '<span data-feather="trash-2"></span>' +
                                     '</button>' ;
                             }

@@ -6,11 +6,7 @@ import nl.utwente.di14.Cofano_C.model.Port;
 import nl.utwente.di14.Cofano_C.model.Terminal;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
@@ -30,9 +26,8 @@ public class TerminalsResource {
 	@POST
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addShip(Terminal input, @Context HttpServletRequest request) {
+	public void addTerminal(Terminal input, @Context HttpServletRequest request) {
 		Tables.start();
-		
 		int ownID = 0;
 		String title = "ADD";
 		String doer = Tables.testRequest(request);
@@ -62,7 +57,7 @@ public class TerminalsResource {
 		}	
 			
 	}
-	
+
 	public int addEntry(Terminal entry, boolean app) {
 		int rez =0;
 		//gets here if the request is from API
@@ -167,6 +162,76 @@ public class TerminalsResource {
 		}
 
 		return result;
+	}
+
+
+	@DELETE
+	@Path("/{terminalId}")
+	public void deletShip(@PathParam("terminalId") int terminalId, @Context HttpServletRequest request) {
+		Tables.start();
+
+		String query ="DELETE FROM terminal WHERE tid = ?";
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setLong(1, terminalId);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("Was not able to delete Terminal");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
+	}
+
+
+	@GET
+	@Path("/{terminalId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Terminal getTerminal(@PathParam("terminalId") int terminalId, @Context HttpServletRequest request) {
+		Terminal terminal = new Terminal();
+		String query = "SELECT * FROM terminal WHERE tid = ?";
+
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setInt(1, terminalId);
+			ResultSet resultSet = statement.executeQuery();
+
+			while(resultSet.next()) {
+				terminal.setName(resultSet.getString("name"));
+				terminal.setTerminalCode(resultSet.getString("terminal_code"));
+				terminal.setType(resultSet.getString("type"));
+				terminal.setUnlo(resultSet.getString("unlo"));
+				terminal.setPortId(resultSet.getInt("port_id"));
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+
+		return terminal;
+	}
+
+	@PUT
+	@Path("/{terminalId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateContainer(@PathParam("terminalId") int terminalId, Terminal terminal) {
+		System.out.println("Joohoooo");
+		System.out.print(terminalId);
+		String query = "UPDATE terminal SET name = ?, terminal_code = ?, type = ?, unlo = ?, port_id = ? WHERE tid = ?";
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setString(1, terminal.getName());
+			statement.setString(2, terminal.getTerminalCode());
+			statement.setString(3, terminal.getType());
+			statement.setString(4, terminal.getUnlo());
+			statement.setInt(5, terminal.getPortId());
+			statement.setInt(6, terminalId);
+
+			statement.executeQuery();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	

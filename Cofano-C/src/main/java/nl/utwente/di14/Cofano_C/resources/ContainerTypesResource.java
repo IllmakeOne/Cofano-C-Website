@@ -13,11 +13,7 @@ import nl.utwente.di14.Cofano_C.model.Port;
 import nl.utwente.di14.Cofano_C.model.Ship;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -129,6 +125,78 @@ public class ContainerTypesResource {
 			e.printStackTrace();
 		}
 		return rez;
+	}
+
+	@DELETE
+	@Path("/{containerId}")
+	public void deletShip(@PathParam("containerId") int containerId, @Context HttpServletRequest request) {
+		Tables.start();
+
+		String query ="DELETE FROM container_type WHERE cid = ?";
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setLong(1, containerId);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("Was not able to delete Container");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
+	}
+
+
+	@GET
+	@Path("/{containerId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ContainerType getShip(@PathParam("containerId") int containerId, @Context HttpServletRequest request) {
+		ContainerType container = new ContainerType();
+		String query = "SELECT * FROM container_type WHERE cid = ?";
+
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setInt(1, containerId);
+			ResultSet resultSet = statement.executeQuery();
+
+			while(resultSet.next()) {
+				container.setDisplayName(resultSet.getString("display_name"));
+				container.setIsoCode(resultSet.getString("iso_code"));
+				container.setDescription(resultSet.getString("description"));
+				container.setLength(resultSet.getInt("c_length"));
+				container.setHeight(resultSet.getInt("c_height"));
+				container.setReefer(resultSet.getBoolean("reefer"));
+				container.setID(resultSet.getInt("cid"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+
+		return container;
+	}
+
+	@PUT
+	@Path("/{containerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateContainer(@PathParam("containerId") int containerId, ContainerType container) {
+		System.out.println("Joohoooo");
+		System.out.print(containerId);
+		String query = "UPDATE container_type SET display_name = ?, iso_code = ?, description = ?, c_length = ?, c_height = ?, reefer = ? WHERE cid = ?";
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setString(1, container.getDisplayName());
+			statement.setString(2, container.getIsoCode());
+			statement.setString(3, container.getDescription());
+			statement.setInt(4, container.getLength());
+			statement.setInt(5, container.getHeight());
+			statement.setBoolean(6, container.getReefer());
+			statement.setInt(7, containerId);
+
+			statement.executeQuery();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 			
 	
