@@ -164,7 +164,7 @@ public class ContainerTypesResource {
 				container.setLength(resultSet.getInt("c_length"));
 				container.setHeight(resultSet.getInt("c_height"));
 				container.setReefer(resultSet.getBoolean("reefer"));
-				container.setID(resultSet.getInt("cid"));
+				container.setId(resultSet.getInt("cid"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
