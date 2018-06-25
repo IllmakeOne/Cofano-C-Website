@@ -163,7 +163,6 @@ public class TerminalsResource {
 
 		return result;
 	}
-<<<<<<< HEAD
 
 
 	@DELETE

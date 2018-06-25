@@ -226,9 +226,7 @@ public class ShipsResource {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		}
-
 	}
 
 	

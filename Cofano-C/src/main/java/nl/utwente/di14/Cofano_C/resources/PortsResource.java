@@ -34,7 +34,7 @@ public class PortsResource {
 		
 		int ownID = 0;
 		String title = "ADD";
-		String doer = Tables.testRequste(request);
+		String doer = Tables.testRequest(request);
 
 		int con = testConflict(input);
 		
