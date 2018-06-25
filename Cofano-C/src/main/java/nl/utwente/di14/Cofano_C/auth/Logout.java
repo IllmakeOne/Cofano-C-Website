@@ -7,22 +7,31 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(description="Logout Servlet", urlPatterns={"/logout"})
-
+/**
+ * Handles log outs.
+ */
+@WebServlet(description = "Logout Servlet", urlPatterns = {"/logout"})
 public class Logout extends HttpServlet {
 
-	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		// you can also make an authenticated request to logout, but here we choose to
-		// simply delete the session variables for simplicity
-		HttpSession session =  request.getSession(false);
-		if (session != null) {
-			session.invalidate();
-		}
-		// rebuild session
-		request.getSession();
+    /**
+     * Handles the HTTP servlet GET requests.
+     *
+     * @param request  the HTTP servlet request
+     * @param response the HTTP servlet response
+     * @throws IOException thrown when an IO exception occurs
+     */
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // you can also make an authenticated request to logout, but here we choose to
+        // simply delete the session variables for simplicity
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        // rebuild session
+        request.getSession();
 
 
-		response.sendRedirect(getServletContext().getInitParameter("cofano.url"));
-	}
+        response.sendRedirect(getServletContext().getInitParameter("cofano.url"));
+    }
 }

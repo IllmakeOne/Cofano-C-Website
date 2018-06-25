@@ -25,7 +25,7 @@
                         { data: 'message' },
                         { data: 'type'},
                         {
-                            data: 'added_at',
+                            data: 'addedAt',
                             render: function (data, type, row, meta) {
                                 if (type == "sort" || type == 'type') {
                                     return data;
