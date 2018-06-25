@@ -27,7 +27,9 @@ public class AddContainer extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        RequestHelper.show(request, response, getServletContext(),
-                "/WEB-INF/jsp/data/containers/edit.jsp");
+		request.setAttribute("action", "Add");
+		request.setAttribute("method", "post");
+		request.setAttribute("formUrl", getServletContext().getInitParameter("cofano.url") + "/api/containers/add" );
+		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/containers/edit.jsp");
     }
 }
