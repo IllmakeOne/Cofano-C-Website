@@ -156,7 +156,7 @@ public class Tables {
      * @param request the <code>HttpServletRequest</code> to be checked
      * @return the name of the API of the request was from an API
      */
-    public static String testRequste(HttpServletRequest request) {
+    public static String testRequest(HttpServletRequest request) {
 		String result = "";
 		String user ="";
 		if(request.getSession().getAttribute("userEmail")!=null) {
@@ -206,9 +206,9 @@ public class Tables {
     		return aux[0].substring(1)+" " +aux[1].substring(0, aux[1].length()-1);
     	}
     	
+    	
+    	
     	public static void addtoConflicts(String table, String doer,int ownid,int con) {
-    		
-    		
     		String query ="SELECT addconflict(?,?,?,?)";
     		//gets here if the request is from API
     		//add to conflicts table

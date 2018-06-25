@@ -90,14 +90,14 @@ public class ApplicationsResource extends ServletContainer {
 				while(resultSet.next()) {
 					add.setName(resultSet.getString(2));
 					add.setAPIKey( resultSet.getString(3));
-					add.setID(resultSet.getInt(1));
+					add.setId(resultSet.getInt(1));
 					}
 				} catch (SQLException e) {
 					System.err.println("Coulnd retrive app about to be deleted" + e);
 				}
 			//add the deletion to the history table
 			String title = "DELETE";
-			String doer = Tables.testRequste(request);
+			String doer = Tables.testRequest(request);
 	//		Tables.addHistoryEntry(title, doer,
 	//				add.toString()
 	//				, new Timestamp(System.currentTimeMillis()),myname );
@@ -134,7 +134,7 @@ public class ApplicationsResource extends ServletContainer {
 				while(resultSet.next()) {
 					app.setName(resultSet.getString(2));
 					app.setAPIKey( resultSet.getString(3));
-					app.setID(resultSet.getInt(1));
+					app.setId(resultSet.getInt(1));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
