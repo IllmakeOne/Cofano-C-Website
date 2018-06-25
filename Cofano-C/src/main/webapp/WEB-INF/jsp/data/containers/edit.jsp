@@ -11,6 +11,7 @@
 
         <script type="text/javascript">
 
+<<<<<<< HEAD
             $("form").submit(function(event){
                 event.preventDefault();
                 $.ajax({
@@ -50,6 +51,14 @@
                 }
             }
             document.onload = retrieveContainer($('form').data('id'));
+=======
+            		window.location.replace("containers");	
+            	}
+            }
+            $(document).keypress(function (e) {
+            	  if(e.which == 13 && e.target.nodeName != "TEXTAREA") return false;
+            	});
+>>>>>>> sprint4
         </script>
     </jsp:attribute>
 

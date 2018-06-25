@@ -25,7 +25,7 @@
                         { data: 'name' },
                         { data: 'email' },
                         {
-                            data: 'lastLogedIn',
+                            data: 'lastLoggedIn',
                             render: function (data, type, row, meta) {
                                 if (type == "sort" || type == 'type') {
                                     return data;
