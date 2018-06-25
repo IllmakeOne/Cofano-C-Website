@@ -211,25 +211,7 @@ public class ShipsResource {
 	@PUT
 	@Path("/{shipId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-<<<<<<< HEAD
-	public void updateApp(@PathParam("shipId") int shipId, Ship ship) {
-
-		String query = "UPDATE ship SET imo = ?, name = ?, callsign = ?, mmsi = ?, ship_depth = ? WHERE sid = ?";
-		try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-			statement.setString(1, ship.getImo());
-			statement.setString(2, ship.getName());
-			statement.setString(3, ship.getCallsign());
-			statement.setString(4, ship.getMmsi());
-			statement.setBigDecimal(5, ship.getDepth());
-			statement.setInt(6, shipId);
-			statement.executeQuery();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-=======
 	public void updateApp(@PathParam("shipId") int shipId, Ship ship,@Context HttpServletRequest request) {
-		System.out.println("JOOOOOSOSKSOKSOSKSOKS");
 		if(request.getSession().getAttribute("userEmail")!=null) {
 	
 			String query = "UPDATE ship SET imo = ?, name = ?, callsign = ?, mmsi = ?, ship_depth = ? WHERE sid = ?";
@@ -246,7 +228,6 @@ public class ShipsResource {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
->>>>>>> 252b13d0394b2126a58be6f3395e85f10385f25c
 		}
 
 	}
