@@ -24,7 +24,7 @@
                         { data: 'id' },
                         { data: 'name' },
                         { data: 'imo' },
-                        { data: 'callSign' },
+                        { data: 'callsign' },
                         { data: 'mmsi' },
                         { data: 'depth' }
                     ],

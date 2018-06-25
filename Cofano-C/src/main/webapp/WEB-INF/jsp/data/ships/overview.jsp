@@ -38,7 +38,7 @@
                         },
                         { data: 'name', render: $.fn.dataTable.render.text() },
                         { data: 'imo', render: $.fn.dataTable.render.text() },
-                        { data: 'callSign', render: $.fn.dataTable.render.text() },
+                        { data: 'callsign', render: $.fn.dataTable.render.text() },
                         { data: 'mmsi', render: $.fn.dataTable.render.text() },
                         { data: 'depth', render: $.fn.dataTable.render.text() },
                     ],

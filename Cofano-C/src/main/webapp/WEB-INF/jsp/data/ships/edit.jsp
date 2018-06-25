@@ -18,7 +18,7 @@
                 $.ajax({
                     type: $("form").attr('method'),
                     url: $("form").attr('action'),
-                    data: JSON.stringify({"imo": $("#imo").val(), "name":$("#name").val(),"callSign":$("#callSign").val(),
+                    data: JSON.stringify({"imo": $("#imo").val(), "name":$("#name").val(),"callsign":$("#callsign").val(),
                         "mmsi":$("#mmsi").val(),"depth":$("#depth").val()}),
                     success: function(data) {
                         window.location.replace("${base}/ships");
@@ -38,7 +38,7 @@
                     $.getJSON( "${base}/api/ships/" + id, function(ship) {
                         $("#name").val(ship.name);
                         $("#imo").val(ship.imo);
-                        $("#callSign").val(ship.callSign);
+                        $("#callsign").val(ship.callsign);
                         $("#mmsi").val(ship.mmsi);
                         $("#depth").val(ship.depth);
                     })
@@ -98,7 +98,7 @@
                         <tr>
                             <td>Callsign</td>
                             <td>
-                                <input type="text" placeholder="BF45" id="callSign" name="callSign" autocomplete="off">
+                                <input type="text" placeholder="BF45" id="callsign" name="callsign" autocomplete="off">
                             </td>
                         </tr>
                         <tr>
