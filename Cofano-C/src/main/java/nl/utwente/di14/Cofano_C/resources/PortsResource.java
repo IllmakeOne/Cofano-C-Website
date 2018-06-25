@@ -65,12 +65,50 @@ public class PortsResource {
 
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
-	public ArrayList<Port> getAllContainerTypes(@Context HttpServletRequest request){
+	public ArrayList<Port> getAllPorts(@Context HttpServletRequest request){
 		Tables.start();
 		ArrayList<Port> result = new ArrayList<>();
 		String query = "SELECT * " +
 				"FROM port " +
 				"WHERE approved = true";
+		
+		String name = Tables.testRequest(request);
+	//	System.out.println(name);
+		if(!name.equals("")) {
+
+			try {
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+	
+				ResultSet resultSet = statement.executeQuery();
+	
+				while(resultSet.next()) {
+					//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
+	
+					Port port = new Port();
+					port.setId(resultSet.getInt("pid"));
+					port.setName(resultSet.getString("name"));
+					port.setUnlo(resultSet.getString("unlo"));
+	
+	
+					result.add(port);
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not retrieve all ports" + e);
+			}
+		} 
+
+		return result;
+	}
+	
+	@GET
+	@Path("unapproved")
+	@Produces({MediaType.APPLICATION_JSON})
+	public ArrayList<Port> getAllPortUN(@Context HttpServletRequest request){
+		Tables.start();
+		ArrayList<Port> result = new ArrayList<>();
+		String query = "SELECT * " +
+				"FROM port " +
+				"WHERE approved = false";
 		
 		String name = Tables.testRequest(request);
 	//	System.out.println(name);
@@ -157,16 +195,22 @@ public class PortsResource {
 	@Path("/{portId}")
 	public void deletPort(@PathParam("portId") int portId, @Context HttpServletRequest request) {
 		Tables.start();
-
-		String query ="DELETE FROM port WHERE pid = ?";
-		try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-			statement.setLong(1, portId);
-			statement.executeUpdate();
-		} catch (SQLException e) {
-			System.err.println("Was not able to delete Port");
-			System.err.println(e.getSQLState());
-			e.printStackTrace();
+		
+		String doer = Tables.testRequest(request);
+		if(!doer.equals("")) {
+	
+			Port  aux = getPort(portId, request);
+			String query ="SELECT deleteport(?)";
+			try {
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				statement.setLong(1, portId);
+				statement.executeUpdate();
+			} catch (SQLException e) {
+				System.err.println("Was not able to delete Port");
+				System.err.println(e.getSQLState());
+				e.printStackTrace();
+			}
+			Tables.addHistoryEntry("DELETE", doer, aux.toString(), myname, true);
 		}
 	}
 
@@ -177,21 +221,21 @@ public class PortsResource {
 	public Port getPort(@PathParam("portId") int portId, @Context HttpServletRequest request) {
 		Port port = new Port();
 		String query = "SELECT * FROM port WHERE pid = ?";
-
-		try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-			statement.setInt(1, portId);
-			ResultSet resultSet = statement.executeQuery();
-
-			while(resultSet.next()) {
-				port.setName(resultSet.getString("name"));
-				port.setUnlo(resultSet.getString("unlo"));
-				port.setId(resultSet.getInt("pid"));
+		if(!Tables.testRequest(request).equals("")) {
+			try {
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				statement.setInt(1, portId);
+				ResultSet resultSet = statement.executeQuery();
+	
+				while(resultSet.next()) {
+					port.setName(resultSet.getString("name"));
+					port.setUnlo(resultSet.getString("unlo"));
+					port.setId(resultSet.getInt("pid"));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
-
 
 		return port;
 	}
@@ -199,18 +243,24 @@ public class PortsResource {
 	@PUT
 	@Path("/{portId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateContainer(@PathParam("portId") int portId, Port port) {
-		String query = "UPDATE port SET name = ?, unlo = ? WHERE pid = ?";
-		try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-			statement.setString(1, port.getName());
-			statement.setString(2, port.getUnlo());
-			statement.setInt(3, portId);
-
-			statement.executeQuery();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+	public void updateContainer(@PathParam("portId") int portId, Port port,@Context HttpServletRequest request) {
+		String doer = Tables.testRequest(request);
+		if(!doer.equals("")) {
+			
+			Port aux = getPort(portId, request);
+			String query = "SELECT editports(?,?,?)";
+			try {
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				statement.setString(2, port.getName());
+				statement.setString(3, port.getUnlo());
+				statement.setInt(1, portId);
+	
+				statement.executeQuery();
+	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			Tables.addHistoryEntry("UPDATE", doer, aux.toString() + "-->" + port.toString(), myname, false);
 		}
 
 	}

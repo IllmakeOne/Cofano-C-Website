@@ -64,7 +64,7 @@ public class ShipsResource {
 
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
-	public ArrayList<Ship> getAllApps(@Context HttpServletRequest request){
+	public ArrayList<Ship> getAllShips(@Context HttpServletRequest request){
 		Tables.start();
 		ArrayList<Ship> result = new ArrayList<>(); 
 		Ship ship = new Ship();
@@ -162,17 +162,20 @@ public class ShipsResource {
 	@Path("/{shipId}")
 	public void deletShip(@PathParam("shipId") int shipId, @Context HttpServletRequest request) {
 		Tables.start();
-		if(request.getSession().getAttribute("userEmail")!=null) {
-			String query ="DELETE FROM ship WHERE sid = ?";
+		String doer = Tables.testRequest(request);
+		if(!doer.equals("")) {
+			Ship aux = getShip(shipId, request);
+			String query ="SELECT deleteships(?)";
 			try {
 				PreparedStatement statement = Tables.getCon().prepareStatement(query);
-				statement.setLong(1, shipId);
+				statement.setInt(1, shipId);
 				statement.executeUpdate();
 			} catch (SQLException e) {
 				System.err.println("Was not able to delete APP");
 				System.err.println(e.getSQLState());
 				e.printStackTrace();
 			}
+			Tables.addHistoryEntry("DELETE", doer, aux.toString(), myname, true);
 		}
 	}
 
@@ -182,7 +185,7 @@ public class ShipsResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Ship getShip(@PathParam("shipId") int shipId, @Context HttpServletRequest request) {
 		Ship ship = new Ship();
-		if(request.getSession().getAttribute("userEmail")!=null) {
+		if(!Tables.testRequest(request).equals("")) {
 			String query = "SELECT * FROM ship WHERE sid = ?";
 	
 			try {
@@ -211,21 +214,28 @@ public class ShipsResource {
 	@PUT
 	@Path("/{shipId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateShip(@PathParam("shipId") int shipId, Ship ship) {
+	public void updateShip(@PathParam("shipId") int shipId, Ship ship,@Context HttpServletRequest request) {
 
-		String query = "UPDATE ship SET imo = ?, name = ?, callsign = ?, mmsi = ?, ship_depth = ? WHERE sid = ?";
-		try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-			statement.setString(1, ship.getImo());
-			statement.setString(2, ship.getName());
-			statement.setString(3, ship.getCallSign());
-			statement.setString(4, ship.getMMSI());
-			statement.setBigDecimal(5, ship.getDepth());
-			statement.setInt(6, shipId);
-			statement.executeQuery();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+		String doer = Tables.testRequest(request);
+		if(!doer.equals("")) {
+			
+			Ship aux = getShip(shipId, request);
+			String query = "SELECT editships(?,?,?,?,?,?)";
+			try {
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				statement.setString(2, ship.getImo());
+				statement.setString(3, ship.getName());
+				statement.setString(4, ship.getCallSign());
+				statement.setString(5, ship.getMMSI());
+				statement.setBigDecimal(6, ship.getDepth());
+				statement.setInt(1, shipId);
+				statement.executeQuery();
+	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			Tables.addHistoryEntry("UPDATE", doer, aux.toString() + "-->" + ship.toString(), myname, false);
+			
 		}
 	}
 

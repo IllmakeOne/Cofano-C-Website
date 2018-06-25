@@ -171,18 +171,17 @@ public class TerminalsResource {
 	@Path("/{terminalId}")
 	public void deletTerminal(@PathParam("terminalId") int terminalId, @Context HttpServletRequest request) {
 		Tables.start();
-		
 		String doer = Tables.testRequest(request);
 		
 		if(!doer.equals("")) {
 			
 			Terminal aux = getTerminal(terminalId, request);
 
-			String query ="DELETE FROM terminal WHERE tid = ?";
+			String query ="SELECT deleteterminal(?)";
 			try {
 				PreparedStatement statement = Tables.getCon().prepareStatement(query);
-				statement.setLong(1, terminalId);
-				statement.executeUpdate();
+				statement.setInt(1, terminalId);
+				statement.executeQuery();
 			} catch (SQLException e) {
 				System.err.println("Was not able to delete Terminal");
 				System.err.println(e.getSQLState());
@@ -226,14 +225,13 @@ public class TerminalsResource {
 	@Path("/{terminalId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateTerminal(@PathParam("terminalId") int terminalId, Terminal terminal,@Context HttpServletRequest request ) {
-		System.out.println("Joohoooo");
+		
 		String doer = Tables.testRequest(request);
 		
 		if(!doer.equals("")) {
 		
 			Terminal aux = getTerminal(terminalId, request);
 			
-			System.out.print(terminalId);
 			String query = "SELECT editterminals(?,?,?,?,?)";
 			try {
 				PreparedStatement statement = Tables.getCon().prepareStatement(query);

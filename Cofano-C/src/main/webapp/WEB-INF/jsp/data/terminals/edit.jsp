@@ -63,73 +63,7 @@
             }
             document.onload = retrieveTerminal($('form').data('id'));
         </script>
-        <%--<script type="text/javascript">--%>
-            <%----%>
-            <%--var restServlet = "${base}/api/terminals/";--%>
-            <%----%>
-            <%----%>
-            <%----%>
-            <%--let dropdown = $('#pid-dropdown');--%>
-
-            <%--dropdown.empty();--%>
-
-            <%--dropdown.append('<option selected="true" disabled>Choose an Port ID</option>');--%>
-            <%--dropdown.prop('selectedIndex', 0);--%>
-
-        <%----%>
-
-            <%--// Populate dropdown with list of provinces--%>
-            <%--$.getJSON(restServlet + "portids", function (data) {--%>
-              <%--$.each(data, function (key, entry) {--%>
-                <%--dropdown.append($('<option></option>').attr('value', entry.id).text(entry.id+" "+entry.name));--%>
-              <%--})--%>
-            <%--});--%>
-            <%----%>
-            <%--function addTerminal(){--%>
-            	<%----%>
-            	<%----%>
-            	<%--var name = document.getElementById("addname");--%>
-            	<%--var terminalcode = document.getElementById("addterminalcode");--%>
-            	<%--var type = document.getElementById("caddtype");--%>
-            	<%--var unlo = document.getElementById("addunlo");--%>
-            	<%--var portid = document.getElementById("pid-dropdown");--%>
-            	<%----%>
-            	<%--if(name.value == "" || portid.value == 0){--%>
-            		<%--alert("Please fill in at least a name and a valid port ID");	--%>
-            	<%--} else {--%>
-            		<%--var json = {"name": name.value, "portId":portid.value,"type":type.value,--%>
-            				<%--"terminalCode":terminalcode.value,"unlo":unlo.value};--%>
-            	<%----%>
-            		<%--let	xmlhttp = new XMLHttpRequest();--%>
-            		<%--xmlhttp.onreadystatechange = function() {--%>
-                	    <%--if (this.readyState == 4 && this.status == 200) {--%>
-                	    	<%--console.log(this);--%>
-                	   		 <%--}--%>
-                	   <%--}--%>
-            		<%--console.log("sent");--%>
-            		<%--xmlhttp.open("POST", restServlet+"add", true);--%>
-            		<%--xmlhttp.setRequestHeader('Content-Type', 'application/json');--%>
-            		<%----%>
-            		<%--xmlhttp.send(JSON.stringify(json));	--%>
-
-        			<%--alert("Entry added to Database!");--%>
-        			<%--window.location.replace("terminals");--%>
-          <%----%>
-            		<%--/*--%>
-            		<%--if(false){--%>
-            			<%----%>
-            		<%--} else {--%>
-            			<%--alert("Entry added to Database!");--%>
-            			<%--window.location.replace("terminals");--%>
-            		<%--}--%>
-            		<%--*/--%>
-            	<%--}--%>
-            <%--};    --%>
-            <%----%>
-            <%--$(document).keypress(function (e) {--%>
-            	  <%--if(e.which == 13 && e.target.nodeName != "TEXTAREA") return false;--%>
-            	<%--});--%>
-        <%--</script>--%>
+        
     </jsp:attribute>
 
     <jsp:body>

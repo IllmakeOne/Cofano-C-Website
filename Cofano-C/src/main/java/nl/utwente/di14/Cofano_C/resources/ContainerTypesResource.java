@@ -64,7 +64,7 @@ public class ContainerTypesResource {
 	@POST
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addApp(ContainerType input, @Context HttpServletRequest request) {
+	public void addContainer(ContainerType input, @Context HttpServletRequest request) {
 		Tables.start();
 		
 		
@@ -129,18 +129,23 @@ public class ContainerTypesResource {
 
 	@DELETE
 	@Path("/{containerId}")
-	public void deletShip(@PathParam("containerId") int containerId, @Context HttpServletRequest request) {
+	public void deleteContainer(@PathParam("containerId") int containerId, @Context HttpServletRequest request) {
 		Tables.start();
-
-		String query ="DELETE FROM container_type WHERE cid = ?";
-		try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-			statement.setLong(1, containerId);
-			statement.executeUpdate();
-		} catch (SQLException e) {
-			System.err.println("Was not able to delete Container");
-			System.err.println(e.getSQLState());
-			e.printStackTrace();
+		String doer = Tables.testRequest(request);
+		
+		if(!doer.equals("")) {
+			ContainerType aux = getContainer(containerId, request);		
+			String query ="SELECT  deletecontainer_types(?)";
+			try {
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				statement.setLong(1, containerId);
+				statement.executeQuery();
+			} catch (SQLException e) {
+				System.err.println("Was not able to delete Container");
+				System.err.println(e.getSQLState());
+				e.printStackTrace();
+			}
+			Tables.addHistoryEntry("DELETE", doer, aux.toString(), myname, true);
 		}
 	}
 
@@ -148,26 +153,29 @@ public class ContainerTypesResource {
 	@GET
 	@Path("/{containerId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ContainerType getShip(@PathParam("containerId") int containerId, @Context HttpServletRequest request) {
+	public ContainerType getContainer(@PathParam("containerId") int containerId, @Context HttpServletRequest request) {
 		ContainerType container = new ContainerType();
 		String query = "SELECT * FROM container_type WHERE cid = ?";
+		
+		if(!Tables.testRequest(request).equals("")) {
 
-		try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-			statement.setInt(1, containerId);
-			ResultSet resultSet = statement.executeQuery();
-
-			while(resultSet.next()) {
-				container.setDisplayName(resultSet.getString("display_name"));
-				container.setIsoCode(resultSet.getString("iso_code"));
-				container.setDescription(resultSet.getString("description"));
-				container.setLength(resultSet.getInt("c_length"));
-				container.setHeight(resultSet.getInt("c_height"));
-				container.setReefer(resultSet.getBoolean("reefer"));
-				container.setId(resultSet.getInt("cid"));
+			try {
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				statement.setInt(1, containerId);
+				ResultSet resultSet = statement.executeQuery();
+	
+				while(resultSet.next()) {
+					container.setDisplayName(resultSet.getString("display_name"));
+					container.setIsoCode(resultSet.getString("iso_code"));
+					container.setDescription(resultSet.getString("description"));
+					container.setLength(resultSet.getInt("c_length"));
+					container.setHeight(resultSet.getInt("c_height"));
+					container.setReefer(resultSet.getBoolean("reefer"));
+					container.setId(resultSet.getInt("cid"));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 
 
@@ -177,24 +185,30 @@ public class ContainerTypesResource {
 	@PUT
 	@Path("/{containerId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateContainer(@PathParam("containerId") int containerId, ContainerType container) {
-		System.out.println("Joohoooo");
-		System.out.print(containerId);
-		String query = "UPDATE container_type SET display_name = ?, iso_code = ?, description = ?, c_length = ?, c_height = ?, reefer = ? WHERE cid = ?";
-		try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-			statement.setString(1, container.getDisplayName());
-			statement.setString(2, container.getIsoCode());
-			statement.setString(3, container.getDescription());
-			statement.setInt(4, container.getLength());
-			statement.setInt(5, container.getHeight());
-			statement.setBoolean(6, container.getReefer());
-			statement.setInt(7, containerId);
-
-			statement.executeQuery();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+	public void updateContainer(@PathParam("containerId") int containerId, ContainerType container,@Context HttpServletRequest request) {
+		
+		String doer = Tables.testRequest(request);
+		if(!doer.equals("")) {
+			ContainerType aux = getContainer(containerId, request);
+			
+			String query = "SELECT editcontainer_types(?,?,?,?,?,?,?)";
+			try {
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				statement.setString(2, container.getDisplayName());
+				statement.setString(3, container.getIsoCode());
+				statement.setString(4, container.getDescription());
+				statement.setInt(5, container.getLength());
+				statement.setInt(6, container.getHeight());
+				statement.setBoolean(7, container.getReefer());
+				statement.setInt(1, containerId);
+	
+				statement.executeQuery();
+	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			Tables.addHistoryEntry("UPDATE", doer, aux.toString() + "-->" + container.toString(), myname, false);
 		}
 
 	}
