@@ -18,7 +18,7 @@
 
             dropdown.empty();
 
-            dropdown.append('<option selected="true" disabled>Choose an Port ID</option>');
+            dropdown.append('<option selected="true" disabled>Choose an Port id</option>');
             dropdown.prop('selectedIndex', 0);
 
         
@@ -40,7 +40,7 @@
             	var portid = document.getElementById("pid-dropdown");
             	
             	if(name.value == "" || portid.value == 0){
-            		alert("Please fill in at least a name and a valid port ID");	
+            		alert("Please fill in at least a name and a valid port id");
             	} else {
             		var json = {"name": name.value, "portId":portid.value,"type":type.value,
             				"terminalCode":terminalcode.value,"unlo":unlo.value};
@@ -50,7 +50,7 @@
                 	    if (this.readyState == 4 && this.status == 200) {
                 	    	console.log(this);
                 	   		 }
-                	   }
+                	   };
             		console.log("sent");
             		xmlhttp.open("POST", restServlet+"add", true);
             		xmlhttp.setRequestHeader('Content-Type', 'application/json');
@@ -69,8 +69,7 @@
             		}
             		*/
             	}
-            };    
-            
+            }
             $(document).keypress(function (e) {
             	  if(e.which == 13 && e.target.nodeName != "TEXTAREA") return false;
             	});
@@ -102,7 +101,7 @@
                   </td>
                 </tr>
  				<tr>
-                  <td>Port ID</td> 
+                  <td>Port id</td>
                   <td>
                   <!--<form><input type="number" placeholder=23 id="addportid" autocomplete="off"></form>-->
 		    		<select id="pid-dropdown" name="pid"></select>

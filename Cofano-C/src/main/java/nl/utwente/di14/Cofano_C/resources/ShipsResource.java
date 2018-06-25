@@ -8,8 +8,6 @@ import java.util.ArrayList;
 
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
-import nl.utwente.di14.Cofano_C.model.Application;
-import nl.utwente.di14.Cofano_C.model.ContainerType;
 import nl.utwente.di14.Cofano_C.model.Ship;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,11 +72,11 @@ public class ShipsResource {
 				"FROM ship "+
 				"WHERE approved = true;";
 		
-		String name = Tables.testRequste(request);
+		String name = Tables.testRequest(request);
 		if(!name.equals("")) {
 		
 			try {
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
 			
 			ResultSet resultSet = statement.executeQuery();
 			
@@ -88,10 +86,10 @@ public class ShipsResource {
 				ship = new Ship();
 				ship.setName(resultSet.getString(3));
 				ship.setImo(resultSet.getString(2));
-				ship.setID(resultSet.getInt(1));
+				ship.setId(resultSet.getInt(1));
 				ship.setDepth(resultSet.getBigDecimal(6));
-				ship.setCallsign(resultSet.getString(4));
-				ship.setMmsi(resultSet.getString(5));
+				ship.setCallSign(resultSet.getString(4));
+				ship.setMMSI(resultSet.getString(5));
 				
 				result.add(ship);
 				}
@@ -138,7 +136,7 @@ public class ShipsResource {
 		String query = "SELECT * FROM shipconflict(?,?,?)";
 		
 		try {
-		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+		PreparedStatement statement = Tables.getCon().prepareStatement(query);
 		statement.setString(1, test.getImo());
 		statement.setString(2, test.getCallsign());
 		statement.setString(3, test.getMmsi());
