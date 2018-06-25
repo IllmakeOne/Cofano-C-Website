@@ -26,7 +26,7 @@ public class PortsResource {
 	@POST
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addShip(Port input, @Context HttpServletRequest request) {
+	public void addPort(Port input, @Context HttpServletRequest request) {
 		Tables.start();
 		
 		int ownID = 0;
