@@ -5,6 +5,13 @@ import java.sql.Timestamp;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.postgresql.util.PGobject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import nl.utwente.di14.Cofano_C.model.ContainerType;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
