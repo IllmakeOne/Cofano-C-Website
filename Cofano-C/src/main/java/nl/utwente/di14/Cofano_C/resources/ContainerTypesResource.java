@@ -61,6 +61,45 @@ public class ContainerTypesResource {
 
 	}
 	
+	@GET
+	@Path("unapproved")
+	@Produces({MediaType.APPLICATION_JSON})
+	public ArrayList<ContainerType> getAllContainerTypesUN(@Context HttpServletRequest request){
+		Tables.start();
+		ArrayList<ContainerType> result = new ArrayList<>();
+		String query = "SELECT * " +
+				"FROM container_type "+
+				"WHERE approved = false";
+		
+		if(request.getSession().getAttribute("userEmail")!=null) {
+	
+			try {
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+	
+				ResultSet resultSet = statement.executeQuery();
+	
+				while(resultSet.next()) {
+					
+					ContainerType container = new ContainerType();
+					container.setDisplayName(resultSet.getString("display_name"));
+					container.setId(resultSet.getInt("cid"));
+					container.setIsoCode(resultSet.getString("iso_code"));
+					container.setDescription(resultSet.getString("description"));
+					container.setLength(resultSet.getInt("c_length"));
+					container.setHeight(resultSet.getInt("c_height"));
+					container.setReefer(resultSet.getBoolean("reefer"));
+	
+					result.add(container);
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not retrieve all containers" + e);
+			}
+		}
+
+		return result;
+
+	}
+	
 	@POST
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)

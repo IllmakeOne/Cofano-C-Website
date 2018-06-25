@@ -102,6 +102,47 @@ public class ShipsResource {
 		
 	}
 	
+	
+	@GET
+	@Path("unapproved")
+	@Produces({MediaType.APPLICATION_JSON})
+	public ArrayList<Ship> getAllShipsUN(@Context HttpServletRequest request){
+		Tables.start();
+		ArrayList<Ship> result = new ArrayList<>(); 
+		Ship ship = new Ship();
+		String query = "SELECT * " +
+				"FROM ship "+
+				"WHERE approved = false;";
+		
+		if(request.getSession().getAttribute("userEmail")!=null) {
+		
+			try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			
+			ResultSet resultSet = statement.executeQuery();
+			
+			while(resultSet.next()) {
+				//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3) +" " +
+				//		resultSet.getString(4) + " " + resultSet.getString(5) + " " + resultSet.getString(6));
+				ship = new Ship();
+				ship.setName(resultSet.getString(3));
+				ship.setImo(resultSet.getString(2));
+				ship.setId(resultSet.getInt(1));
+				ship.setDepth(resultSet.getBigDecimal(6));
+				ship.setCallSign(resultSet.getString(4));
+				ship.setMMSI(resultSet.getString(5));
+				
+				result.add(ship);
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not retrive all ships" + e);
+			}
+		}
+	
+		return result;
+		
+	}
+	
 	public int addEntry(Ship entry, boolean app) {
 
 		String query ="SELECT addships(?,?,?,?,?,?)";

@@ -166,6 +166,47 @@ public class TerminalsResource {
 		return result;
 	}
 
+	
+	@GET
+	@Path("unapproved")
+	@Produces({MediaType.APPLICATION_JSON})
+	public ArrayList<Terminal> getAllTerminalsUN(@Context HttpServletRequest request){
+		Tables.start();
+		ArrayList<Terminal> result = new ArrayList<>();
+		String query = "SELECT * " +
+				"FROM terminal "+
+				"WHERE approved = false";
+		
+		if(request.getSession().getAttribute("userEmail")!=null) {
+
+			try {
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+	
+				ResultSet resultSet = statement.executeQuery();
+	
+				while(resultSet.next()) {
+					//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3) +" " +
+						//	resultSet.getString(4) + " " + resultSet.getString(5) + " " + resultSet.getString(6));
+	
+					Terminal terminal = new Terminal();
+					terminal.setID(resultSet.getInt("tid"));
+					terminal.setName(resultSet.getString("name"));
+					terminal.setTerminalCode(resultSet.getString("terminal_code"));
+					terminal.setType(resultSet.getString("type"));
+					terminal.setUnlo(resultSet.getString("unlo"));
+					terminal.setPortId(resultSet.getInt("port_id"));
+	
+	
+					result.add(terminal);
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not retrieve all terminals" + e);
+			}
+		}
+
+		return result;
+	}
+
 
 	@DELETE
 	@Path("/{terminalId}")

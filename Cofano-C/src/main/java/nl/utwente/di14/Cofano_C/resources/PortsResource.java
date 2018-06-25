@@ -110,9 +110,7 @@ public class PortsResource {
 				"FROM port " +
 				"WHERE approved = false";
 		
-		String name = Tables.testRequest(request);
-	//	System.out.println(name);
-		if(!name.equals("")) {
+		if(request.getSession().getAttribute("userEmail")!=null) {
 
 			try {
 				PreparedStatement statement = Tables.getCon().prepareStatement(query);
