@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * Data object for adding a terminal.
  */
-@WebServlet(description = "Application Data Servlet", urlPatterns = {"/addterminal"})
+@WebServlet(description = "Application Data Servlet", urlPatterns = {"/terminals/add"})
 public class AddTerminal extends HttpServlet {
 
     /**

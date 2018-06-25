@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * Data object for adding a container.
  */
-@WebServlet(description = "Application Data Servlet", urlPatterns = {"/addcontainer"})
+@WebServlet(description = "Application Data Servlet", urlPatterns = {"/containers/add"})
 public class AddContainer extends HttpServlet {
 
     /**

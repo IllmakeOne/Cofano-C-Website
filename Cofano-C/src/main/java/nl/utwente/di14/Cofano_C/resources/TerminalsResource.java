@@ -2,6 +2,7 @@ package nl.utwente.di14.Cofano_C.resources;
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.exceptions.ConflictException;
+import nl.utwente.di14.Cofano_C.model.Application;
 import nl.utwente.di14.Cofano_C.model.Port;
 import nl.utwente.di14.Cofano_C.model.Terminal;
 
@@ -89,6 +90,7 @@ public class TerminalsResource {
 	}
 	
 	
+	
 	/**
 	 * this function is used in the Adding of a terminal.
 	 * Terminal have a foreign key to Ports
@@ -127,7 +129,7 @@ public class TerminalsResource {
 
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
-	public ArrayList<Terminal> getAllContainerTypes(@Context HttpServletRequest request){
+	public ArrayList<Terminal> getAllTerminals(@Context HttpServletRequest request){
 		Tables.start();
 		ArrayList<Terminal> result = new ArrayList<>();
 		String query = "SELECT * " +
@@ -167,7 +169,7 @@ public class TerminalsResource {
 
 	@DELETE
 	@Path("/{terminalId}")
-	public void deletShip(@PathParam("terminalId") int terminalId, @Context HttpServletRequest request) {
+	public void deletTerminal(@PathParam("terminalId") int terminalId, @Context HttpServletRequest request) {
 		Tables.start();
 
 		String query ="DELETE FROM terminal WHERE tid = ?";
@@ -214,23 +216,30 @@ public class TerminalsResource {
 	@PUT
 	@Path("/{terminalId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateContainer(@PathParam("terminalId") int terminalId, Terminal terminal) {
+	public void updateTerminal(@PathParam("terminalId") int terminalId, Terminal terminal,@Context HttpServletRequest request ) {
 		System.out.println("Joohoooo");
-		System.out.print(terminalId);
-		String query = "UPDATE terminal SET name = ?, terminal_code = ?, type = ?, unlo = ?, port_id = ? WHERE tid = ?";
-		try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-			statement.setString(1, terminal.getName());
-			statement.setString(2, terminal.getTerminalCode());
-			statement.setString(3, terminal.getType());
-			statement.setString(4, terminal.getUnlo());
-			statement.setInt(5, terminal.getPortId());
-			statement.setInt(6, terminalId);
-
-			statement.executeQuery();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+		String doer = Tables.testRequest(request);
+		
+		if(!doer.equals("")) {
+		
+			Terminal aux = getTerminal(terminalId, request);
+			
+			System.out.print(terminalId);
+			String query = "SELECT editterminals(?,?,?,?,?)";
+			try {
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				statement.setString(2, terminal.getName());
+				statement.setString(3, terminal.getTerminalCode());
+				statement.setString(4, terminal.getType());
+				statement.setString(5, terminal.getUnlo());
+				statement.setInt(1, terminalId);
+	
+				statement.executeQuery();
+	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			Tables.addHistoryEntry("UPDATE", doer, aux.toString() +"-->"+terminal.toString(), myname, false);
 		}
 	}
 	
