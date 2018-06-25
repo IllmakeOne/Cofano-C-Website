@@ -8,124 +8,136 @@
 <t:dashboard>
 
     <jsp:attribute name="footer">
-        <script type="text/javascript">
-            
-            var restServlet = "${base}/api/containers/add";
-            
-            function addContainer(){
-            	
-            	
-            	var name = document.getElementById("addname");
-            	var iso = document.getElementById("addiso");
-            	var descr = document.getElementById("adddescrip");
-            	var lenght = document.getElementById("addlenght");
-            	var height = document.getElementById("addheight");
-            	var reefer = false;
-            	
-            	if($('#' + "addreefer").is(":checked")){
-            		reefer = true;
-            	}
-            	
-            	if(name.value == "" || iso.value == ""){
-            		alert("Please fill in at least name and ISO");	
-            	} else {
-            		var json = {"displayName": name.value, "isoCode":iso.value,"description":descr.value,
-            				"length":lenght.value,"height":height.value,"reefer":reefer};
-            	
-            		let	xmlhttp = new XMLHttpRequest();
-            		xmlhttp.open("POST", restServlet, true);
-            		xmlhttp.setRequestHeader('Content-Type', 'application/json');
-            		
-            		xmlhttp.send(JSON.stringify(json));	
-          
-            		alert("Entry added to Database!");
 
-            		window.location.replace("containers");	
-            	}
-            };    
-            
-            $(document).keypress(function (e) {
-            	  if(e.which == 13 && e.target.nodeName != "TEXTAREA") return false;
-            	});
+        <script type="text/javascript">
+
+            $("form").submit(function(event){
+                event.preventDefault();
+                $.ajax({
+                    type: $("form").attr('method'),
+                    url: $("form").attr('action'),
+                    data: JSON.stringify({"displayName": $("#name").val(), "isoCode": $("#iso").val(), "description": $("#description").val(),
+                        "length": $("#length").val(), "height": $("#height").val(), "reefer":$("#reefer").val()}),
+                    success: function(data) {
+                        window.location.replace("${base}/containers");
+                    },
+                    error: function(data) {
+                        $("#error").show().text("Something went wrong: " + data)
+                    },
+                    contentType: "application/json",
+                    dataType: 'json'
+                });
+                return false; // prevent default
+            });
+
+            function retrieveContainer(id) {
+                if ($('form').attr('method') === "put" && id !== "undefined") {
+                    $("#loading").show();
+                    $.getJSON( "${base}/api/containers/" + id, function(container) {
+                        $("#name").val(container.displayName);
+                        $("#iso").val(container.isoCode);
+                        $("#description").val(container.description);
+                        $("#length").val(container.length);
+                        $("#height").val(container.height);
+                        $("#reefer").val(container.reefer);
+                    })
+                    .fail(function() {
+                        $("#error").show().text("Could not load information")
+                    })
+                    .always(function() {
+                        $("#loading").hide();
+                    });
+                }
+            }
+            document.onload = retrieveContainer($('form').data('id'));
         </script>
     </jsp:attribute>
 
     <jsp:body>
-        <div class="row">
-            <div class="col-sm-8">
-                <h2 style="margin: 20px" >Add Container Type</h2>
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">${fn:escapeXml(action)} Container<c:if test="${not empty app}">: ${fn:escapeXml(app)}</c:if></h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group mr-2">
+                    <a class="btn btn-sm btn-outline-secondary" href="${base}/containers">Go back</a>
+                </div>
             </div>
         </div>
-        <div class="col-sm-12">	
-          <div class="table-responsive" style="margin: 35px">
-            <table class="table table-striped table-sm">
-              <thead>
-                <tr>
-                  <th><h5>Field</h5></th>
-                  <th><h5>Data</h5></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Display Name</td> 
-                  <td>
-                	<form	>
-		     			 <input type="text" placeholder=" 54JS " id="addname" autocomplete="off">
-		    		</form>
-                  </td>
-                </tr>
- 				<tr>
-                  <td>ISO Code</td> 
-                  <td><form>
-		     			 <input type="text" placeholder=" 23B4 " id="addiso" autocomplete="off">
-		    		</form>
-		    		</td>
-                </tr>
-                <tr>
-                <tr>
-                  <td>Description</td> 
-                  <td>
-                	<form	>
-		     			 <input type="text" placeholder=" Big squery thingy " id="adddescrip" autocomplete="off">
-		    		</form>
-                  </td>
-                </tr>
-                <tr>
-                <tr>
-                  <td>Length</td> 
-                  <td>
-                	<form	>
-		     			 <input type="number" min="1" max="999" placeholder=" 10" id="addlenght" autocomplete="off">
-		    		</form>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Height</td> 
-                  <td>
-                	<form	>
-		     			 <input type="number" min="1" max="999" placeholder=" 5 " id="addheight" autocomplete="off">
-		    		</form>
-                  </td>
-                </tr>
-                  <td>Reefer</td> 
-                  <td>
-					 <input class="form-check-input" type="checkbox" value="" id="addreefer" required>
-				        Check for true, leave unchecked for false
-                  </td>
-                </tr>
-                
-                  <td></td> 
-                  <td>
-                  	<button type="button" class="btn" onclick="addContainer()">
-					    	Add Information 
-					</button>
-		    		</td>
-                </tr>
-              
-              </tbody>
-            </table>
-          </div>   
-    
+
+        <div class="alert alert-danger" id="error" role="alert" style="display:none">
+            A simple danger alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
         </div>
+
+        <div class="alert alert-info" id="loading" role="alert" style="display:none">
+            Loading
+        </div>
+
+        <form <c:if test="${not empty app}">data-id="${fn:escapeXml(app)}"</c:if>action="${formUrl}" method="${method}">
+            <div class="col-sm-10">
+                <div class="table-responsive" style="margin: 35px">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                        <tr>
+                            <th><h5>Field</h5></th>
+                            <th><h5>Data</h5></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Display Name</td>
+                            <td>
+                                <input type="text" placeholder="54JS" id="name" name="name" autocomplete="off" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ISO Code</td>
+                            <td>
+                                <input type="text" placeholder="23B4" id="iso" name="iso" autocomplete="off" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td>
+                                <input type="text" placeholder="Big squery thingy" id="description" name="description" autocomplete="off">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Length</td>
+                            <td>
+                                <input type="number" min="1" max="999" placeholder="5" id="length" name="length" autocomplete="off">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Height</td>
+                            <td>
+                                <input type="number" min="1" max="999" placeholder="5" id="height" name="height" autocomplete="off">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Reefer</td>
+                            <td>
+                                <input class="form-check-input" type="checkbox" value="" id="reefer">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <button type="submit" class="btn btn-sm btn-outline">
+                                    <c:choose>
+                                        <c:when test="${method eq 'put'}">
+                                            Edit
+                                        </c:when>
+                                        <c:otherwise>
+                                            Add
+                                        </c:otherwise>
+                                    </c:choose>
+                                    container
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
     </jsp:body>
 </t:dashboard>
