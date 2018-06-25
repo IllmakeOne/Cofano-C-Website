@@ -29,6 +29,13 @@ public class ApplicationsResource extends ServletContainer {
 	private String myname = "Application";
 	
 	
+	/**
+	 * this function adds an entry to the database
+	 * if it is from a user it is directly added and approved
+	 * if not, it is added but not approved
+	 * @param input the entry about to be added
+	 * @param request the request of the client
+	 */
 	@POST
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -41,20 +48,12 @@ public class ApplicationsResource extends ServletContainer {
 		if(request.getSession().getAttribute("userEmail")!=null){
 			String title = "ADD";
 			
-			//if there is no conflict
 			if(testConflict(input) == false) {
+				//if there is no conflict
 					Tables.addHistoryEntry(title, doer, input.toString()
 					, new Timestamp(System.currentTimeMillis()), myname );
 		
-		
-					//System.out.println("Received from client request " +input.toString());
-		
 					String query ="SELECT addapplications(?,?)";
-		
-					//System.out.println(query);
-		
-					System.out.println("Added to database: " + "name, api_key -> "+
-					input.getName()+ ","+input.getAPIKey());
 					try {
 						PreparedStatement statement = Tables.getCon().prepareStatement(query);
 						statement.setString(1, input.getName());
@@ -73,7 +72,10 @@ public class ApplicationsResource extends ServletContainer {
 		}
 	}
 	
-	
+	/**
+	 * this method deletes an entry from a table and also adds it to history
+	 * @param appid the ID of the entry which is deleted
+	 */
 	@DELETE
 	@Path("/{appid}")
 	public void deleteApp(@PathParam("appid") int appid, @Context HttpServletRequest request) {
@@ -99,10 +101,7 @@ public class ApplicationsResource extends ServletContainer {
 			//add the deletion to the history table
 			String title = "DELETE";
 			String doer = Tables.testRequest(request);
-	//		Tables.addHistoryEntry(title, doer,
-	//				add.toString()
-	//				, new Timestamp(System.currentTimeMillis()),myname );
-			//Tables.addHistoryEntry(title, doer, add.toString(),myname,);
+			Tables.addHistoryEntry(title, doer, add.toString(), myname, true);
 				query ="SELECT deleteapplications(?)";
 				try {
 					PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
@@ -119,6 +118,11 @@ public class ApplicationsResource extends ServletContainer {
 	}
 
 
+	/**
+	 * this method retrives a specific entry from the DB
+	 * @param appid
+	 * @return return the entry as an Application object
+	 */
 	@GET
 	@Path("/{appid}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -146,6 +150,11 @@ public class ApplicationsResource extends ServletContainer {
 		return app;
 	}
 
+	/**
+	 * this method changes an entry in the database
+	 * @param appid the ID of the entry about to be changed
+	 * @param app the new information for the entry
+	 */
 	@PUT
 	@Path("/{appid}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -172,8 +181,11 @@ public class ApplicationsResource extends ServletContainer {
 	}
 	
 	
-	
-	
+	/**
+	 * This is used for displaying unapproved entries, which await deletion or approval
+	 * this method only returns something if the request is comming from our website
+	 * @return an JSON array of unapproved entries
+	 */
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
 	public List<Application> getAllApps(@Context HttpServletRequest request){
@@ -181,9 +193,6 @@ public class ApplicationsResource extends ServletContainer {
 		ArrayList<Application> result = new ArrayList<>();
 		
 		if(request.getSession().getAttribute("userEmail")!=null) {
-		
-			//System.out.println("acces granted to "+
-		//(String)request.getSession().getAttribute("userEmail"));
 		
 			Application add = new Application();
 			String query = "SELECT * FROM application";
@@ -210,7 +219,12 @@ public class ApplicationsResource extends ServletContainer {
 	}
 	
 	
-	
+	/**
+	 * this tests if there a new Application creates a conflict in the DB if it is added
+	 * it creates a conflict if the name or apikey is the same as another entry in the DB
+	 * @param test the Application which is tested 
+	 * @return the id of the port it is on conflict with , or 0 if there is no conflict
+	 */
 	public boolean testConflict(Application test) {
 		boolean result = true;
 		String query = "SELECT * FROM appsconflict(?,?)";

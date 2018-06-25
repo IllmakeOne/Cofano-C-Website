@@ -24,6 +24,14 @@ public class TerminalsResource {
 
 	private String myname = "terminal";
 	
+	
+	/**
+	 * this function adds an entry to the database
+	 * if it is from a user it is directly added and approve
+	 * if not, it is added but not approved
+	 * @param input the entry about to be added
+	 * @param request the request of the client
+	 */
 	@POST
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -59,6 +67,12 @@ public class TerminalsResource {
 			
 	}
 
+	/**
+	 * this method adds a Terminal entry to the Database
+	 * @param entry the Terminal about to be added 
+	 * @param app if the terminal is approved or not 
+	 * @return the ID which is assigned to this port by the database
+	 */
 	public int addEntry(Terminal entry, boolean app) {
 		int rez =0;
 		//gets here if the request is from API
@@ -127,6 +141,10 @@ public class TerminalsResource {
 		return result;
 	}
 
+	
+	/**
+	 * @return a JSON array of all approved terminals
+	 */
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
 	public ArrayList<Terminal> getAllTerminals(@Context HttpServletRequest request){
@@ -144,9 +162,6 @@ public class TerminalsResource {
 				ResultSet resultSet = statement.executeQuery();
 	
 				while(resultSet.next()) {
-					//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3) +" " +
-						//	resultSet.getString(4) + " " + resultSet.getString(5) + " " + resultSet.getString(6));
-	
 					Terminal terminal = new Terminal();
 					terminal.setID(resultSet.getInt("tid"));
 					terminal.setName(resultSet.getString("name"));
@@ -166,7 +181,12 @@ public class TerminalsResource {
 		return result;
 	}
 
-	
+
+	/**
+	 * This is used for displaying unapproved entries, which await deletion or approval
+	 * this method only returns something if the request is comming from our website
+	 * @return an JSON array of unapproved entries
+	 */
 	@GET
 	@Path("unapproved")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -200,14 +220,17 @@ public class TerminalsResource {
 					result.add(terminal);
 				}
 			} catch (SQLException e) {
-				System.err.println("Could not retrieve all terminals" + e);
+				System.err.println("Could not retrieve all unapproved terminals" + e);
 			}
 		}
 
 		return result;
 	}
 
-
+	/**
+	 * this method deletes an entry from a table and also adds it to history
+	 * @param terminalId the id of the entry which is deleted
+	 */
 	@DELETE
 	@Path("/{terminalId}")
 	public void deletTerminal(@PathParam("terminalId") int terminalId, @Context HttpServletRequest request) {
@@ -234,6 +257,11 @@ public class TerminalsResource {
 	}
 
 
+	/**
+	 * this method retrives a specific entry from the DB
+	 * @param portId
+	 * @return return the entry as an Terminal object
+	 */
 	@GET
 	@Path("/{terminalId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -262,6 +290,12 @@ public class TerminalsResource {
 		return terminal;
 	}
 
+	
+	/**
+	 * this method changes an entry in the database
+	 * @param terminalId the ID of the entry about to be changed
+	 * @param terminal the new information for the entry
+	 */
 	@PUT
 	@Path("/{terminalId}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -292,7 +326,11 @@ public class TerminalsResource {
 	}
 	
 	
-	
+	/**
+	 * this tests if there a new Port creates a conflict in the DB if it is added
+	 * @param test the Port which is tested
+	 * @return the id of the port it is on conflict with , or 0 if there is no conflict
+	 */
 	public int testConflict(Terminal test) {
 		int result = 0;
 		String query = "SELECT * FROM terminalconflict(?,?)";

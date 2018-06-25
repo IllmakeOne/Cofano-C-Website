@@ -22,6 +22,9 @@ public class ContainerTypesResource {
 
 	private String myname= "container_type";
 	
+	/**
+	 * @return a JSON array of all approved ports
+	 */
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
 	public ArrayList<ContainerType> getAllContainerTypes(@Context HttpServletRequest request){
@@ -61,6 +64,11 @@ public class ContainerTypesResource {
 
 	}
 	
+	/**
+	 * This is used for displaying unapproved entries, which await deletion or approval
+	 * this method only returns something if the request is comming from our website
+	 * @return an JSON array of unapproved entries
+	 */
 	@GET
 	@Path("unapproved")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -100,6 +108,13 @@ public class ContainerTypesResource {
 
 	}
 	
+	/**
+	 * this function adds an entry to the database
+	 * if it is from a user it is directly added and approve
+	 * if not, it is added but not approved
+	 * @param input the entry about to be added
+	 * @param request the request of the client
+	 */
 	@POST
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -139,6 +154,13 @@ public class ContainerTypesResource {
 		
 	}
 	
+
+	/**
+	 * this method adds a ContainerType entry to the Database
+	 * @param entry the Container type about to be added 
+	 * @param app if the port is approved or not 
+	 * @return the ID which is assigned to this container by the database
+	 */
 	public int addEntry(ContainerType entry, boolean app) {
 		String query = "SELECT addcontainer_type(?,?,?,?,?,?,?)";
 		int rez =0;
@@ -166,9 +188,14 @@ public class ContainerTypesResource {
 		return rez;
 	}
 
+	/**
+	 * this method deletes an entry from a table and also adds it to history
+	 * @param containerId the id of the entry which is deleted
+	 */
 	@DELETE
 	@Path("/{containerId}")
-	public void deleteContainer(@PathParam("containerId") int containerId, @Context HttpServletRequest request) {
+	public void deleteContainer(@PathParam("containerId") int containerId,
+			@Context HttpServletRequest request) {
 		Tables.start();
 		String doer = Tables.testRequest(request);
 		
@@ -176,7 +203,8 @@ public class ContainerTypesResource {
 			ContainerType aux = getContainer(containerId, request);		
 			String query ="SELECT  deletecontainer_types(?)";
 			try {
-				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
 				statement.setLong(1, containerId);
 				statement.executeQuery();
 			} catch (SQLException e) {
@@ -189,17 +217,24 @@ public class ContainerTypesResource {
 	}
 
 
+	/**
+	 * this method retrives a specific entry from the DB
+	 * @param containerId 
+	 * @return return the entry as an Container Type object
+	 */
 	@GET
 	@Path("/{containerId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ContainerType getContainer(@PathParam("containerId") int containerId, @Context HttpServletRequest request) {
+	public ContainerType getContainer(@PathParam("containerId") int containerId,
+			@Context HttpServletRequest request) {
 		ContainerType container = new ContainerType();
 		String query = "SELECT * FROM container_type WHERE cid = ?";
 		
 		if(!Tables.testRequest(request).equals("")) {
 
 			try {
-				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				PreparedStatement statement =
+						Tables.getCon().prepareStatement(query);
 				statement.setInt(1, containerId);
 				ResultSet resultSet = statement.executeQuery();
 	
@@ -221,18 +256,24 @@ public class ContainerTypesResource {
 		return container;
 	}
 
+	/**
+	 * this method changes an entry in the database
+	 * @param containerId the ID of the entry about to be changed
+	 * @param container the new information for the entry
+	 */
 	@PUT
 	@Path("/{containerId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateContainer(@PathParam("containerId") int containerId, ContainerType container,@Context HttpServletRequest request) {
+	public void updateContainer(@PathParam("containerId") int containerId,
+			ContainerType container,@Context HttpServletRequest request) {
 		
 		String doer = Tables.testRequest(request);
 		if(!doer.equals("")) {
-			ContainerType aux = getContainer(containerId, request);
-			
+			ContainerType aux = getContainer(containerId, request);			
 			String query = "SELECT editcontainer_types(?,?,?,?,?,?,?)";
 			try {
-				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
 				statement.setString(2, container.getDisplayName());
 				statement.setString(3, container.getIsoCode());
 				statement.setString(4, container.getDescription());
@@ -247,7 +288,8 @@ public class ContainerTypesResource {
 				e.printStackTrace();
 			}
 			
-			Tables.addHistoryEntry("UPDATE", doer, aux.toString() + "-->" + container.toString(), myname, false);
+			Tables.addHistoryEntry("UPDATE", doer,
+aux.toString() + "-->" + container.toString(), myname, false);
 		}
 
 	}
