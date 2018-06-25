@@ -30,7 +30,7 @@ public class TerminalsResource {
 	@POST
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addShip(Terminal input, @Context HttpServletRequest request) {
+	public void addTerminal(Terminal input, @Context HttpServletRequest request) {
 		Tables.start();
 		
 		int ownID = 0;
