@@ -330,7 +330,7 @@ public class ContainerTypesResource {
 			
 			Tables.addHistoryEntry("APPROVE", 
 					request.getSession().getAttribute("userEmail").toString(),
-					aux.toString() , myname, false);
+					aux.toString() , myname, true);
 		}
 	}
 			
