@@ -34,11 +34,11 @@ public class UsersResources {
                 "FROM public.user";
         if (request.getSession().getAttribute("userEmail") != null) {
             try {
-                PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+                PreparedStatement statement = Tables.getCon().
+                        prepareStatement(query);
                 ResultSet resultSet = statement.executeQuery();
 
                 while (resultSet.next()) {
-                    //	System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
                     add = new User();
                     add.setEmail(resultSet.getString("email"));
                     add.setId(resultSet.getInt("uid"));
@@ -48,7 +48,7 @@ public class UsersResources {
                     end.add(add);
                 }
             } catch (SQLException e) {
-                System.err.println("Could not retrive all apps" + e);
+                System.err.println("Could not retrieve all apps" + e);
             }
         }
         return end;
