@@ -47,7 +47,7 @@
                 drawCallback: function( settings ) {
                     feather.replace();
                 },
-            });
+            });	
             
             
                 var terminaltable = $(' #terminalstable').DataTable({
