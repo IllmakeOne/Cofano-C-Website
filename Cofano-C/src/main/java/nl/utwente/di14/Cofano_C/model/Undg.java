@@ -1,19 +1,30 @@
 package nl.utwente.di14.Cofano_C.model;
 
+import java.util.List;
+
 /**
  * Model for UNDG objects.
  */
-class Undg {
+public class Undg {
 
     private int id;
-    private int descriptionId;
+
+    private List<UndgDescription> descriptions;
+    private List<String> labels;
+    private List<String> tankSpecialProvisions;
+    private List<String> tankCode;
     private boolean transportForbidden;
     private boolean collective;
     private boolean notApplicable;
     private String classificationCode;
-    private String unNo;
+    private int unNo;
     private String classification;
-    private String packingGroup;
+    private int packingGroup;
+    private String hazardNo;
+    private String station;
+    private String transportCategory;
+    private String tunnelCode;
+    private String vehicleTankCarriage;
 
     /**
      * Constructs a UNDG without data.
@@ -25,44 +36,36 @@ class Undg {
      * Constructs a UNDG with data.
      *
      * @param iD                 of the UNDG
-     * @param descriptionID      of the UNDG
+     * @param descriptions       of the UNDG
      * @param classificationCode of the UNDG
      * @param unNo               of the UNDG
      * @param classification     of the UNDG
      * @param packingGroup       of the UNDG
      */
-    public Undg(int iD, int descriptionID, String classificationCode, String unNo,
-                String classification, String packingGroup) {
+    public Undg(int iD, List<UndgDescription> descriptions, String classificationCode, int unNo,
+                String classification, int packingGroup) {
         super();
         id = iD;
-        this.descriptionId = descriptionID;
+        this.descriptions = descriptions;
         this.classificationCode = classificationCode;
         this.unNo = unNo;
         this.classification = classification;
         this.packingGroup = packingGroup;
+
 
         transportForbidden = false;
         collective = false;
         notApplicable = false;
     }
 
-    /**
-     * Gets the description ID of the UNDG.
-     *
-     * @return the description ID of the UNDG
-     */
-    public int getDescriptionID() {
-        return descriptionId;
+    public List<UndgDescription> getDescriptions() {
+        return descriptions;
     }
 
-    /**
-     * Sets the description ID of the UNDG.
-     *
-     * @param iD of the description of the UNDG
-     */
-    public void setDescriptionID(int iD) {
-        descriptionId = iD;
+    public void setDescriptions(List<UndgDescription> descriptions) {
+        this.descriptions = descriptions;
     }
+
 
     /**
      * Gets the ID of the UNDG.
@@ -159,7 +162,7 @@ class Undg {
      *
      * @return UnNo of the UNDG
      */
-    public String getUnNo() {
+    public int getUnNo() {
         return unNo;
     }
 
@@ -168,7 +171,7 @@ class Undg {
      *
      * @param unNo of the UNDG
      */
-    public void setUnNo(String unNo) {
+    public void setUnNo(int unNo) {
         this.unNo = unNo;
     }
 
@@ -195,7 +198,7 @@ class Undg {
      *
      * @return the packing group of the UNDG
      */
-    public String getPackingGroup() {
+    public int getPackingGroup() {
         return packingGroup;
     }
 
@@ -204,7 +207,71 @@ class Undg {
      *
      * @param packingGroup of the UNDG
      */
-    public void setPackingGroup(String packingGroup) {
+    public void setPackingGroup(int packingGroup) {
         this.packingGroup = packingGroup;
+    }
+
+    public void setHazardNo(String hazardNo) {
+        this.hazardNo = hazardNo;
+    }
+
+    public void setStation(String station) {
+        this.station = station;
+    }
+
+    public void setTransportCategory(String transportCategory) {
+        this.transportCategory = transportCategory;
+    }
+
+    public void setTunnelCode(String tunnelCode) {
+        this.tunnelCode = tunnelCode;
+    }
+
+    public void setVehicleTankCarriage(String vehicleTankCarriage) {
+        this.vehicleTankCarriage = vehicleTankCarriage;
+    }
+
+    public String getHazardNo() {
+        return hazardNo;
+    }
+
+    public String getStation() {
+        return station;
+    }
+
+    public String getTransportCategory() {
+        return transportCategory;
+    }
+
+    public String getTunnelCode() {
+        return tunnelCode;
+    }
+
+    public String getVehicleTankCarriage() {
+        return vehicleTankCarriage;
+    }
+
+    public void setLabels(List<String> labels) {
+        this.labels = labels;
+    }
+
+    public List<String> getLabels() {
+        return labels;
+    }
+
+    public List<String> getTankSpecialProvisions() {
+        return tankSpecialProvisions;
+    }
+
+    public void setTankSpecialProvisions(List<String> tankSpecialProvisions) {
+        this.tankSpecialProvisions = tankSpecialProvisions;
+    }
+
+    public List<String> getTankCode() {
+        return tankCode;
+    }
+
+    public void setTankCode(List<String> tankCode) {
+        this.tankCode = tankCode;
     }
 }
