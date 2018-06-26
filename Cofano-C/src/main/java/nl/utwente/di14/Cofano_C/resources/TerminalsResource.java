@@ -113,19 +113,21 @@ public class TerminalsResource {
 			@Context HttpServletRequest request) {
 		Terminal terminal = new Terminal();
 		String query = "SELECT * FROM terminal WHERE tid = ?";
-		try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-			statement.setInt(1, terminalId);
-			ResultSet resultSet = statement.executeQuery();
-			while(resultSet.next()) {
-				terminal.setName(resultSet.getString("name"));
-				terminal.setTerminalCode(resultSet.getString("terminal_code"));
-				terminal.setType(resultSet.getString("type"));
-				terminal.setUnlo(resultSet.getString("unlo"));
-				terminal.setPortId(resultSet.getInt("port_id"));
+		if(!Tables.testRequest(request).equals("")) {
+			try {
+				PreparedStatement statement = Tables.getCon().prepareStatement(query);
+				statement.setInt(1, terminalId);
+				ResultSet resultSet = statement.executeQuery();
+				while(resultSet.next()) {
+					terminal.setName(resultSet.getString("name"));
+					terminal.setTerminalCode(resultSet.getString("terminal_code"));
+					terminal.setType(resultSet.getString("type"));
+					terminal.setUnlo(resultSet.getString("unlo"));
+					terminal.setPortId(resultSet.getInt("port_id"));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 		return terminal;
 	}
