@@ -49,6 +49,7 @@
                 },
             });
             
+            
                 var terminaltable = $(' #terminalstable').DataTable({
                     ajax: {
                         url: "${(empty base) ? '.' : base}/api/terminals/unapproved",
@@ -119,7 +120,7 @@
                     },
                 });
                 
-                var table = $('#containerstable').DataTable({
+                var containerstable = $('#containerstable').DataTable({
                     ajax: {
                         url: "${(empty base) ? '.' : base}/api/containers/unapproved",
                         dataSrc: '',
@@ -199,6 +200,16 @@
                     });
                 });
                 
+                if(portstable.data().any()){
+                	$('#portstable').remove();
+                }
+                console.log(!containerstable.data().any());
+                if(!containerstable.data().any()){
+                	var elem = document.getElementById("containerstable");
+                	 elem.parentElement.removeChild(elem);
+                	//document.getElementById("containerstable").outerHTML = "";
+                //	$('#containerstable').remove();
+                }
                 
 
 
@@ -245,18 +256,18 @@
 
 
 
- 		<table class="table table-striped table-sm datatables" style="width:100%" id="portstable" >
-            <thead>
-            <h3>Ports</h3>
-            <tr>
-                <th data-priority="1">#</th>
-                <th data-priority="1">Name</th>
-                <th>Unlo</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+ 			<table class="table table-striped table-sm datatables" style="width:100%" id="portstable" >
+         	   <thead>
+         		  <h3>Ports</h3>
+       				     <tr>
+             		       <th data-priority="1">#</th>
+           			     <th data-priority="1">Name</th>
+           			     <th>Unlo</th>
+           				 </tr>
+          			  </thead>
+          		  <tbody>
+         		   </tbody>
+       			</table>
               
               
               <table class="table table-striped table-sm datatables" style="width:100%" id = "terminalstable">

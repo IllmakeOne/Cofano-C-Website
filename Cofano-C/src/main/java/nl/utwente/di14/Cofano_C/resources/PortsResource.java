@@ -72,6 +72,7 @@ public class PortsResource {
 	@Produces({MediaType.APPLICATION_JSON})
 	public ArrayList<Port> getAllPortUN(@Context HttpServletRequest request){
 		Tables.start();
+		//System.out.println("getting some ports");
 		ArrayList<Port> result = new ArrayList<>();
 		String query = "SELECT * " +
 				"FROM port " +
