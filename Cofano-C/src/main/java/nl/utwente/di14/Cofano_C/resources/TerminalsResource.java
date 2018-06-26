@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class TerminalsResource {
 
 
-    private String myname = "terminal";
+    private final String myName = "terminal";
 
 
     /**
@@ -40,16 +40,7 @@ public class TerminalsResource {
                 PreparedStatement statement =
                         Tables.getCon().prepareStatement(query);
                 ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    Terminal terminal = new Terminal();
-                    terminal.setID(resultSet.getInt("tid"));
-                    terminal.setName(resultSet.getString("name"));
-                    terminal.setTerminalCode(resultSet.getString("terminal_code"));
-                    terminal.setType(resultSet.getString("type"));
-                    terminal.setUnlo(resultSet.getString("unlo"));
-                    terminal.setPortId(resultSet.getInt("port_id"));
-                    result.add(terminal);
-                }
+                constructTerminal(result, resultSet);
             } catch (SQLException e) {
                 System.err.println("Could not retrieve all terminals" + e);
             }
@@ -57,9 +48,23 @@ public class TerminalsResource {
         return result;
     }
 
+    private void constructTerminal(ArrayList<Terminal> result, ResultSet resultSet)
+            throws SQLException {
+        while (resultSet.next()) {
+            Terminal terminal = new Terminal();
+            terminal.setID(resultSet.getInt("tid"));
+            terminal.setName(resultSet.getString("name"));
+            terminal.setTerminalCode(resultSet.getString("terminal_code"));
+            terminal.setType(resultSet.getString("type"));
+            terminal.setUnlo(resultSet.getString("unlo"));
+            terminal.setPortId(resultSet.getInt("port_id"));
+            result.add(terminal);
+        }
+    }
+
     /**
-     * This is used for displaying unapproved entries, which await deletion or approval
-     * this method only returns something if the request is comming from our website
+     * This is used for displaying unapproved entries, which await deletion or approval.
+     * this method only returns something if the request is coming from our website
      *
      * @return an JSON array of unapproved entries
      */
@@ -81,16 +86,7 @@ public class TerminalsResource {
 
                 ResultSet resultSet = statement.executeQuery();
 
-                while (resultSet.next()) {
-                    Terminal terminal = new Terminal();
-                    terminal.setID(resultSet.getInt("tid"));
-                    terminal.setName(resultSet.getString("name"));
-                    terminal.setTerminalCode(resultSet.getString("terminal_code"));
-                    terminal.setType(resultSet.getString("type"));
-                    terminal.setUnlo(resultSet.getString("unlo"));
-                    terminal.setPortId(resultSet.getInt("port_id"));
-                    result.add(terminal);
-                }
+                constructTerminal(result, resultSet);
             } catch (SQLException e) {
                 System.err.println("Could not retrieve all unapproved terminals" + e);
             }
@@ -99,9 +95,9 @@ public class TerminalsResource {
     }
 
     /**
-     * this method retrives a specific entry from the DB
+     * this method retrieves a specific entry from the DB.
      *
-     * @param portId
+     * @param terminalId ID of the terminal
      * @return return the entry as an Terminal object
      */
     @GET
@@ -130,13 +126,14 @@ public class TerminalsResource {
 
 
     /**
-     * this function adds an entry to the database
+     * this function adds an entry to the database.
      * if it is from a user it is directly added and approve
      * if not, it is added but not approved
      *
      * @param input   the entry about to be added
      * @param request the request of the client
      */
+    @SuppressWarnings("Duplicates")
     @POST
     @Path("add")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -148,39 +145,39 @@ public class TerminalsResource {
         int con = testConflict(input);
 
         if (request.getSession().getAttribute("userEmail") != null && con == 0) {
-            //if its from a cofano employee and it doesnt create conflcit, add straight to db
+            //if its from a cofano employee and it doesn't create conflict, add straight to db
             ownID = addEntry(input, true);
-            Tables.addHistoryEntry(title, doer, input.toString(), myname, true);
+            Tables.addHistoryEntry(title, doer, input.toString(), myName, true);
         } else if (request.getSession().getAttribute("userEmail") != null && con != 0) {
-            //if its froma cofano emplyee and it create sconflcit, add but unapproved
+            //if its from a cofano employee and it creates conflict, add but unapproved
             ownID = addEntry(input, false);
 
-            Tables.addHistoryEntry(title, doer, input.toString(), myname, false);
+            Tables.addHistoryEntry(title, doer, input.toString(), myName, false);
         } else if (!doer.equals("")) {
             //if its from an api add to unapproved
             ownID = addEntry(input, false);
-            Tables.addHistoryEntry(title, doer, input.toString(), myname, false);
+            Tables.addHistoryEntry(title, doer, input.toString(), myName, false);
         }
 
         if (con != 0) {
-            //if it creates a conflcit, add it to conflict table
-            Tables.addtoConflicts(myname, doer, ownID, con);
+            //if it creates a conflict, add it to conflict table
+            Tables.addtoConflicts(myName, doer, ownID, con);
             //add to history
             Tables.addHistoryEntry("CON", doer,
-                    ownID + " " + input.toString() + " con with " + con, myname, false);
+                    ownID + " " + input.toString() + " con with " + con, myName, false);
         }
 
     }
 
     /**
-     * this method adds a Terminal entry to the Database
+     * this method adds a Terminal entry to the Database.
      *
      * @param entry the Terminal about to be added
      * @param app   if the terminal is approved or not
      * @return the ID which is assigned to this port by the database
      */
-    public int addEntry(Terminal entry, boolean app) {
-        int rez = 0;
+    private int addEntry(Terminal entry, boolean app) {
+        int rez;
         //gets here if the request is from API
         //add to conflicts table
         String query = "SELECT addterminal(?,?,?,?,?,?)";
@@ -210,14 +207,14 @@ public class TerminalsResource {
 
 
     /**
-     * this method deletes an entry from a table and also adds it to history
+     * this method deletes an entry from a table and also adds it to history.
      *
      * @param terminalId the id of the entry which is deleted
      */
     @DELETE
     @Path("/{terminalId}")
-    public void deletTerminal(@PathParam("terminalId") int terminalId,
-                              @Context HttpServletRequest request) {
+    public void deleteTerminal(@PathParam("terminalId") int terminalId,
+                               @Context HttpServletRequest request) {
         Tables.start();
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
@@ -233,13 +230,13 @@ public class TerminalsResource {
                 System.err.println(e.getSQLState());
                 e.printStackTrace();
             }
-            Tables.addHistoryEntry("DELETE", doer, aux.toString(), myname, true);
+            Tables.addHistoryEntry("DELETE", doer, aux.toString(), myName, true);
         }
     }
 
 
     /**
-     * this method changes an entry in the database
+     * this method changes an entry in the database.
      *
      * @param terminalId the ID of the entry about to be changed
      * @param terminal   the new information for the entry
@@ -267,20 +264,20 @@ public class TerminalsResource {
                 e.printStackTrace();
             }
             Tables.addHistoryEntry("UPDATE", doer,
-                    aux.toString() + "-->" + terminal.toString(), myname, false);
+                    aux.toString() + "-->" + terminal.toString(), myName, false);
         }
     }
 
 
     /**
-     * this tests if there a new Port creates a conflict in the DB if it is added
-     * it creates a conflcit if the name or terminal code is the same as another entry in the DB
+     * this tests if there a new Port creates a conflict in the DB if it is added.
+     * it creates a conflict if the name or terminal code is the same as another entry in the DB
      *
      * @param test the Port which is tested
      * @return the id of the port it is on conflict with , or 0 if there is no conflict
      */
-    public int testConflict(Terminal test) {
-        int result = 0;
+    private int testConflict(Terminal test) {
+        int result = -1;
         String query = "SELECT * FROM terminalconflict(?,?)";
         try {
             PreparedStatement statement =
@@ -294,7 +291,7 @@ public class TerminalsResource {
                 result = resultSet.getInt("tid");
             }
         } catch (SQLException e) {
-            System.err.println("Could not test conflcit IN apps" + e);
+            System.err.println("Could not test conflict IN apps" + e);
         }
         return result;
     }
