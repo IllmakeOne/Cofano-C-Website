@@ -200,15 +200,41 @@
                     });
                 });
                 
+               
+                console.log(portstable.data().any());
+                console.log(containerstable.data().any());
+                console.log(shipstable.data().any());
+                console.log(containerstable.data().count());	
+                
                 if(portstable.data().any()){
-                	$('#portstable').remove();
+                	portstable.destroy();
+                	document.getElementById("portstable").outerHTML = "";
+                	document.getElementById("portname").outerHTML = "";
                 }
-                console.log(!containerstable.data().any());
-                if(!containerstable.data().any()){
-                	var elem = document.getElementById("containerstable");
-                	 elem.parentElement.removeChild(elem);
-                	//document.getElementById("containerstable").outerHTML = "";
-                //	$('#containerstable').remove();
+                if(terminaltable.data().any()){
+                	terminaltable.destroy();
+                	document.getElementById("terminalstable").outerHTML = "";
+                	document.getElementById("termname").outerHTML = "";
+                }
+                if(shipstable.data().any()){
+                	shipstable.destroy();
+                	document.getElementById("shipstable").outerHTML = "";
+                	document.getElementById("shipname").outerHTML = "";
+                }
+                
+                if(containerstable.data().any()){
+                	containerstable.destroy();
+                	document.getElementById("containerstable").outerHTML = "";
+                	document.getElementById("conname").outerHTML = "";
+                }
+                
+                
+                
+                if(document.getElementById("conname") &
+                		document.getElementById("portname") &
+                		document.getElementById("shipname") &
+                		document.getElementById("termname") ){
+                	document.getElementById("title").outerHTML = "<h2>Nothing to be approved</h2>";
                 }
                 
 
@@ -252,13 +278,13 @@
                             </button>
                         </div>
 
-<h3>These entries need approval</h3>
+<h3 id = "title">These entries need approval</h3>
 
-
+			
 
  			<table class="table table-striped table-sm datatables" style="width:100%" id="portstable" >
          	   <thead>
-         		  <h3>Ports</h3>
+         		  <h3 id = "portname" >Ports</h3>
        				     <tr>
              		       <th data-priority="1">#</th>
            			     <th data-priority="1">Name</th>
@@ -272,7 +298,7 @@
               
               <table class="table table-striped table-sm datatables" style="width:100%" id = "terminalstable">
             <thead>
-            <h3>Terminals</h3>
+            <h3 id = "termname" >Terminals</h3>
             <tr>
                 <th data-priority="1">#</th>
                 <th data-priority="1">Name</th>
@@ -288,7 +314,7 @@
         
         <table class="table table-striped table-sm datatables" style="width:100%" id="shipstable"> 
             <thead>
-            <h3>Ships</h3>
+            <h3 id = "shipname" >Ships</h3>
             <tr>
                 <th data-priority="1">#</th>
                 <th data-priority="1">Name</th>
@@ -304,7 +330,7 @@
         
         <table class="table table-striped table-sm datatables" style="width:100%" id="containerstable">
             <thead>
-            <h3>Container Types</h3>
+            <h3 id = "conname" >Container Types</h3>
             <tr>
                 <th data-priority="1">#</th>
                 <th data-priority="1">Display name</th>
