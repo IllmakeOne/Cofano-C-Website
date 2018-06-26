@@ -302,7 +302,35 @@ public class PortsResource {
 			Tables.addHistoryEntry("UPDATE", doer, 
 				aux.toString() + "-->" + port.toString(), myname, false);
 		}
-
+	}
+	
+	/**
+	 * this method approves an entry in the database
+	 * @param portid the id of the port which is approved
+	 */
+	@PUT
+	@Path("/approve/{portid}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void approvePort(@PathParam("portid") int portid,
+			@Context HttpServletRequest request) {
+		
+		if(request.getSession().getAttribute("userEmail")!=null) {
+			Port aux = getPort(portid, request);
+			String query = "SELECT approveport(?)";
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				statement.setInt(1, portid);
+				statement.executeQuery();
+	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			Tables.addHistoryEntry("APPROVE", 
+					request.getSession().getAttribute("userEmail").toString(),
+					aux.toString() , myname, false);
+		}
 	}
 
 

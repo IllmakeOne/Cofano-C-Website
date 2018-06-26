@@ -300,7 +300,38 @@ public class ContainerTypesResource {
 			Tables.addHistoryEntry("UPDATE", doer,
 				aux.toString() + "-->" + container.toString(), myname, false);
 		}
+	}
+	
 
+	
+
+	/**
+	 * this method approves an entry in the database
+	 * @param containerId the id of the contaier which is approved
+	 */
+	@PUT
+	@Path("/approve/{containerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void approveContainer(@PathParam("containerId") int containerId,
+			@Context HttpServletRequest request) {
+		
+		if(request.getSession().getAttribute("userEmail")!=null) {
+			ContainerType aux = getContainer(containerId, request);
+			String query = "SELECT approvecontainer(?)";
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				statement.setInt(1, containerId);
+				statement.executeQuery();
+	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			Tables.addHistoryEntry("APPROVE", 
+					request.getSession().getAttribute("userEmail").toString(),
+					aux.toString() , myname, false);
+		}
 	}
 			
 	

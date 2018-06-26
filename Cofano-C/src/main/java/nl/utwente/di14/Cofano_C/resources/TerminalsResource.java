@@ -3,6 +3,7 @@ package nl.utwente.di14.Cofano_C.resources;
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.exceptions.ConflictException;
 import nl.utwente.di14.Cofano_C.model.Application;
+import nl.utwente.di14.Cofano_C.model.ContainerType;
 import nl.utwente.di14.Cofano_C.model.Port;
 import nl.utwente.di14.Cofano_C.model.Terminal;
 
@@ -286,6 +287,35 @@ public class TerminalsResource {
 			}
 			Tables.addHistoryEntry("UPDATE", doer, 
 					aux.toString() +"-->"+terminal.toString(), myname, false);
+		}
+	}
+	
+	/**
+	 * this method approves an entry in the database
+	 * @param terminalId the id of the terminal which is approved
+	 */
+	@PUT
+	@Path("/approve/{terminalId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void approveContainer(@PathParam("terminalId") int terminalId,
+			@Context HttpServletRequest request) {
+		
+		if(request.getSession().getAttribute("userEmail")!=null) {
+			Terminal aux = getTerminal(terminalId, request);
+			String query = "SELECT approveterminal(?)";
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				statement.setInt(1, terminalId);
+				statement.executeQuery();
+	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			Tables.addHistoryEntry("APPROVE", 
+					request.getSession().getAttribute("userEmail").toString(),
+					aux.toString() , myname, false);
 		}
 	}
 	

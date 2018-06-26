@@ -29,9 +29,10 @@
                             if (type == "sort" || type == 'type') {
                                 return data;
                             }
-                            return '<a class="btn btn-info btn-sm" href=${(empty base) ? '.' : base}/port/'+ data +'" role="button">' +
-                                '<span data-feather="check-square"></span>' +
-                                '</a>&nbsp;' +
+                            return '<button type="button" class="btn btn-info btn-sm btn-approve" data-approve-id="' + data 
+								+ '" data-approve-name="' + escapeHtml(row.displayName) + '" data-type="ports" role="button">' + 
+				   				  '<span data-feather="check-square"></span>' +
+			  					  '</button>&nbsp;' +
                                 
                                 '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data
 										+ '" data-delete-name="' + escapeHtml(row.name) + '"data-type="ports" role="button">' +
@@ -60,9 +61,10 @@
                                 if (type == "sort" || type == 'type') {
                                     return data;
                                 }
-                                return '<a class="btn btn-info btn-sm" href="${(empty base) ? '.' : base}/terminal/'+ data +'" role="button">' +
-                                    '<span data-feather="check-square"></span>' +
-                                    '</a>&nbsp;' +
+                                return '<button type="button" class="btn btn-info btn-sm btn-approve" data-approve-id="' + data 
+    									+ '" data-approve-name="' + escapeHtml(row.displayName) + '" data-type="terminals" role="button">' + 
+        				   			  '<span data-feather="check-square"></span>' +
+         			  				  '</button>&nbsp;' +
                                     
                                     '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data 
                                     		+ '" data-delete-name="' + escapeHtml(row.name) + '" data-type="terminals" role="button">' +
@@ -94,9 +96,10 @@
                                 if (type == "sort" || type == 'type') {
                                     return data;
                                 }
-                                return '<a class="btn btn-info btn-sm" href="${(empty base) ? '.' : base}/ship/'+ data +'" role="button">' +
-                                    '<span data-feather="check-square"></span>' +
-                                    '</a>&nbsp;' +
+                                return '<button type="button" class="btn btn-info btn-sm btn-approve" data-approve-id="' + data 
+            							+ '" data-approve-name="' + escapeHtml(row.displayName) + '" data-type="ships" role="button">' + 
+              				   		  '<span data-feather="check-square"></span>' +
+               			  			  '</button>&nbsp;' +
                                     
                                     '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data
                                     		+ '" data-delete-name="' + escapeHtml(row.name) + '" data-type="ships" role="button">' +
@@ -128,9 +131,10 @@
                                 if (type == "sort" || type == 'type') {
                                     return data;
                                 }
-                                return '<a class="btn btn-info btn-sm" href="${(empty base) ? '.' : base}/container/'+ data +'" role="button">' +
-                                    '<span data-feather="edit-2"></span>' +
-                                    '</a>&nbsp;' +
+                                return  '<button type="button" class="btn btn-info btn-sm btn-approve" data-approve-id="' + data 
+                        					+ '" data-approve-name="' + escapeHtml(row.displayName) + '" data-type="containers" role="button">' + 
+                           				     '<span data-feather="check-square"></span>' +
+                            			    '</button>&nbsp;' +
                                     
                                     '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data 
                                     		+ '" data-delete-name="' + escapeHtml(row.displayName) + '" data-type="containers" role="button">' + 
@@ -149,6 +153,28 @@
                     drawCallback: function( settings ) {
                         feather.replace();
                     },
+                });
+                
+                var approvingRow;
+                $(document).on('click', '.btn-approve', function () {
+                	approvingRow = $(this).parents('tr');
+                    $.ajax({
+                        type: "put",
+                        url: "${(empty base) ? '.' : base}/api/"+ $(this).data('type')+ "/approve/" + $(this).data('approve-id'),
+                        beforeSend: function( xhr ) {
+                            $("#delete-error").hide();
+                        },
+                        success: function(data) {
+                        	//console.log(deletingRow.closest('table'))
+                            approvingRow.closest('table').DataTable()
+                                .row( approvingRow )
+                                .remove()
+                                .draw();
+                        },
+                        error: function(data) {
+                            $("#delete-error").show();
+                        },
+                    });
                 });
 
                 var deletingRow;
