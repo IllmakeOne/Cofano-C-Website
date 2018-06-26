@@ -228,7 +228,7 @@ public class ContainerTypesResource {
 			try {
 				PreparedStatement statement = 
 						Tables.getCon().prepareStatement(query);
-				statement.setLong(1, containerId);
+				statement.setInt(1, containerId);
 				statement.executeQuery();
 			} catch (SQLException e) {
 				System.err.println("Was not able to delete Container");
@@ -236,6 +236,31 @@ public class ContainerTypesResource {
 				e.printStackTrace();
 			}
 			Tables.addHistoryEntry("DELETE", doer, aux.toString(), myname, true);
+		}
+	}
+	
+	/**
+	 * this method deletes an entry from a table but doest not enter in in the database
+	 * this method is called for unapproved entries
+	 * @param portId the id of the entry which is deleted
+	 */
+	@DELETE
+	@Path("/unapproved/{containerId}")
+	public void deleteContainerUN(@PathParam("containerId") int containerId,
+			@Context HttpServletRequest request) {
+		Tables.start();
+		if(request.getSession().getAttribute("userEmail")!=null) {		
+			String query ="SELECT  deletecontainer_types(?)";
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				statement.setInt(1, containerId);
+				statement.executeQuery();
+			} catch (SQLException e) {
+				System.err.println("Was not able to delete unapproved Container");
+				System.err.println(e.getSQLState());
+				e.printStackTrace();
+			}
 		}
 	}
 

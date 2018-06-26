@@ -235,6 +235,26 @@ public class TerminalsResource {
 			Tables.addHistoryEntry("DELETE", doer, aux.toString(), myname, true);
 		}
 	}
+	
+	@DELETE
+	@Path("/unapproved/{terminalId}")
+	public void deletTerminalUN(@PathParam("terminalId") int terminalId, 
+			@Context HttpServletRequest request) {
+		Tables.start();	
+		if(request.getSession().getAttribute("userEmail")!=null) {
+			String query ="SELECT deleteterminal(?)";
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				statement.setInt(1, terminalId);
+				statement.executeQuery();
+			} catch (SQLException e) {
+				System.err.println("Was not able to delete unapproved Terminal");
+				System.err.println(e.getSQLState());
+				e.printStackTrace();
+			}
+		}
+	}
 
 
 	/**
@@ -307,7 +327,7 @@ public class TerminalsResource {
 	public ArrayList<Port> getAvailableIDs(@Context HttpServletRequest request){
 		Tables.start();
 		ArrayList<Port> result = new ArrayList<>();
-		String query = "SELECT pid, name FROM port";
+		String query = "SELECT pid, name FROM port WHERE approved = true";
 		
 		String name = Tables.testRequest(request);
 		if(!name.equals("")) {

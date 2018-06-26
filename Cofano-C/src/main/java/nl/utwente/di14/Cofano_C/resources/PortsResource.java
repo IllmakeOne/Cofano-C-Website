@@ -234,8 +234,8 @@ public class PortsResource {
 			try {
 				PreparedStatement statement = 
 						Tables.getCon().prepareStatement(query);
-				statement.setLong(1, portId);
-				statement.executeUpdate();
+				statement.setInt(1, portId);
+				statement.executeQuery();
 			} catch (SQLException e) {
 				System.err.println("Was not able to delete Port");
 				System.err.println(e.getSQLState());
@@ -243,6 +243,31 @@ public class PortsResource {
 			}
 			Tables.addHistoryEntry("DELETE", doer, 
 					aux.toString(), myname, true);
+		}
+	}
+	
+	/**
+	 * this method deletes an entry from a table but doest not enter in in the database
+	 * this method is called for unapproved entries
+	 * @param portId the id of the entry which is deleted
+	 */
+	@DELETE
+	@Path("/unapproved/{portId}")
+	public void deletPortUN(@PathParam("portId") int portId,
+			@Context HttpServletRequest request) {
+		Tables.start();		
+		if(request.getSession().getAttribute("userEmail")!=null) {
+			String query ="SELECT deleteport(?)";
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				statement.setInt(1, portId);
+				statement.executeQuery();
+			} catch (SQLException e) {
+				System.err.println("Was not able to delete unapproved Port");
+				System.err.println(e.getSQLState());
+				e.printStackTrace();
+			}
 		}
 	}
 
