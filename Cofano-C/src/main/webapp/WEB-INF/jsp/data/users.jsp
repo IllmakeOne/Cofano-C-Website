@@ -49,12 +49,12 @@
 	  				<button class="btn btn-primary dropdown-toggle btn" type="button" data-toggle="dropdown">+
 					  <span class="caret"></span></button>
 					<ul class="dropdown-menu">
-					    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addship">Ship</a></li>
-			    		<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addapp">Application</a></li>
-					    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addcontainer">Container Type</a></li>
-				    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addterminal">Terminal</a></li>
-					    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}">UNDG</a></li>
-			    		<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addport">Port</a></li>
+				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ships/add">Ship</a></li>
+			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/applications/add">Application</a></li>
+				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/containers/add">Container Type</a></li>
+			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/terminals/add">Terminal</a></li>
+				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}">UNDG</a></li>
+			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ports/add">Port</a></li>
 					 </ul>
 				</div>
 			</div>

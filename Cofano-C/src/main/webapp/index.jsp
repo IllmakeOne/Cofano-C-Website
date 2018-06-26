@@ -8,6 +8,6 @@
 
 <t:dashboard>
     <jsp:body>
-        <c:import url="/WEB-INF/jsp/home.jsp" />
+        <c:import url="/WEB-INF/jsp/data/dashboard/home.jsp" />
     </jsp:body>
 </t:dashboard>

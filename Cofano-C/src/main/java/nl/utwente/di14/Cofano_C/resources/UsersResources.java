@@ -20,6 +20,11 @@ import javax.ws.rs.core.MediaType;
 @Path("/users")
 public class UsersResources {
 	
+	
+	/**
+	 * @return a JSON array of all users
+	 * this can only be accessed by users of our website
+	 */
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
 	public List<User> getAllUsers(@Context HttpServletRequest request){
@@ -47,7 +52,6 @@ public class UsersResources {
 				System.err.println("Could not retrive all apps" + e);
 			}
 		}
-
 		return end;
 	}
 }
