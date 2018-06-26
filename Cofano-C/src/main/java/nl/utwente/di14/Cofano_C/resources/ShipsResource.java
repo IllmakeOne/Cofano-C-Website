@@ -1,12 +1,5 @@
 package nl.utwente.di14.Cofano_C.resources;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-
-
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.Ship;
 
@@ -14,10 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 
 @Path("/ships")
 public class ShipsResource {
-	
 
 	private String myname = "ship";
 	
@@ -316,7 +313,7 @@ public class ShipsResource {
 		return result;
 	}
 
-	
-	
-	
+    }
+
+
 }

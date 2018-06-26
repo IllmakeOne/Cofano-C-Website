@@ -52,8 +52,25 @@ public class HistoryResource {
 			}
 		}
 
-		return result;
+                ResultSet resultSet = statement.executeQuery();
 
-	}
+                while (resultSet.next()) {
+                    HistoryEntry entry = new HistoryEntry();
+                    entry.setId(resultSet.getInt("hid"));
+                    entry.setTitle(resultSet.getString("title"));
+                    entry.setAddedAt(resultSet.getTimestamp("added_at"));
+                    entry.setMessage(resultSet.getString("message"));
+                    entry.setType(resultSet.getString("type"));
+
+                    result.add(entry);
+                }
+            } catch (SQLException e) {
+                System.err.println("Could not retrieve all history entries" + e);
+            }
+        }
+
+        return result;
+
+    }
 
 }

@@ -1,6 +1,14 @@
 package nl.utwente.di14.Cofano_C.resources;
 
 
+import nl.utwente.di14.Cofano_C.dao.Tables;
+import nl.utwente.di14.Cofano_C.model.Application;
+import org.glassfish.jersey.servlet.ServletContainer;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,17 +21,21 @@ import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.*;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
-
-//@WebFilter(value = "/applications/*", initParams = @WebInitParam(name = "javax.ws.rs.Application", value = "javax.ws.rs.Application"))
-
 @Path("/applications")
-
 public class ApplicationsResource extends ServletContainer {
+
+
+    @POST
+    @Path("add")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void addApp(Application input, @Context HttpServletRequest request) {
+        Tables.start();
+
+        String doer = Tables.testRequest(request);
+
+        //tests if the person is allowed to make any modificaitons
+        if (!doer.equals("")) {
+            String title = "ADD";
 
 	
 	private String myname = "Application";
@@ -213,6 +225,13 @@ public class ApplicationsResource extends ServletContainer {
 		
 	
 	
+
+        } catch (SQLException e) {
+            System.err.println("Could not test conflict IN apps" + e);
+        }
+        return result;
+    }
+
 
 }
 
