@@ -12,11 +12,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+@SuppressWarnings("Duplicates")
 @Path("/ships")
 public class ShipsResource {
 
 
-    private String myname = "ship";
+    private final String myName = "ship";
 
     /**
      * @return a JSON array of all approved ports
@@ -26,7 +27,6 @@ public class ShipsResource {
     public ArrayList<Ship> getAllShips(@Context HttpServletRequest request) {
         Tables.start();
         ArrayList<Ship> result = new ArrayList<>();
-        Ship ship = new Ship();
         String query = "SELECT * " +
                 "FROM ship " +
                 "WHERE approved = true;";
@@ -34,36 +34,41 @@ public class ShipsResource {
         String name = Tables.testRequest(request);
         if (!name.equals("")) {
 
-            try {
-                PreparedStatement statement =
-                        Tables.getCon().prepareStatement(query);
-
-                ResultSet resultSet = statement.executeQuery();
-
-                while (resultSet.next()) {
-                    ship = new Ship();
-                    ship.setName(resultSet.getString(3));
-                    ship.setImo(resultSet.getString(2));
-                    ship.setId(resultSet.getInt(1));
-                    ship.setDepth(resultSet.getBigDecimal(6));
-                    ship.setCallSign(resultSet.getString(4));
-                    ship.setMMSI(resultSet.getString(5));
-
-                    result.add(ship);
-                }
-            } catch (SQLException e) {
-                System.err.println("Could not retrive all ships" + e);
-            }
+            constructShip(result, query);
         }
 
         return result;
 
     }
 
+    private void constructShip(ArrayList<Ship> result, String query) {
+        Ship ship;
+        try {
+            PreparedStatement statement =
+                    Tables.getCon().prepareStatement(query);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                ship = new Ship();
+                ship.setName(resultSet.getString(3));
+                ship.setImo(resultSet.getString(2));
+                ship.setId(resultSet.getInt(1));
+                ship.setDepth(resultSet.getBigDecimal(6));
+                ship.setCallSign(resultSet.getString(4));
+                ship.setMMSI(resultSet.getString(5));
+
+                result.add(ship);
+            }
+        } catch (SQLException e) {
+            System.err.println("Could not retrieve all ships" + e);
+        }
+    }
+
     /**
-     * This is used for displaying unapproved entries,
+     * This is used for displaying unapproved entries.
      * which await deletion or approval
-     * this method only returns something if the request is comming from our website
+     * this method only returns something if the request is coming from our website
      *
      * @return an JSON array of unapproved entries
      */
@@ -73,30 +78,12 @@ public class ShipsResource {
     public ArrayList<Ship> getAllShipsUN(@Context HttpServletRequest request) {
         Tables.start();
         ArrayList<Ship> result = new ArrayList<>();
-        Ship ship = new Ship();
         String query = "SELECT * " +
                 "FROM ship " +
                 "WHERE approved = false;";
 
         if (request.getSession().getAttribute("userEmail") != null) {
-            try {
-                PreparedStatement statement =
-                        Tables.getCon().prepareStatement(query);
-                ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    ship = new Ship();
-                    ship.setName(resultSet.getString(3));
-                    ship.setImo(resultSet.getString(2));
-                    ship.setId(resultSet.getInt(1));
-                    ship.setDepth(resultSet.getBigDecimal(6));
-                    ship.setCallSign(resultSet.getString(4));
-                    ship.setMMSI(resultSet.getString(5));
-
-                    result.add(ship);
-                }
-            } catch (SQLException e) {
-                System.err.println("Could not retrive all ships" + e);
-            }
+            constructShip(result, query);
         }
 
         return result;
@@ -104,9 +91,9 @@ public class ShipsResource {
     }
 
     /**
-     * this method retrives a specific entry from the DB
+     * this method retrieves a specific entry from the DB.
      *
-     * @param shipId
+     * @param shipId the ID of the ship
      * @return return the entry as an Ship object
      */
     @GET
@@ -144,7 +131,7 @@ public class ShipsResource {
 
 
     /**
-     * this function adds an entry to the database
+     * this function adds an entry to the database.
      * if it is from a user it is directly added and approve
      * if not, it is added but not approved
      *
@@ -161,38 +148,39 @@ public class ShipsResource {
         String doer = Tables.testRequest(request);
         int con = testConflict(input);
         if (request.getSession().getAttribute("userEmail") != null && con == 0) {
-            //if its from a cofano employee and it doesnt create conflcit, add straight to db
+            //if its from a cofano employee and it doesn't create conflict, add straight to db
             ownID = addEntry(input, true);
-            Tables.addHistoryEntry(title, doer, input.toString(), myname, true);
+            Tables.addHistoryEntry(title, doer, input.toString(), myName, true);
         } else if (request.getSession().getAttribute("userEmail") != null && con != 0) {
-            //if its froma cofano emplyee and it create sconflcit, add but unapproved
+            //if its from a cofano employee and it creates conflict, add but unapproved
             ownID = addEntry(input, false);
 
-            Tables.addHistoryEntry(title, doer, input.toString(), myname, false);
+            Tables.addHistoryEntry(title, doer, input.toString(), myName, false);
         } else if (!doer.equals("")) {
             //if its from an api add to unapproved
             ownID = addEntry(input, false);
-            Tables.addHistoryEntry(title, doer, input.toString(), myname, false);
+            Tables.addHistoryEntry(title, doer, input.toString(), myName, false);
         }
 
         if (con != 0) {
-            //if it creates a conflcit, add it to conflict table
-            Tables.addtoConflicts(myname, doer, ownID, con);
+            //if it creates a conflict, add it to conflict table
+            Tables.addtoConflicts(myName, doer, ownID, con);
             //add to history
-            Tables.addHistoryEntry("CON", doer, ownID + " " + input.toString() + " con with " + con, myname, false);
+            Tables.addHistoryEntry("CON", doer, ownID + " " + input.toString() +
+                    " con with " + con, myName, false);
         }
 
 
     }
 
     /**
-     * this method adds a Ship entry to the Database
+     * this method adds a Ship entry to the Database.
      *
      * @param entry the Ship about to be added
      * @param app   if the ship is approved or not
      * @return the ID which is assigned to this ship by the database
      */
-    public int addEntry(Ship entry, boolean app) {
+    private int addEntry(Ship entry, boolean app) {
         String query = "SELECT addships(?,?,?,?,?,?)";
         int rez = 0;
         try {
@@ -220,14 +208,14 @@ public class ShipsResource {
     }
 
     /**
-     * this method deletes an entry from a table and also adds it to history
+     * this method deletes an entry from a table and also adds it to history.
      *
      * @param shipId the id of the entry which is deleted
      */
     @DELETE
     @Path("/{shipId}")
-    public void deletShip(@PathParam("shipId") int shipId,
-                          @Context HttpServletRequest request) {
+    public void deleteShip(@PathParam("shipId") int shipId,
+                           @Context HttpServletRequest request) {
         Tables.start();
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
@@ -243,12 +231,12 @@ public class ShipsResource {
                 System.err.println(e.getSQLState());
                 e.printStackTrace();
             }
-            Tables.addHistoryEntry("DELETE", doer, aux.toString(), myname, true);
+            Tables.addHistoryEntry("DELETE", doer, aux.toString(), myName, true);
         }
     }
 
     /**
-     * this method changes an entry in the database
+     * this method changes an entry in the database.
      *
      * @param shipId the ID of the entry about to be changed
      * @param ship   the new information for the entry
@@ -278,23 +266,24 @@ public class ShipsResource {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            Tables.addHistoryEntry("UPDATE", doer, aux.toString() + "-->" + ship.toString(), myname, false);
+            Tables.addHistoryEntry("UPDATE", doer, aux.toString() + "-->" +
+                    ship.toString(), myName, false);
 
         }
     }
 
 
     /**
-     * this tests if there a new Port creates a conflict in the DB if it is added
-     * it creates a conflict if the IMO, callsign or MMSI
+     * this tests if there a new Port creates a conflict in the DB if it is added.
+     * it creates a conflict if the IMO, call sign or MMSI
      * is the same as another entry in the DB
      *
      * @param test the Port which is tested
      * @return the id of the port it is on conflict with
      * or 0 if there is no conflict
      */
-    public int testConflict(Ship test) {
-        int result = 0;
+    private int testConflict(Ship test) {
+        int result = -1;
         String query = "SELECT * FROM shipconflict(?,?,?)";
 
         try {
@@ -314,7 +303,7 @@ public class ShipsResource {
 
 
         } catch (SQLException e) {
-            System.err.println("Could not test conflcit IN apps" + e);
+            System.err.println("Could not test conflict IN apps" + e);
         }
         return result;
     }
