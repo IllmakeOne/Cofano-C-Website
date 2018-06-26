@@ -31,5 +31,7 @@ public class AddTerminal extends HttpServlet {
 		request.setAttribute("method", "post");
 		request.setAttribute("formUrl",
 				getServletContext().getInitParameter("cofano.url") + "/api/terminals/add" );
-    }
+		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/terminals/edit.jsp");
+
+	}
 }

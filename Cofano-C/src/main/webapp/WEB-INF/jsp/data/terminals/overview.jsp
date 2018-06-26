@@ -77,7 +77,7 @@
                 var deletingRow;
                 $(document).on('click', '.btn-delete', function () {
                     $('#delete-name').text($(this).data('delete-name'))
-                    $('#delete-confirm').data('delete-url', "${base}/api/containers/" + $(this).data('delete-id'))
+                    $('#delete-confirm').data('delete-url', "${base}/api/terminals/" + $(this).data('delete-id'))
                     $('#deleteModal').modal('show')
                     deletingRow = $(this).parents('tr');
                 });
