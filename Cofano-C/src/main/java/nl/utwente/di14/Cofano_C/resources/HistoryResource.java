@@ -20,11 +20,11 @@ public class HistoryResource {
 
 
     /**
-     * @return a JSON array of all hisotry entries
+     * @return a JSON array of all history entries
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public ArrayList<HistoryEntry> getAllHisotryEntries(
+    public ArrayList<HistoryEntry> getAllHistoryEntries(
             @Context HttpServletRequest request) {
         Tables.start();
         ArrayList<HistoryEntry> result = new ArrayList<>();
