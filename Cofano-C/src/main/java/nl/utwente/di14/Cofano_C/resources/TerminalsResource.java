@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 
+
 @Path("/terminals")
 public class TerminalsResource {
 

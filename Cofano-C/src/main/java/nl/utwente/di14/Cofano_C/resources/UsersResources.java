@@ -1,7 +1,13 @@
 package nl.utwente.di14.Cofano_C.resources;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import nl.utwente.di14.Cofano_C.dao.Tables;
-import nl.utwente.di14.Cofano_C.model.User;
+import nl.utwente.di14.Cofano_C.model.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -9,11 +15,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Path("/users")

@@ -1,5 +1,12 @@
 package nl.utwente.di14.Cofano_C.resources;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+
+
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.ContainerType;
 import nl.utwente.di14.Cofano_C.model.Port;
@@ -9,11 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 
 @Path("/containers")
 public class ContainerTypesResource {
@@ -306,12 +308,6 @@ public class ContainerTypesResource {
 		}
 		return result;
 	}
-
-        } catch (SQLException e) {
-            System.err.println("Could not test conflict IN apps" + e);
-        }
-        return result;
-    }
 
 
 }
