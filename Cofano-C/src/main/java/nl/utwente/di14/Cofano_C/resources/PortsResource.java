@@ -16,7 +16,7 @@ import java.util.ArrayList;
 @Path("/ports")
 public class PortsResource {
 
-    private String myname = "port";
+    private final String myName = "port";
 
 
     /**
@@ -38,15 +38,7 @@ public class PortsResource {
                 PreparedStatement statement =
                         Tables.getCon().prepareStatement(query);
                 ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    Port port = new Port();
-                    port.setId(resultSet.getInt("pid"));
-                    port.setName(resultSet.getString("name"));
-                    port.setUnlo(resultSet.getString("unlo"));
-
-
-                    result.add(port);
-                }
+                constructPort(result, resultSet);
             } catch (SQLException e) {
                 System.err.println("Could not retrieve all approved ports" + e);
             }
@@ -55,10 +47,29 @@ public class PortsResource {
         return result;
     }
 
+    /**
+     * Extracted method to construct a port.
+     *
+     * @param result    the result being constructed
+     * @param resultSet the Set with elements to be added to result
+     * @throws SQLException if an exception occurs
+     */
+    private void constructPort(ArrayList<Port> result, ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
+            Port port = new Port();
+            port.setId(resultSet.getInt("pid"));
+            port.setName(resultSet.getString("name"));
+            port.setUnlo(resultSet.getString("unlo"));
+
+
+            result.add(port);
+        }
+    }
+
 
     /**
-     * This is used for displaying unapproved entries, which await deletion or approval
-     * this method only returns something if the request is comming from our website
+     * This is used for displaying unapproved entries, which await deletion or approval.
+     * this method only returns something if the request is coming from our website
      *
      * @return an JSON array of unapproved entries
      */
@@ -78,13 +89,7 @@ public class PortsResource {
                 PreparedStatement statement =
                         Tables.getCon().prepareStatement(query);
                 ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    Port port = new Port();
-                    port.setId(resultSet.getInt("pid"));
-                    port.setName(resultSet.getString("name"));
-                    port.setUnlo(resultSet.getString("unlo"));
-                    result.add(port);
-                }
+                constructPort(result, resultSet);
             } catch (SQLException e) {
                 System.err.println("Could not retrieve all unapproved ports" + e);
             }
@@ -96,9 +101,9 @@ public class PortsResource {
 
 
     /**
-     * this method retrives a specific entry from the DB
+     * this method retrieves a specific entry from the DB.
      *
-     * @param portId
+     * @param portId the ports ID
      * @return return the entry as an Port object
      */
     @GET
@@ -130,13 +135,14 @@ public class PortsResource {
 
 
     /**
-     * this function adds an entry to the database
+     * this function adds an entry to the database.
      * if it is from a user it is directly added and approve
      * if not, it is added but not approved
      *
      * @param input   the entry about to be added
      * @param request the request of the client
      */
+    @SuppressWarnings("Duplicates")
     @POST
     @Path("add")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -151,26 +157,26 @@ public class PortsResource {
 
 
         if (request.getSession().getAttribute("userEmail") != null && con == 0) {
-            //if its from a cofano employee and it doesnt create conflcit, add straight to db
+            //if its from a cofano employee and it doesn't create conflict, add straight to db
             ownID = addEntry(input, true);
-            Tables.addHistoryEntry(title, doer, input.toString(), myname, true);
+            Tables.addHistoryEntry(title, doer, input.toString(), myName, true);
         } else if (request.getSession().getAttribute("userEmail") != null && con != 0) {
-            //if its froma cofano emplyee and it create sconflcit, add but unapproved
+            //if its from a cofano employee and it creates conflict, add but unapproved
             ownID = addEntry(input, false);
 
-            Tables.addHistoryEntry(title, doer, input.toString(), myname, false);
+            Tables.addHistoryEntry(title, doer, input.toString(), myName, false);
         } else if (!doer.equals("")) {
             //if its from an api add to unapproved
             ownID = addEntry(input, false);
-            Tables.addHistoryEntry(title, doer, input.toString(), myname, false);
+            Tables.addHistoryEntry(title, doer, input.toString(), myName, false);
         }
 
         if (con != 0) {
-            //if it creates a conflcit, add it to conflict table
-            Tables.addtoConflicts(myname, doer, ownID, con);
+            //if it creates a conflict, add it to conflict table
+            Tables.addtoConflicts(myName, doer, ownID, con);
             //add to history
             Tables.addHistoryEntry("CON", doer, ownID + " "
-                    + input.toString() + " con with " + con, myname, false);
+                    + input.toString() + " con with " + con, myName, false);
 
         }
 
@@ -178,13 +184,13 @@ public class PortsResource {
 
 
     /**
-     * this method adds a Port entry to the Database
+     * this method adds a Port entry to the Database.
      *
      * @param entry the Port about to be added
      * @param app   if the port is approved or not
      * @return the ID which is assigned to this port by the database
      */
-    public int addEntry(Port entry, boolean app) {
+    private int addEntry(Port entry, boolean app) {
         String query = "SELECT addport(?,?,?)";
         int rez = 0;
         //gets here if the request is from API
@@ -211,14 +217,14 @@ public class PortsResource {
 
 
     /**
-     * this method deletes an entry from a table and also adds it to history
+     * this method deletes an entry from a table and also adds it to history.
      *
      * @param portId the id of the entry which is deleted
      */
     @DELETE
     @Path("/{portId}")
-    public void deletPort(@PathParam("portId") int portId,
-                          @Context HttpServletRequest request) {
+    public void deletePort(@PathParam("portId") int portId,
+                           @Context HttpServletRequest request) {
         Tables.start();
 
         String doer = Tables.testRequest(request);
@@ -237,12 +243,12 @@ public class PortsResource {
                 e.printStackTrace();
             }
             Tables.addHistoryEntry("DELETE", doer,
-                    aux.toString(), myname, true);
+                    aux.toString(), myName, true);
         }
     }
 
     /**
-     * this method changes an entry in the database
+     * this method changes an entry in the database.
      *
      * @param portId the ID of the entry about to be changed
      * @param port   the new information for the entry
@@ -271,22 +277,22 @@ public class PortsResource {
                 e.printStackTrace();
             }
             Tables.addHistoryEntry("UPDATE", doer,
-                    aux.toString() + "-->" + port.toString(), myname, false);
+                    aux.toString() + "-->" + port.toString(), myName, false);
         }
 
     }
 
 
     /**
-     * this tests if there a new Port creates a conflict in the DB if it is added
+     * this tests if there a new Port creates a conflict in the DB if it is added.
      * it creates a conflict if the name or unlo is the same as another entry in the DB
      *
      * @param test the Port which is tested
      * @return the id of the port it is on conflict with
      * or 0 if there is no conflict
      */
-    public int testConflict(Port test) {
-        int result = 0;
+    private int testConflict(Port test) {
+        int result = -1;
         String query = "SELECT * FROM portconflict(?,?)";
 
         try {
@@ -304,7 +310,7 @@ public class PortsResource {
             }
 
         } catch (SQLException e) {
-            System.err.println("Could not test conflcit IN port " + e);
+            System.err.println("Could not test conflict IN port " + e);
         }
         return result;
     }
