@@ -13,6 +13,7 @@
 
     <jsp:attribute name="footer">
         <script type="text/javascript" src="${base}/DataTables/datatables.min.js"></script>
+        <script type="text/javascript" src="${base}/js/dataTables.cellEdit.js"></script>
         <script type="text/javascript">
             $(document).ready( function () {
                 $('.datatables').DataTable({
@@ -21,9 +22,9 @@
                         dataSrc: '',
                     },
                     columns: [
-                        { data: 'title' },
-                        { data: 'message' },
-                        { data: 'type'},
+                        { data: 'title', render: $.fn.dataTable.render.text()},
+                        { data: 'message', render: $.fn.dataTable.render.text() },
+                        { data: 'type', render: $.fn.dataTable.render.text()},
                         {
                             data: 'addedAt',
                             render: function (data, type, row, meta) {

@@ -211,7 +211,7 @@
                 	document.getElementById("portstable").outerHTML = "";
                 	document.getElementById("portname").outerHTML = "";
                 }
-                if(terminaltable.data().any()){
+                if(!terminaltable.data().any()){
                 	terminaltable.destroy();
                 	document.getElementById("terminalstable").outerHTML = "";
                 	document.getElementById("termname").outerHTML = "";
