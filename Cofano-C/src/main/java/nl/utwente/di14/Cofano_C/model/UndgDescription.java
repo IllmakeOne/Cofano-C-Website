@@ -3,7 +3,7 @@ package nl.utwente.di14.Cofano_C.model;
 /**
  * This is the model for UNDG descriptions.
  */
-class DescriptionUNDG {
+public class UndgDescription {
 
     private int id;
     private int undgID;
@@ -13,7 +13,7 @@ class DescriptionUNDG {
     /**
      * Creates a new blank UNDG description.
      */
-    public DescriptionUNDG() {
+    public UndgDescription() {
     }
 
     /**
@@ -24,7 +24,7 @@ class DescriptionUNDG {
      * @param description the actual description
      * @param language    of the UNDG description
      */
-    public DescriptionUNDG(int id, int undgID, String description, String language) {
+    public UndgDescription(int id, int undgID, String description, String language) {
         super();
         this.id = id;
         this.undgID = undgID;
@@ -32,13 +32,9 @@ class DescriptionUNDG {
         this.language = language;
     }
 
-    /**
-     * Gets the UNDG description ID.
-     *
-     * @return id of the UNDG description
-     */
-    public int getId() {
-        return id;
+    public UndgDescription(String language , String description) {
+        this.language = language;
+        this.description = description;
     }
 
     /**
@@ -50,14 +46,6 @@ class DescriptionUNDG {
         this.id = id;
     }
 
-    /**
-     * Gets the UNDG ID the description references.
-     *
-     * @return the UNDG ID the description references
-     */
-    public int getUndgID() {
-        return undgID;
-    }
 
     /**
      * Sets the UNDG ID the description references.
