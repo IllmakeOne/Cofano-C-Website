@@ -47,22 +47,6 @@ public class ContainerTypesResource {
         return result;
     }
 
-    private void constructContainerType(ArrayList<ContainerType> result, ResultSet resultSet)
-            throws SQLException {
-        while (resultSet.next()) {
-            ContainerType container = new ContainerType();
-            container.setDisplayName(resultSet.getString("display_name"));
-            container.setId(resultSet.getInt("cid"));
-            container.setIsoCode(resultSet.getString("iso_code"));
-            container.setDescription(resultSet.getString("description"));
-            container.setLength(resultSet.getInt("c_length"));
-            container.setHeight(resultSet.getInt("c_height"));
-            container.setReefer(resultSet.getBoolean("reefer"));
-
-            result.add(container);
-        }
-    }
-
     /**
      * This is used for displaying unapproved entries, which await deletion or approval
      * this method only returns something if the request is coming from our website.
@@ -76,10 +60,14 @@ public class ContainerTypesResource {
             @Context HttpServletRequest request) {
         Tables.start();
         ArrayList<ContainerType> result = new ArrayList<>();
-        String query = "SELECT * " +
-                "FROM container_type " +
-                "WHERE approved = false";
-
+        //select all unapproved entries which are not in the conflict table
+        String query = "select container_type.* "
+        		+ "from container_type"
+        		+ " where container_type.approved = false "
+        		+ "AND container_type.cid not in (select conflict.entry "
+        										+ "from conflict "
+        										+ "where conflict.\"table\"= 'container_type' )\r\n";
+        
         if (request.getSession().getAttribute("userEmail") != null) {
             try {
                 PreparedStatement statement = Tables.getCon().prepareStatement(query);
@@ -307,6 +295,22 @@ public class ContainerTypesResource {
         }
         return result;
     }
+
+	private void constructContainerType(ArrayList<ContainerType> result, ResultSet resultSet)
+	        throws SQLException {
+	    while (resultSet.next()) {
+	        ContainerType container = new ContainerType();
+	        container.setDisplayName(resultSet.getString("display_name"));
+	        container.setId(resultSet.getInt("cid"));
+	        container.setIsoCode(resultSet.getString("iso_code"));
+	        container.setDescription(resultSet.getString("description"));
+	        container.setLength(resultSet.getInt("c_length"));
+	        container.setHeight(resultSet.getInt("c_height"));
+	        container.setReefer(resultSet.getBoolean("reefer"));
+	
+	        result.add(container);
+	    }
+	}
 
 
 }

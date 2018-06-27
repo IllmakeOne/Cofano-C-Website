@@ -41,30 +41,6 @@ public class ShipsResource {
 
     }
 
-    private void constructShip(ArrayList<Ship> result, String query) {
-        Ship ship;
-        try {
-            PreparedStatement statement =
-                    Tables.getCon().prepareStatement(query);
-
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                ship = new Ship();
-                ship.setName(resultSet.getString(3));
-                ship.setImo(resultSet.getString(2));
-                ship.setId(resultSet.getInt(1));
-                ship.setDepth(resultSet.getBigDecimal(6));
-                ship.setCallSign(resultSet.getString(4));
-                ship.setMMSI(resultSet.getString(5));
-
-                result.add(ship);
-            }
-        } catch (SQLException e) {
-            System.err.println("Could not retrieve all ships" + e);
-        }
-    }
-
     /**
      * This is used for displaying unapproved entries.
      * which await deletion or approval
@@ -78,9 +54,12 @@ public class ShipsResource {
     public ArrayList<Ship> getAllShipsUN(@Context HttpServletRequest request) {
         Tables.start();
         ArrayList<Ship> result = new ArrayList<>();
-        String query = "SELECT * " +
-                "FROM ship " +
-                "WHERE approved = false;";
+        String query = "select ship.* "
+        		+ "from ship "
+        		+ "where ship.approved = false "
+        		+ "AND ship.sid not in (select conflict.entry "
+        								+ "from conflict "
+        								+ "where conflict.\"table\"= 'ship' )";
 
         if (request.getSession().getAttribute("userEmail") != null) {
             constructShip(result, query);
@@ -307,6 +286,30 @@ public class ShipsResource {
         }
         return result;
     }
+
+	private void constructShip(ArrayList<Ship> result, String query) {
+	    Ship ship;
+	    try {
+	        PreparedStatement statement =
+	                Tables.getCon().prepareStatement(query);
+	
+	        ResultSet resultSet = statement.executeQuery();
+	
+	        while (resultSet.next()) {
+	            ship = new Ship();
+	            ship.setName(resultSet.getString(3));
+	            ship.setImo(resultSet.getString(2));
+	            ship.setId(resultSet.getInt(1));
+	            ship.setDepth(resultSet.getBigDecimal(6));
+	            ship.setCallSign(resultSet.getString(4));
+	            ship.setMMSI(resultSet.getString(5));
+	
+	            result.add(ship);
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("Could not retrieve all ships" + e);
+	    }
+	}
 
 
 }

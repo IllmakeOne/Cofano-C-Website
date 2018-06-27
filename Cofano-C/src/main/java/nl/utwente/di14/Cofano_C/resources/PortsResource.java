@@ -48,26 +48,6 @@ public class PortsResource {
     }
 
     /**
-     * Extracted method to construct a port.
-     *
-     * @param result    the result being constructed
-     * @param resultSet the Set with elements to be added to result
-     * @throws SQLException if an exception occurs
-     */
-    private void constructPort(ArrayList<Port> result, ResultSet resultSet) throws SQLException {
-        while (resultSet.next()) {
-            Port port = new Port();
-            port.setId(resultSet.getInt("pid"));
-            port.setName(resultSet.getString("name"));
-            port.setUnlo(resultSet.getString("unlo"));
-
-
-            result.add(port);
-        }
-    }
-
-
-    /**
      * This is used for displaying unapproved entries, which await deletion or approval.
      * this method only returns something if the request is coming from our website
      *
@@ -79,9 +59,11 @@ public class PortsResource {
     public ArrayList<Port> getAllPortUN(@Context HttpServletRequest request) {
         Tables.start();
         ArrayList<Port> result = new ArrayList<>();
-        String query = "SELECT * " +
-                "FROM port " +
-                "WHERE approved = false";
+        String query = "select port.* from port "
+        		+ "where port.approved = false "
+        		+ "AND port.pid not in (select conflict.entry"
+        								+ " from conflict "
+        								+ "where conflict.\"table\"= 'port' ) ";
 
         if (request.getSession().getAttribute("userEmail") != null) {
 
@@ -163,7 +145,7 @@ public class PortsResource {
         } else if (request.getSession().getAttribute("userEmail") != null && con != 0) {
             //if its from a cofano employee and it creates conflict, add but unapproved
             ownID = addEntry(input, false);
-
+            //INFOM CLIENT THEY CREATED CONFLICT
             Tables.addHistoryEntry(title, doer, input.toString(), myName, false);
         } else if (!doer.equals("")) {
             //if its from an api add to unapproved
@@ -177,9 +159,7 @@ public class PortsResource {
             //add to history
             Tables.addHistoryEntry("CON", doer, ownID + " "
                     + input.toString() + " con with " + con, myName, false);
-
         }
-
     }
 
 
@@ -284,6 +264,25 @@ public class PortsResource {
 
 
     /**
+	 * Extracted method to construct a port.
+	 *
+	 * @param result    the result being constructed
+	 * @param resultSet the Set with elements to be added to result
+	 * @throws SQLException if an exception occurs
+	 */
+	private void constructPort(ArrayList<Port> result, ResultSet resultSet) throws SQLException {
+	    while (resultSet.next()) {
+	        Port port = new Port();
+	        port.setId(resultSet.getInt("pid"));
+	        port.setName(resultSet.getString("name"));
+	        port.setUnlo(resultSet.getString("unlo"));
+	
+	
+	        result.add(port);
+	    }
+	}
+
+	/**
      * this tests if there a new Port creates a conflict in the DB if it is added.
      * it creates a conflict if the name or unlo is the same as another entry in the DB
      *
@@ -291,6 +290,7 @@ public class PortsResource {
      * @return the id of the port it is on conflict with
      * or 0 if there is no conflict
      */
+	
     private int testConflict(Port test) {
         int result = -1;
         String query = "SELECT * FROM portconflict(?,?)";

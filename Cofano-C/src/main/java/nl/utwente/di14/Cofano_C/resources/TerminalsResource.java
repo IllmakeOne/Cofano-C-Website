@@ -48,20 +48,6 @@ public class TerminalsResource {
         return result;
     }
 
-    private void constructTerminal(ArrayList<Terminal> result, ResultSet resultSet)
-            throws SQLException {
-        while (resultSet.next()) {
-            Terminal terminal = new Terminal();
-            terminal.setID(resultSet.getInt("tid"));
-            terminal.setName(resultSet.getString("name"));
-            terminal.setTerminalCode(resultSet.getString("terminal_code"));
-            terminal.setType(resultSet.getString("type"));
-            terminal.setUnlo(resultSet.getString("unlo"));
-            terminal.setPortId(resultSet.getInt("port_id"));
-            result.add(terminal);
-        }
-    }
-
     /**
      * This is used for displaying unapproved entries, which await deletion or approval.
      * this method only returns something if the request is coming from our website
@@ -74,9 +60,11 @@ public class TerminalsResource {
     public ArrayList<Terminal> getAllTerminalsUN(@Context HttpServletRequest request) {
         Tables.start();
         ArrayList<Terminal> result = new ArrayList<>();
-        String query = "SELECT * " +
-                "FROM terminal " +
-                "WHERE approved = false";
+        String query = "SELECT terminal.* " +
+                "FROM terminal,conflict " +
+                "WHERE terminal.approved = false "
+                + "AND conflict.\"table\"='terminal' "
+                + "AND conflict.entry != terminal.tid ";
 
         if (request.getSession().getAttribute("userEmail") != null) {
 
@@ -296,7 +284,21 @@ public class TerminalsResource {
         return result;
     }
 
-    /**
+    private void constructTerminal(ArrayList<Terminal> result, ResultSet resultSet)
+	        throws SQLException {
+	    while (resultSet.next()) {
+	        Terminal terminal = new Terminal();
+	        terminal.setID(resultSet.getInt("tid"));
+	        terminal.setName(resultSet.getString("name"));
+	        terminal.setTerminalCode(resultSet.getString("terminal_code"));
+	        terminal.setType(resultSet.getString("type"));
+	        terminal.setUnlo(resultSet.getString("unlo"));
+	        terminal.setPortId(resultSet.getInt("port_id"));
+	        result.add(terminal);
+	    }
+	}
+
+	/**
      * this function is used in the Adding of a terminal.
      * Terminal have a foreign key to Ports
      *
