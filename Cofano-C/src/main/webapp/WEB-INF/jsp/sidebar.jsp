@@ -8,26 +8,26 @@
             <span>MAIN</span>
         </h6>
         <ul class="nav flex-column">
-            <li class="nav-item">
+            <li id="dashboard" class="nav-item">
                 <a class="nav-link<c:if test="${fn:endsWith(pageContext.request.requestURI, '/Cofano-C/')}"> active</c:if>" href="${(empty base) ? '.' : base}/">
                     <span data-feather="home"></span>
                     Dashboard
                     <span class="sr-only">(current)</span>
                 </a>
             </li>
-            <li class="nav-item">
+            <li id="recent_data" class="nav-item">
                 <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'history')}"> active</c:if>" href="${(empty base) ? '.' : base}/history">
                     <span data-feather="clock"></span>
                     Recently added data
                 </a>
             </li>
-            <li class="nav-item">
+            <li id="conflicts" class="nav-item">
                 <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'conflicts')}"> active</c:if>" href="${(empty base) ? '.' : base}#">
                     <span data-feather="alert-triangle"></span>
                     Conflicts
                 </a>
             </li>
-            <li class="nav-item">
+            <li id="users" class="nav-item">
                 <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'users')}"> active</c:if>" href="${(empty base) ? '.' : base}/users">
                     <span data-feather="users"></span>
                     Users
@@ -43,38 +43,38 @@
 	</div>
 			
         <ul class="nav flex-column">
-            <li class="nav-item">
+            <li id="applications" class="nav-item">
                 <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'apps')}"> active</c:if>" href="${(empty base) ? '.' : base}/applications">
                     <span data-feather="aperture"></span>
                     Applications
                 </a>
             </li>
-            <li class="nav-item">
+            <li id="ships" class="nav-item">
                 <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'ships')}"> active</c:if>" href="${(empty base) ? '.' : base}/ships">
                     <span data-feather="anchor"></span>
                     Ships
                 </a>
             </li>
-            <li class="nav-item">
+            <li id="container_types" class="nav-item">
                 <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'containers')}"> active</c:if>" href="${(empty base) ? '.' : base}/containers">
                     <span data-feather="package"></span>
                     Container Types
                 </a>
             </li>
-            <li class="nav-item">
+            <li id="terminals" class="nav-item">
                 <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'terminals')}"> active</c:if>" href="${(empty base) ? '.' : base}/terminals">
                     <span data-feather="terminal"></span>
                     Terminals
                 </a>
             </li>
 
-            <li class="nav-item">
+            <li id="UNDGs" class="nav-item">
                 <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'undgs')}"> active</c:if>" href="${(empty base) ? '.' : base}/undgs">
                     <span data-feather="box"></span>
                     UNDGs
                 </a>
             </li>
-            <li class="nav-item">
+            <li id="ports" class="nav-item">
                 <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'ports')}"> active</c:if>" href="${(empty base) ? '.' : base}/ports">
                     <span data-feather="map-pin"></span>
                     Ports
