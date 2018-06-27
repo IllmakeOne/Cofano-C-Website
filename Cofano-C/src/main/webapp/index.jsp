@@ -17,6 +17,7 @@
         <script type="text/javascript" src="${(empty base) ? '.' : base}/js/dataTables.cellEdit.js"></script>
         <script type="text/javascript">
         $(document).ready( function () {
+        	var empties = 0;
             var portstable = $('#portstable').DataTable({
                 ajax: {
                     url: "${(empty base) ? '.' : base}/api/ports/unapproved",
@@ -46,8 +47,19 @@
                 responsive: true,
                 drawCallback: function( settings ) {
                     feather.replace();
+                    /*
+                    console.log(this.data());
+                    if(!this.data().any()){
+                    	this.destroy();
+                    	document.getElementById("portstable").outerHTML = "";
+                    	document.getElementById("portname").outerHTML = "";
+                    	empties +=1;
+                    }
+                    */
                 },
             });	
+          //  console.log(portstable.data());
+            
             
             
                 var terminaltable = $(' #terminalstable').DataTable({
@@ -81,7 +93,13 @@
                     ],
                     responsive: true,
                     drawCallback: function( settings ) {
-                        feather.replace();
+                        feather.replace();/*
+                        if(!this.data().any()){
+                        	this.destroy();
+                        	document.getElementById("terminalstable").outerHTML = "";
+                        	document.getElementById("termname").outerHTML = "";
+                        	empties+=1;
+                        }*/
                     },
                 });
                 
@@ -116,7 +134,13 @@
                     ],
                     responsive: true,
                     drawCallback: function( settings ) {
-                        feather.replace();
+                        feather.replace();/*
+                        if(!this.data().any()){
+                        	this.destroy();
+                        	document.getElementById("shipstable").outerHTML = "";
+                        	document.getElementById("shipname").outerHTML = "";
+                        	empties+=1;
+                        }*/
                     },
                 });
                 
@@ -152,7 +176,14 @@
                     ],
                     responsive: true,
                     drawCallback: function( settings ) {
-                        feather.replace();
+                        feather.replace();        /*                
+                        if(!this.data().any()){
+                        	this.destroy();
+                        	document.getElementById("containerstable").outerHTML = "";
+                        	document.getElementById("conname").outerHTML = "";
+                        	empties+=1;
+                        }*/
+                        
                     },
                 });
                 
@@ -200,46 +231,16 @@
                     });
                 });
                 
-                var empties = 0;
-               
-                console.log(portstable.data().any());
-                console.log(containerstable.data().any());
-                console.log(shipstable.data().any());
-                console.log(containerstable.data().count());	
-                
-                if(portstable.data().any()){
-                	portstable.destroy();
-                	document.getElementById("portstable").outerHTML = "";
-                	document.getElementById("portname").outerHTML = "";
-                	empties +=1;
-                }
-                if(terminaltable.data().any()){
-                	terminaltable.destroy();
-                	document.getElementById("terminalstable").outerHTML = "";
-                	document.getElementById("termname").outerHTML = "";
-                	empties+=1;
-                }
-                if(shipstable.data().any()){
-                	shipstable.destroy();
-                	document.getElementById("shipstable").outerHTML = "";
-                	document.getElementById("shipname").outerHTML = "";
-                	empties+=1;
-                }
-                
-                if(containerstable.data().any()){
-                	containerstable.destroy();
-                	document.getElementById("containerstable").outerHTML = "";
-                	document.getElementById("conname").outerHTML = "";
-                	empties+=1;
-                }
-                
-                
+             
+              
+                /*
                 
                 if(empties === 4){
                 	document.getElementById("title").outerHTML = "<h2>Nothing to be approved</h2>";
                 } else {
                 	document.getElementById("title").outerHTML = "<h3>These entries need approval</h3>";
                 }
+                */
                 
 
 
@@ -282,7 +283,7 @@
                             </button>
                         </div>
 
-<h3 id = "title">Loading</h3>
+<h3 id = "title">These entries need approval</h3>
 
 			
 
