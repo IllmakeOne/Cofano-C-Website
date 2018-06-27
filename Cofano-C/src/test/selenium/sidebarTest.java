@@ -36,28 +36,67 @@ public class sidebarTest {
         passwordElement.submit();
 
         //Anticipate web browser response, with an explicit wait
-        WebDriverWait wait2 = new WebDriverWait(driver, 10);
-        WebElement userElement = wait2.until(ExpectedConditions.presenceOfElementLocated(By.className("wpW1cb")));
+//        WebDriverWait wait2 = new WebDriverWait(driver, 10);
+        WebElement userElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.className("wpW1cb")));
         userElement.click();
         WebDriverWait wait1 = new WebDriverWait(driver, 10);
-        WebElement pageHeaderElement = wait1.until(ExpectedConditions.presenceOfElementLocated(By.id("pageHeader")));
+        WebElement element = wait1.until(ExpectedConditions.presenceOfElementLocated(By.id("pageHeader")));
 
         //Testing the sidebar
 
         //Testing the dashboard button
-        WebDriverWait wait3 = new WebDriverWait(driver, 10);
-        WebElement sidebarDashboardElement = wait3.until(ExpectedConditions.presenceOfElementLocated(By.id("ships")));
-        sidebarDashboardElement.click();
-        String dashboardURL = driver.getCurrentUrl();
-        Assert.assertEquals(dashboardURL, "http://localhost:8080/Cofano-C/ships");
+        element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("dashboard")));
+        element.click();
+        String URL = driver.getCurrentUrl();
+        Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/");
+
+        //Testing the recently added button
+       element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("recent_data")));
+        element.click();
+        URL = driver.getCurrentUrl();
+        Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/history");
+
+        //Testing the users button
+        element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("users")));
+        element.click();
+        String shipsURL = driver.getCurrentUrl();
+        Assert.assertEquals(shipsURL, "http://localhost:8080/Cofano-C/users");
+
+        //Testing the applications button
+        element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("applications")));
+        element.click();
+        URL = driver.getCurrentUrl();
+        Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/applications");
 
         //Testing the ships button
-        WebDriverWait wait3 = new WebDriverWait(driver, 10);
-        WebElement sidebarDashboardElement = wait3.until(ExpectedConditions.presenceOfElementLocated(By.id("ships")));
-        sidebarDashboardElement.click();
-        String dashboardURL = driver.getCurrentUrl();
-        Assert.assertEquals(dashboardURL, "http://localhost:8080/Cofano-C/ships");
+        element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("ships")));
+        element.click();
+        URL = driver.getCurrentUrl();
+        Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/ships");
 
+        //Testing the container types button
+        element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("container_types")));
+        element.click();
+        URL = driver.getCurrentUrl();
+        Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/containers");
+
+        //Testing the terminals button
+        element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("terminals")));
+        element.click();
+        URL = driver.getCurrentUrl();
+        Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/terminals");
+
+        //Testing the UNDGs button
+        element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("UNDGs")));
+        element.click();
+        URL = driver.getCurrentUrl();
+        Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/undgs");
+
+        //Testing the ports button
+        element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("ports")));
+        element.click();
+        URL = driver.getCurrentUrl();
+        Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/ports");
 
         //Stopping the driver
         driver.quit();
