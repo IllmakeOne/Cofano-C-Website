@@ -54,6 +54,7 @@ public class ShipsResource {
     public ArrayList<Ship> getAllShipsUN(@Context HttpServletRequest request) {
         Tables.start();
         ArrayList<Ship> result = new ArrayList<>();
+        //select all unapproved entries which are not in the conflict table
         String query = "select ship.* "
         		+ "from ship "
         		+ "where ship.approved = false "
@@ -213,6 +214,36 @@ public class ShipsResource {
             Tables.addHistoryEntry("DELETE", doer, aux.toString(), myName, true);
         }
     }
+    
+    /**
+	 * this method approves an entry in the database
+	 * @param shipid the id of the ship which is approved
+	 */
+	@PUT
+	@Path("/approve/{shipid}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void approveShip(@PathParam("shipid") int shipid,
+			@Context HttpServletRequest request) {
+		
+		if(request.getSession().getAttribute("userEmail")!=null) {
+			Ship aux = getShip(shipid, request);
+			String query = "SELECT approveship(?)";
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				statement.setInt(1, shipid);
+				statement.executeQuery();
+	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			Tables.addHistoryEntry("APPROVE", 
+					request.getSession().getAttribute("userEmail").toString(),
+					aux.toString() , myName, true);
+		}
+	}
+
 
     /**
      * this method changes an entry in the database.
