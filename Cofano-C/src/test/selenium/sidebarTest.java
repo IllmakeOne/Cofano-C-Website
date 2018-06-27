@@ -40,10 +40,18 @@ public class sidebarTest {
         WebElement userElement = wait2.until(ExpectedConditions.presenceOfElementLocated(By.className("wpW1cb")));
         userElement.click();
         WebDriverWait wait1 = new WebDriverWait(driver, 10);
-        WebElement titleElement = wait1.until(ExpectedConditions.presenceOfElementLocated(By.id("title")));
+        WebElement pageHeaderElement = wait1.until(ExpectedConditions.presenceOfElementLocated(By.id("pageHeader")));
 
         //Testing the sidebar
+
         //Testing the dashboard button
+        WebDriverWait wait3 = new WebDriverWait(driver, 10);
+        WebElement sidebarDashboardElement = wait3.until(ExpectedConditions.presenceOfElementLocated(By.id("ships")));
+        sidebarDashboardElement.click();
+        String dashboardURL = driver.getCurrentUrl();
+        Assert.assertEquals(dashboardURL, "http://localhost:8080/Cofano-C/ships");
+
+        //Testing the ships button
         WebDriverWait wait3 = new WebDriverWait(driver, 10);
         WebElement sidebarDashboardElement = wait3.until(ExpectedConditions.presenceOfElementLocated(By.id("ships")));
         sidebarDashboardElement.click();

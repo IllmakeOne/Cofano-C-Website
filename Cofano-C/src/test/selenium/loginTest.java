@@ -43,10 +43,10 @@ public class loginTest {
         WebElement userElement = wait2.until(ExpectedConditions.presenceOfElementLocated(By.className("wpW1cb")));
         userElement.click();
         WebDriverWait wait1 = new WebDriverWait(driver, 10);
-        WebElement titleElement = wait1.until(ExpectedConditions.presenceOfElementLocated(By.id("title")));
+        WebElement pageHeaderElement = wait1.until(ExpectedConditions.presenceOfElementLocated(By.id("pageHeader")));
 
         //Run a test
-        String message = titleElement.getText();
+        String message = pageHeaderElement.getText();
         String successMsg = "Dashboard";
         Assert.assertEquals(message, successMsg);
 
