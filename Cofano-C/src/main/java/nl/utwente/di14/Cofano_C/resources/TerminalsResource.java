@@ -226,6 +226,33 @@ public class TerminalsResource {
     }
     
     /**
+	 * this method deletes an entry from a table but doest not enter in in the database
+	 * this method is called for unapproved entries
+	 * this method does not add to the history table
+	 * @param portId the id of the entry which is deleted
+	 */
+    @DELETE
+	@Path("/unapproved/{terminalId}")
+	public void deletTerminalUN(@PathParam("terminalId") int terminalId, 
+			@Context HttpServletRequest request) {
+		Tables.start();	
+		if(request.getSession().getAttribute("userEmail")!=null) {
+			String query ="SELECT deleteterminal(?)";
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				statement.setInt(1, terminalId);
+				statement.executeQuery();
+			} catch (SQLException e) {
+				System.err.println("Was not able to delete unapproved Terminal");
+				System.err.println(e.getSQLState());
+				e.printStackTrace();
+			}
+		}
+	}
+
+    
+    /**
 	 * this method approves an entry in the database
 	 * @param terminalId the id of the terminal which is approved
 	 */
@@ -343,7 +370,7 @@ public class TerminalsResource {
     public ArrayList<Port> getAvailableIDs(@Context HttpServletRequest request) {
         Tables.start();
         ArrayList<Port> result = new ArrayList<>();
-        String query = "SELECT pid, name FROM port";
+        String query = "SELECT pid, name FROM port WHERE approved = true";
 
         String name = Tables.testRequest(request);
         if (!name.equals("")) {
