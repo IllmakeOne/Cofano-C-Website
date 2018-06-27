@@ -3,6 +3,8 @@ import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -41,8 +43,16 @@ public class sidebarTest {
         WebElement titleElement = wait1.until(ExpectedConditions.presenceOfElementLocated(By.id("title")));
 
         //Testing the sidebar
+        //Testing the dashboard button
         WebDriverWait wait3 = new WebDriverWait(driver, 10);
-        WebElement sidebarDashboarElement = wait3.until(ExpectedConditions.presenceOfElementLocated(By.id()))
+        WebElement sidebarDashboardElement = wait3.until(ExpectedConditions.presenceOfElementLocated(By.id("ships")));
+        sidebarDashboardElement.click();
+        String dashboardURL = driver.getCurrentUrl();
+        Assert.assertEquals(dashboardURL, "http://localhost:8080/Cofano-C/ships");
+
+
+        //Stopping the driver
+        driver.quit();
 
     }
 }

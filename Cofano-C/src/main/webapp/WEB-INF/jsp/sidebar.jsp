@@ -8,8 +8,8 @@
             <span>MAIN</span>
         </h6>
         <ul class="nav flex-column">
-            <li id="dashboard" class="nav-item">
-                <a class="nav-link<c:if test="${fn:endsWith(pageContext.request.requestURI, '/Cofano-C/')}"> active</c:if>" href="${(empty base) ? '.' : base}/">
+            <li class="nav-item">
+                <a id="dashboard" class="nav-link<c:if test="${fn:endsWith(pageContext.request.requestURI, '/Cofano-C/')}"> active</c:if>" href="${(empty base) ? '.' : base}/">
                     <span data-feather="home"></span>
                     Dashboard
                     <span class="sr-only">(current)</span>
@@ -49,8 +49,8 @@
                     Applications
                 </a>
             </li>
-            <li id="ships" class="nav-item">
-                <a class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'ships')}"> active</c:if>" href="${(empty base) ? '.' : base}/ships">
+            <li class="nav-item">
+                <a id="ships" class="nav-link<c:if test="${fn:contains(pageContext.request.requestURI, 'ships')}"> active</c:if>" href="${(empty base) ? '.' : base}/ships">
                     <span data-feather="anchor"></span>
                     Ships
                 </a>
