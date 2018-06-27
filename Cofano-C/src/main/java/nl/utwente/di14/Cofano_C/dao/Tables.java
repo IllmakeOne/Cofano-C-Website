@@ -200,7 +200,13 @@ public class Tables {
 //    		return stringy;
 //    	}
     	
-    	
+    /**
+	 * this methods takes a strig and reformats it
+	 * the method is called to reformat string comming from the database 
+	 * @param str
+	 * @return
+	 */
+
     	public static String tidyup(String str) {
     		String[] aux = str.split(",");
     		return aux[0].substring(1)+" " +aux[1].substring(0, aux[1].length()-1);
