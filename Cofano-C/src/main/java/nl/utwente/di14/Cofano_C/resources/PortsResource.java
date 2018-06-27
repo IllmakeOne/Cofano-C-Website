@@ -59,6 +59,7 @@ public class PortsResource {
     public ArrayList<Port> getAllPortUN(@Context HttpServletRequest request) {
         Tables.start();
         ArrayList<Port> result = new ArrayList<>();
+        //select all unapproved entries which are not in the conflict table
         String query = "select port.* from port "
         		+ "where port.approved = false "
         		+ "AND port.pid not in (select conflict.entry"
@@ -215,8 +216,8 @@ public class PortsResource {
             try {
                 PreparedStatement statement =
                         Tables.getCon().prepareStatement(query);
-                statement.setLong(1, portId);
-                statement.executeUpdate();
+                statement.setInt(1, portId);
+                statement.executeQuery();
             } catch (SQLException e) {
                 System.err.println("Was not able to delete Port");
                 System.err.println(e.getSQLState());
@@ -226,6 +227,63 @@ public class PortsResource {
                     aux.toString(), myName, true);
         }
     }
+    
+    /**
+	 * this method deletes an entry from a table but doest not enter in in the database
+	 * this method is called for unapproved entries
+	 * this method does not add to the history table
+	 * @param portId the id of the entry which is deleted
+	 */
+	@DELETE
+	@Path("/unapproved/{portId}")
+	public void deletPortUN(@PathParam("portId") int portId,
+			@Context HttpServletRequest request) {
+		Tables.start();		
+		if(request.getSession().getAttribute("userEmail")!=null) {
+			String query ="SELECT deleteport(?)";
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				statement.setInt(1, portId);
+				statement.executeQuery();
+			} catch (SQLException e) {
+				System.err.println("Was not able to delete unapproved Port");
+				System.err.println(e.getSQLState());
+				e.printStackTrace();
+			}
+		}
+	}
+    
+    
+    /**
+	 * this method approves an entry in the database
+	 * @param portid the id of the port which is approved
+	 */
+	@PUT
+	@Path("/approve/{portid}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void approvePort(@PathParam("portid") int portid,
+			@Context HttpServletRequest request) {
+		
+		if(request.getSession().getAttribute("userEmail")!=null) {
+			Port aux = getPort(portid, request);
+			String query = "SELECT approveport(?)";
+			try {
+				PreparedStatement statement = 
+						Tables.getCon().prepareStatement(query);
+				statement.setInt(1, portid);
+				statement.executeQuery();
+	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			Tables.addHistoryEntry("APPROVE", 
+					request.getSession().getAttribute("userEmail").toString(),
+					aux.toString() , myName, true);
+		}
+	}
+
 
     /**
      * this method changes an entry in the database.

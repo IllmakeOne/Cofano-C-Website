@@ -8,7 +8,9 @@
 <t:dashboard>
 
     <jsp:attribute name="header">
-        <link rel="stylesheet" type="text/css" href="${base}/DataTables/datatables.min.css"/>
+        <link rel="stylesheet" type="text/css" href="${base}/DataTables/datatables.min.css"/>   
+        <script type="text/javascript" src="${base}/js/dataTables.cellEdit.js"></script>
+        
     </jsp:attribute>
 
     <jsp:attribute name="footer">
@@ -20,10 +22,11 @@
                         url: "${base}/api/history",
                         dataSrc: '',
                     },
-                    columns: [
-                        { data: 'title' },
-                        { data: 'message' },
-                        { data: 'type'},
+                    columns: [                
+                    	{ data: 'title', render: $.fn.dataTable.render.text()},
+                        { data: 'message', render: $.fn.dataTable.render.text() },
+                        { data: 'type', render: $.fn.dataTable.render.text()},
+
                         {
                             data: 'addedAt',
                             render: function (data, type, row, meta) {
