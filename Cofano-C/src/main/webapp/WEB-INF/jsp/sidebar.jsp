@@ -86,7 +86,7 @@
             <span>ADMINISTRATION</span>
         </h6>
         <ul class="nav flex-column mb-3">
-            <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'api')}"> active</c:if>" href="#">
+            <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'api')}"> active</c:if>" href="${(empty base) ? '.' : base}/apidoc">
                 <span data-feather="book-open"></span>
                 API-documentation
             </a>
