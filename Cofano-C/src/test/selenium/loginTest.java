@@ -3,6 +3,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 
@@ -27,7 +28,7 @@ public class loginTest {
         //Navigate to a web page
         driver.get("http://farm05.ewi.utwente.nl:7027/Cofano-C/login");
 
-        //Find the login button
+        /*//Find the login button
         WebElement loginButtonElement = driver.findElement(By.id("loginButton"));
         //Click the login button
         loginButtonElement.click();
@@ -56,7 +57,7 @@ public class loginTest {
 
         //Conclude a test
         driver.quit();
-
+*/
     }
 
 }
