@@ -69,7 +69,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'undgs')}"> active</c:if>" href="${(empty base) ? '.' : base}/undgs">
+                <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'undgs')}"> active</c:if>" href="#">
                     <span data-feather="box"></span>
                     UNDGs
                 </a>

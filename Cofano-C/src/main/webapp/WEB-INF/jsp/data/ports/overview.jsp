@@ -151,7 +151,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <p>Are you really sure you want to delete port with name <code id="delete-name"></code>.</p>
+                        <p>Are you really sure you want to delete ports with name <code id="delete-name"></code>.</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-delete-url="" id="delete-confirm">Yes delete it</button>
