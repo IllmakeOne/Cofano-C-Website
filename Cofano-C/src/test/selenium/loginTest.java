@@ -1,12 +1,15 @@
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.xml.sax.Locator;
@@ -15,6 +18,8 @@ import org.xml.sax.Locator;
 public class loginTest {
 
     public static void main(String[] args) {
+
+        WebDriverManager.firefoxdriver().setup();
 
         //Create in instance of the driver
         WebDriver driver = new FirefoxDriver();
