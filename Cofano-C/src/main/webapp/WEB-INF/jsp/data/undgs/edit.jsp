@@ -58,6 +58,7 @@
                         }
                     },
                 });
+                feather.replace();
             }
 
 
@@ -268,18 +269,27 @@
                 loadLanguages()
             });
 
+            $(document).on('click', '.btn-delete', function () {
+                $(this).closest('.language-description').remove();
+            });
+
 
         </script>
 
         <script type="text/template" id="description-template">
-            <div class="form-group row">
+            <div class="form-group row language-description">
                     <div class="col-sm-3">
                         <select name="language-selectize[]" placeholder="Select a Language">
                             <option value="">Select a language...</option>
                         </select>
                     </div>
                     <div class="col-sm-5">
-                        <input type="text" name="description[]" class="form-control" placeholder="Description" autocomplete="off">
+                        <input type="text" name="description[]" class="form-control" placeholder="Description" autocomplete="off">&nbsp;
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12" style="padding-top: 0.3rem;">
+                            <button type="button" class="btn btn-danger btn-sm btn-delete"><span data-feather="trash-2"></span></button>
+                        </div>
                     </div>
                 </div>
         </script>
@@ -305,6 +315,36 @@
         </div>
 
         <form <c:if test="${not empty app}">data-id="${fn:escapeXml(app)}"</c:if>action="${formUrl}" method="${method}" class="container-fluid">
+            <fieldset>
+                <legend>Undgs descriptions</legend>
+                <div class="descriptions">
+                    <div class="form-group row">
+                        <div class="col-sm-3">
+                            <select name="language-selectize[]" placeholder="Select a Language">
+                                <option value="">Select a language...</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" name="description[]" class="form-control" placeholder="Description" autocomplete="off" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="button" id="add-description" class="btn btn-outline-primary">Add new description</button>
+                    </div>
+                </div>
+                    <%--<div class="form-group">--%>
+                    <%--<label for="subject" class="col-sm-3 control-label">Subject</label>--%>
+                    <%--<div class="col-sm-5">--%>
+                    <%--<div class="container">--%>
+
+                    <%--</div>--%>
+
+                    <%--</div>--%>
+                    <%--</div>--%>
+            </fieldset>
+
             <fieldset>
                 <legend>Undgs data</legend>
                 <div class="form-group row">
@@ -544,35 +584,7 @@
                     <%--</table>--%>
                 <%--</div>--%>
             <%--</div>--%>
-            <fieldset>
-                <legend>Undgs descriptions</legend>
-                <div class="descriptions">
-                    <div class="form-group row">
-                        <div class="col-sm-3">
-                            <select name="language-selectize[]" placeholder="Select a Language">
-                                <option value="">Select a language...</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-5">
-                            <input type="text" name="description[]" class="form-control" placeholder="Description" autocomplete="off">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-sm-10">
-                        <button type="button" id="add-description" class="btn btn-outline-primary">Add new description</button>
-                    </div>
-                </div>
-                <%--<div class="form-group">--%>
-                    <%--<label for="subject" class="col-sm-3 control-label">Subject</label>--%>
-                    <%--<div class="col-sm-5">--%>
-                        <%--<div class="container">--%>
 
-                        <%--</div>--%>
-
-                    <%--</div>--%>
-                <%--</div>--%>
-            </fieldset>
             <fieldset>
                 <legend>Save</legend>
                 <div class="form-group row">
