@@ -8,7 +8,9 @@
 <t:dashboard>
 
     <jsp:attribute name="header">
-        <link rel="stylesheet" type="text/css" href="${base}/DataTables/datatables.min.css"/>
+        <link rel="stylesheet" type="text/css" href="${base}/DataTables/datatables.min.css"/>   
+        <script type="text/javascript" src="${base}/js/dataTables.cellEdit.js"></script>
+        
     </jsp:attribute>
 
     <jsp:attribute name="footer">
