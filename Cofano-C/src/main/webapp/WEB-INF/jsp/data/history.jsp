@@ -21,9 +21,9 @@
                         dataSrc: '',
                     },
                     columns: [
-                        { data: 'title' },
-                        { data: 'message' },
-                        { data: 'type'},
+                        { data: 'title', render: $.fn.dataTable.render.text() },
+                        { data: 'message', render: $.fn.dataTable.render.text() },
+                        { data: 'type', render: $.fn.dataTable.render.text() },
                         {
                             data: 'addedAt',
                             render: function (data, type, row, meta) {
