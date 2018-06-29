@@ -15,7 +15,7 @@ import java.io.IOException;
 @WebServlet(description = "Application Data Servlet", urlPatterns = {"/ports/add"})
 public class AddPort extends HttpServlet {
 
-	    /**
+    /**
      * Handles the GET request.
      *
      * @param request  the HTTP request
@@ -23,11 +23,11 @@ public class AddPort extends HttpServlet {
      * @throws IOException      when there is an <code>IOException</code>
      * @throws ServletException when there is a <code>ServletException</code>
      */
-@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		request.setAttribute("action", "Add");
-		request.setAttribute("method", "post");
-		request.setAttribute("formUrl", getServletContext().getInitParameter("cofano.url") + "/api/ports/add" );
-		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/ports/edit.jsp");
-	}
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.setAttribute("action", "Add");
+        request.setAttribute("method", "post");
+        request.setAttribute("formUrl", getServletContext().getInitParameter("cofano.url") + "/api/ports/add");
+        RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/ports/edit.jsp");
+    }
 }

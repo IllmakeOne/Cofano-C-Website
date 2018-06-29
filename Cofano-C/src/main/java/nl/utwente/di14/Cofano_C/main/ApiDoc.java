@@ -13,7 +13,7 @@ import java.io.IOException;
 @WebServlet(description = "Api Dcumentation Servlet", urlPatterns = {"/apidoc"})
 public class ApiDoc extends HttpServlet {
 
-    
+
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {

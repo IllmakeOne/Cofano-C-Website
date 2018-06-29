@@ -56,11 +56,11 @@ public class ShipsResource {
         ArrayList<Ship> result = new ArrayList<>();
         //select all unapproved entries which are not in the conflict table
         String query = "select ship.* "
-        		+ "from ship "
-        		+ "where ship.approved = false "
-        		+ "AND ship.sid not in (select conflict.entry "
-        								+ "from conflict "
-        								+ "where conflict.\"table\"= 'ship' )";
+                + "from ship "
+                + "where ship.approved = false "
+                + "AND ship.sid not in (select conflict.entry "
+                + "from conflict "
+                + "where conflict.\"table\"= 'ship' )";
 
         if (request.getSession().getAttribute("userEmail") != null) {
             constructShip(result, query);
@@ -214,62 +214,64 @@ public class ShipsResource {
             Tables.addHistoryEntry("DELETE", doer, aux.toString(), myName, true);
         }
     }
-    
-    /**
-	 * this method deletes an entry from a table but doest not enter in in the database
-	 * this method is called for unapproved entries
-	 * this method does not add to the history table
-	 * @param portId the id of the entry which is deleted
-	 */
-	@DELETE
-	@Path("/unapproved/{shipId}")
-	public void deletShipUN(@PathParam("shipId") int shipId,
-			@Context HttpServletRequest request) {
-		Tables.start();
-		if(request.getSession().getAttribute("userEmail")!=null) {
-			String query ="SELECT deleteships(?)";
-			try {
-				PreparedStatement statement = 
-						Tables.getCon().prepareStatement(query);
-				statement.setInt(1, shipId);
-				statement.executeQuery();
-			} catch (SQLException e) {
-				System.err.println("Was not able to delete unapproved ship");
-				System.err.println(e.getSQLState());
-				e.printStackTrace();
-			}
-		}
-	}
 
-    
     /**
-	 * this method approves an entry in the database
-	 * @param shipid the id of the ship which is approved
-	 */
-	@PUT
-	@Path("/approve/{shipid}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void approveShip(@PathParam("shipid") int shipid,
-			@Context HttpServletRequest request) {
-		
-		if(request.getSession().getAttribute("userEmail")!=null) {
-			Ship aux = getShip(shipid, request);
-			String query = "SELECT approveship(?)";
-			try {
-				PreparedStatement statement = 
-						Tables.getCon().prepareStatement(query);
-				statement.setInt(1, shipid);
-				statement.executeQuery();
-	
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			
-			Tables.addHistoryEntry("APPROVE", 
-					request.getSession().getAttribute("userEmail").toString(),
-					aux.toString() , myName, true);
-		}
-	}
+     * this method deletes an entry from a table but doest not enter in in the database
+     * this method is called for unapproved entries
+     * this method does not add to the history table
+     *
+     * @param portId the id of the entry which is deleted
+     */
+    @DELETE
+    @Path("/unapproved/{shipId}")
+    public void deletShipUN(@PathParam("shipId") int shipId,
+                            @Context HttpServletRequest request) {
+        Tables.start();
+        if (request.getSession().getAttribute("userEmail") != null) {
+            String query = "SELECT deleteships(?)";
+            try {
+                PreparedStatement statement =
+                        Tables.getCon().prepareStatement(query);
+                statement.setInt(1, shipId);
+                statement.executeQuery();
+            } catch (SQLException e) {
+                System.err.println("Was not able to delete unapproved ship");
+                System.err.println(e.getSQLState());
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
+     * this method approves an entry in the database
+     *
+     * @param shipid the id of the ship which is approved
+     */
+    @PUT
+    @Path("/approve/{shipid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void approveShip(@PathParam("shipid") int shipid,
+                            @Context HttpServletRequest request) {
+
+        if (request.getSession().getAttribute("userEmail") != null) {
+            Ship aux = getShip(shipid, request);
+            String query = "SELECT approveship(?)";
+            try {
+                PreparedStatement statement =
+                        Tables.getCon().prepareStatement(query);
+                statement.setInt(1, shipid);
+                statement.executeQuery();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            Tables.addHistoryEntry("APPROVE",
+                    request.getSession().getAttribute("userEmail").toString(),
+                    aux.toString(), myName, true);
+        }
+    }
 
 
     /**
@@ -345,29 +347,29 @@ public class ShipsResource {
         return result;
     }
 
-	private void constructShip(ArrayList<Ship> result, String query) {
-	    Ship ship;
-	    try {
-	        PreparedStatement statement =
-	                Tables.getCon().prepareStatement(query);
-	
-	        ResultSet resultSet = statement.executeQuery();
-	
-	        while (resultSet.next()) {
-	            ship = new Ship();
-	            ship.setName(resultSet.getString(3));
-	            ship.setImo(resultSet.getString(2));
-	            ship.setId(resultSet.getInt(1));
-	            ship.setDepth(resultSet.getBigDecimal(6));
-	            ship.setCallSign(resultSet.getString(4));
-	            ship.setMMSI(resultSet.getString(5));
-	
-	            result.add(ship);
-	        }
-	    } catch (SQLException e) {
-	        System.err.println("Could not retrieve all ships" + e);
-	    }
-	}
+    private void constructShip(ArrayList<Ship> result, String query) {
+        Ship ship;
+        try {
+            PreparedStatement statement =
+                    Tables.getCon().prepareStatement(query);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                ship = new Ship();
+                ship.setName(resultSet.getString(3));
+                ship.setImo(resultSet.getString(2));
+                ship.setId(resultSet.getInt(1));
+                ship.setDepth(resultSet.getBigDecimal(6));
+                ship.setCallSign(resultSet.getString(4));
+                ship.setMMSI(resultSet.getString(5));
+
+                result.add(ship);
+            }
+        } catch (SQLException e) {
+            System.err.println("Could not retrieve all ships" + e);
+        }
+    }
 
 
 }

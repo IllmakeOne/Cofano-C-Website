@@ -15,6 +15,12 @@ public class User {
     private Timestamp lastLoggedIn;
 
     /**
+     * Constructs a user without data.
+     */
+    public User() {
+    }
+
+    /**
      * Returns all the info of the object as a string.
      *
      * @return the string with info.
@@ -24,12 +30,6 @@ public class User {
         return "User:  Name: " + name + "; email: " + email + "; emailNotification: "
                 + emailNotification +
                 "; darkMode: " + darkMode + "; lastLoggedIn: " + lastLoggedIn;
-    }
-
-    /**
-     * Constructs a user without data.
-     */
-    public User() {
     }
 
     /**

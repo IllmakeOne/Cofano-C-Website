@@ -11,21 +11,21 @@ import java.io.IOException;
 
 import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
 
-@WebServlet(description="Application Data Servlet", urlPatterns={"/undgs/*"})
+@WebServlet(description = "Application Data Servlet", urlPatterns = {"/undgs/*"})
 
 public class EditUndgs extends HttpServlet {
 
-	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		request.setAttribute("action", "Edit");
-		request.setAttribute("method", "put");
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.setAttribute("action", "Edit");
+        request.setAttribute("method", "put");
 
-		String pathInfo = request.getPathInfo();
-		String appId = escapeHtml4(pathInfo.split("/")[1]);
+        String pathInfo = request.getPathInfo();
+        String appId = escapeHtml4(pathInfo.split("/")[1]);
 
-		request.setAttribute("app", appId);
-		request.setAttribute("formUrl", getServletContext().getInitParameter("cofano.url") + "/api/undgs/" + appId);
+        request.setAttribute("app", appId);
+        request.setAttribute("formUrl", getServletContext().getInitParameter("cofano.url") + "/api/undgs/" + appId);
 
-		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/undgs/edit.jsp");
-	}
+        RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/undgs/edit.jsp");
+    }
 }
