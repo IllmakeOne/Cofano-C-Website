@@ -12,13 +12,15 @@ public class loginTest {
 
     public static void main(String[] args) {
 
+        String URL = "http://localhost:8080";
+
         WebDriverManager.firefoxdriver().setup();
 
         //Create in instance of the driver
         WebDriver driver = new FirefoxDriver();
 
         //Navigate to a web page
-        driver.get("http://localhost:8080/Cofano-C/login");
+        driver.get(URL + "/Cofano-C/login");
 
         //Find the login button
         WebElement loginButtonElement = driver.findElement(By.id("loginButton"));
