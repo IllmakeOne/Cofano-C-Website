@@ -15,7 +15,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class sidebarTest {
     public static void main(String[] args) {
 
-        String WEBSITE_URL = "http://localhost:8080";
+        String WEBSITE_URL = args[2];
 
         //Setup the web driver. Browser can be changed here
         WebDriverManager.firefoxdriver().setup();
