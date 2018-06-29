@@ -74,7 +74,7 @@ public class Tables {
 
         String query = "SELECT addhistory(?,?,?,?)";
         try {
-            PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+            PreparedStatement statement = Tables.getCon().prepareStatement(query);
             statement.setString(1, title);
             statement.setString(2, who + " " + title + " " + message);
             statement.setTimestamp(3, timestamp);
@@ -103,7 +103,7 @@ public class Tables {
 
         String query = "SELECT addhistory(?,?,?,?)";
         try {
-            PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+            PreparedStatement statement = Tables.getCon().prepareStatement(query);
             statement.setString(1, title);
             statement.setString(2, who + " " + title + " " + message);
             statement.setString(3, type);
@@ -161,7 +161,7 @@ public class Tables {
         //System.out.println(user);
         String query = "SELECT testrequest(?)";
         try {
-            PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+            PreparedStatement statement = Tables.getCon().prepareStatement(query);
             statement.setString(1, user);
             ResultSet rez = statement.executeQuery();
             if (rez.next()) {
@@ -209,7 +209,7 @@ public class Tables {
         //add to conflicts table
         try {
             //Create prepared statement
-            PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+            PreparedStatement statement = Tables.getCon().prepareStatement(query);
             //add the data to the statement's query
             statement.setString(1, doer);
             statement.setString(2, table);
