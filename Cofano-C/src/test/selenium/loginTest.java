@@ -26,7 +26,6 @@ public class loginTest {
         loginButtonElement.click();
 
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        By loginWidget = By.id("loginWidget");
         WebElement loginForm = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("loginWidget")));
 
         //Find username and password field
@@ -39,8 +38,7 @@ public class loginTest {
         passwordElement.submit();
 
         //Anticipate web browser response, with an explicit wait
-        WebDriverWait wait2 = new WebDriverWait(driver, 10);
-        WebElement userElement = wait2.until(ExpectedConditions.presenceOfElementLocated(By.className("wpW1cb")));
+        WebElement userElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.className("wpW1cb")));
         userElement.click();
         WebDriverWait wait1 = new WebDriverWait(driver, 10);
         WebElement pageHeaderElement = wait1.until(ExpectedConditions.presenceOfElementLocated(By.id("pageHeader")));
