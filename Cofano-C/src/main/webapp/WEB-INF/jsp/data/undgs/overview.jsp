@@ -114,7 +114,7 @@
                 function inlineEditCallback (updatedCell, updatedRow, oldValue) {
                     $.ajax({
                         type: "put",
-                        url: "${base}/api/containers/" + updatedRow.data().id,
+                        url: "${base}/api/undgs/" + updatedRow.data().id,
                         data: JSON.stringify(updatedRow.data()),
                         success: function(data) {
                             $("#error").hide();
@@ -140,7 +140,7 @@
                 var deletingRow;
                 $(document).on('click', '.btn-delete', function () {
                     $('#delete-name').text($(this).data('delete-name'))
-                    $('#delete-confirm').data('delete-url', "${base}/api/containers/" + $(this).data('delete-id'))
+                    $('#delete-confirm').data('delete-url', "${base}/api/undgs/" + $(this).data('delete-id'))
                     $('#deleteModal').modal('show')
                     deletingRow = $(this).parents('tr');
                 });

@@ -974,8 +974,10 @@ public class UndgsResource {
 			descriptionsStatement.executeUpdate();
 
 			PreparedStatement DELETEStatement = Tables.getCon().prepareStatement("DELETE FROM undgs WHERE uid = ?");
-			hasTankCodeStatement.setInt(1, undgsId);
-			hasTankCodeStatement.executeUpdate();
+            DELETEStatement.setInt(1, undgsId);
+            DELETEStatement.executeUpdate();
+            System.out.println(DELETEStatement.toString());
+
 
 			// Now cleanup:
 			PreparedStatement cleanUpStatement = Tables.getCon().prepareStatement(
