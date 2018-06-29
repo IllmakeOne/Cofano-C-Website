@@ -23,7 +23,6 @@ public class sidebarTest {
         loginButtonElement.click();
 
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        By loginWidget = By.id("loginWidget");
         WebElement loginForm = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("loginWidget")));
 
         //Find username and password field
@@ -36,11 +35,9 @@ public class sidebarTest {
         passwordElement.submit();
 
         //Anticipate web browser response, with an explicit wait
-//        WebDriverWait wait2 = new WebDriverWait(driver, 10);
         WebElement userElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.className("wpW1cb")));
         userElement.click();
-        WebDriverWait wait1 = new WebDriverWait(driver, 10);
-        WebElement element = wait1.until(ExpectedConditions.presenceOfElementLocated(By.id("pageHeader")));
+        WebElement element;
 
         //Testing the sidebar
 
@@ -103,7 +100,6 @@ public class sidebarTest {
         element.click();
         URL = driver.getCurrentUrl();
         Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/ports");
-
 
         //Stopping the driver
         driver.quit();
