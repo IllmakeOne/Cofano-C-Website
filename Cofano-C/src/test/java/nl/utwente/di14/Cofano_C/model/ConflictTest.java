@@ -11,6 +11,16 @@ public class ConflictTest {
     private Conflict conf2 = new Conflict();
 
     @Test
+    public void constructorWithDataTest() {
+        assertNotNull(conf1);
+    }
+
+    @Test
+    public void constructorWithoutDataTest() {
+        assertNotNull(conf2);
+    }
+
+    @Test
     public void toStringTest() {
       assertEquals(("Conflict:  Created by : " + "Me" + "; Solved by: " + "You" + "; In table: "
               + "TestingTable" + "; on column: " + "Column1" + "; with Value of: " + "TestingValue" +

@@ -44,6 +44,10 @@
 	{
  	color:#00ff99; 
 	}
+	h10 
+	{
+	font-size:120%;
+	}
 
 </style>
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -51,8 +55,14 @@
         </div>
         <h2>API Documentation</h2>
         
-        When adding or editing an entry, the request must contain a JSON object stuctured like the ones received from the DBs
-	<div>	  
+   
+		<p>  <h5>All API request are required to have an "Authorization" header which has as value an API key assiged by cofano. 
+		</h5><h10>These API keys must be stored in the database in the Applications table</h10></p>	
+	
+	   <h10>  When adding or editing an entry, the request must contain a JSON object stuctured like the ones received from the DBs</h10>
+	  
+
+<div>	  
 	    <table class="table table-striped table " style="width:100%">
             <thead>
             <tr>
