@@ -31,7 +31,7 @@
                                 return '<a class="btn btn-info btn-sm" href="${base}/undgs/'+ data +'" role="button">' +
                                     '<span data-feather="edit-2"></span>' +
                                     '</a>&nbsp;' +
-                                    '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data + '" data-delete-name="' + escapeHtml(row.displayName) + '" role="button">' +
+                                    '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data + '" data-delete-name="' + escapeHtml(row.unNo) + '" role="button">' +
                                     '<span data-feather="trash-2"></span>' +
                                     '</button>' ;
                             },
@@ -114,7 +114,7 @@
                 function inlineEditCallback (updatedCell, updatedRow, oldValue) {
                     $.ajax({
                         type: "put",
-                        url: "${base}/api/containers/" + updatedRow.data().id,
+                        url: "${base}/api/undgs/" + updatedRow.data().id,
                         data: JSON.stringify(updatedRow.data()),
                         success: function(data) {
                             $("#error").hide();
@@ -140,7 +140,7 @@
                 var deletingRow;
                 $(document).on('click', '.btn-delete', function () {
                     $('#delete-name').text($(this).data('delete-name'))
-                    $('#delete-confirm').data('delete-url', "${base}/api/containers/" + $(this).data('delete-id'))
+                    $('#delete-confirm').data('delete-url', "${base}/api/undgs/" + $(this).data('delete-id'))
                     $('#deleteModal').modal('show')
                     deletingRow = $(this).parents('tr');
                 });
@@ -223,7 +223,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <p>Are you really sure you want to delete container with name <code id="delete-name"></code>.</p>
+                        <p>Are you really sure you want to delete UNDGS with unNo <code id="delete-name"></code>.</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-delete-url="" id="delete-confirm">Yes delete it</button>

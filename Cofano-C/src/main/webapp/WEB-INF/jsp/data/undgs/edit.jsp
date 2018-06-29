@@ -58,6 +58,7 @@
                         }
                     },
                 });
+
                 feather.replace();
             }
 
@@ -135,6 +136,7 @@
 
 
             function retrieveUndgs(id) {
+                loadLanguages();
 
                 if ($('form').attr('method') === "put" && id !== "undefined") {
                     $("#loading").show();
@@ -184,7 +186,7 @@
                             $.each(descriptions, function( index, description ) {
                                 if (index > 0) {
                                     var descriptionTemplate = $('#description-template').html();
-                                    // descriptionTemplate.replace(/{}/g, u)
+                                    descriptionTemplate = descriptionTemplate.replace(/{deleteLang}/g, description.language)
                                     $("div.descriptions").append(descriptionTemplate);
                                 }
                                 loadLanguages()
@@ -192,7 +194,6 @@
                                 $('input[name^="description"]').eq(index).val(description.description)
                             });
                         }
-
 
                     })
                     .fail(function() {
@@ -262,15 +263,40 @@
 
 
             $(document).on('click', '#add-description', function () {
-                console.log("KAAS IS BAAS")
                 var descriptionTemplate = $('#description-template').html();
                 // descriptionTemplate.replace(/{}/g, u)
+                descriptionTemplate = descriptionTemplate.replace(/{deleteLang}/g, "");
                 $("div.descriptions").append(descriptionTemplate);
                 loadLanguages()
             });
 
+            var deletingRow;
             $(document).on('click', '.btn-delete', function () {
-                $(this).closest('.language-description').remove();
+                if ($(this).attr('data-delete-lang') && $(this).data('delete-lang') != "") {
+                    $('#delete-name').text($(this).closest('.language-description').find('select[name^=language-selectize]')[0].selectize.getValue())
+                    $('#delete-confirm').data('delete-url', "${base}/api/undgs/" + $('form').data('id') + "/description/" + $(this).data('delete-lang'));
+                    $('#deleteModal').modal('show')
+                    deletingRow = $(this).closest('.language-description');
+                } else {
+                    $(this).closest('.language-description').remove();
+                }
+            });
+
+            $(document).on('click', '#delete-confirm', function () {
+                $.ajax({
+                    type: "delete",
+                    url: $('#delete-confirm').data('delete-url'),
+                    beforeSend: function( xhr ) {
+                        $("#delete-error").hide();
+                    },
+                    success: function(data) {
+                        $('#deleteModal').modal('hide')
+                        deletingRow.remove();
+                    },
+                    error: function(data) {
+                        $("#delete-error").show();
+                    },
+                });
             });
 
 
@@ -288,7 +314,7 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-sm-12" style="padding-top: 0.3rem;">
-                            <button type="button" class="btn btn-danger btn-sm btn-delete"><span data-feather="trash-2"></span></button>
+                            <button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-lang="{deleteLang}"><span data-feather="trash-2"></span></button>
                         </div>
                     </div>
                 </div>
@@ -331,7 +357,7 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-10">
-                        <button type="button" id="add-description" class="btn btn-outline-primary">Add new description</button>
+                        <button type="button" id="add-description" class="btn btn-outline-primary btn-sm">Add new description</button>
                     </div>
                 </div>
                     <%--<div class="form-group">--%>
@@ -606,5 +632,31 @@
 
 
         </form>
+
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="delete modal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm deletion</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="delete-error" style="display:none">
+                            <strong>Holy guacamole!</strong> Something went wrong while deleting
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <p>Are you really sure you want to delete the <code id="delete-name"></code> description?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-delete-url="" id="delete-confirm">Yes delete it</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </jsp:body>
 </t:dashboard>
