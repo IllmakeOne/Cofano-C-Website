@@ -45,6 +45,8 @@
             <div class="row">
                 <c:import url="/WEB-INF/jsp/sidebar.jsp" />
                 <main role="main" class="cofano-main col-md-9 ml-sm-auto col-lg-10 px-4">
+                
+       				 
                     <jsp:doBody/>
                 </main>
             </div>
@@ -60,6 +62,24 @@
         <script src="${(empty base) ? '.' : base}/js/popper.min.js"></script>
                 
         <script src="${(empty base) ? '.' : base}/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            var entityMap = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;',
+                '/': '&#x2F;',
+                '`': '&#x60;',
+                '=': '&#x3D;'
+            };
+
+            function escapeHtml (string) {
+                return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+                    return entityMap[s];
+                });
+            }
+        </script>
 
         <!-- Icons -->
         <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>

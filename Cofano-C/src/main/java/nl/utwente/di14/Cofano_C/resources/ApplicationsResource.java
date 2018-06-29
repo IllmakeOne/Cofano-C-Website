@@ -1,6 +1,14 @@
 package nl.utwente.di14.Cofano_C.resources;
 
 
+import nl.utwente.di14.Cofano_C.dao.Tables;
+import nl.utwente.di14.Cofano_C.model.Application;
+import org.glassfish.jersey.servlet.ServletContainer;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,144 +16,205 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.utwente.di14.Cofano_C.dao.Tables;
-import nl.utwente.di14.Cofano_C.model.*;
-import org.glassfish.jersey.servlet.ServletContainer;
 
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.annotation.WebInitParam;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
-
-//@WebFilter(value = "/applications/*", initParams = @WebInitParam(name = "javax.ws.rs.Application", value = "javax.ws.rs.Application"))
-
-@Path("/")
-
+/**
+ * This is the resource class for applications.
+ */
+@SuppressWarnings("CheckStyle")
+@Path("/applications")
 public class ApplicationsResource extends ServletContainer {
 
-	@GET
-	public String hello() {
 
-		return "hello";
-	}
-	
-	@POST
-	@Path("add")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void addApp(Application input, @Context HttpServletRequest request) {
-		Tables.start();
-
-		String title = "ADD";
-
-			Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"), input.toString()
-			, new Timestamp(System.currentTimeMillis()));
+    private final String myName = "Application";
 
 
-			//System.out.println("Received from client request " +input.toString());
+    /**
+     * @return a JSON array of all approved Application
+     */
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Application> getAllApps(@Context HttpServletRequest request) {
+        Tables.start();
+        ArrayList<Application> result = new ArrayList<>();
 
-			String query ="SELECT addapplications(?,?)";
+        if (request.getSession().getAttribute("userEmail") != null) {
+            Application add;
+            String query = "SELECT * FROM application";
+            try {
+                PreparedStatement statement =
+                        Tables.getCon().prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    add = new Application();
+                    add.setName(resultSet.getString(2));
+                    add.setAPIKey(resultSet.getString(3));
+                    add.setId(resultSet.getInt(1));
+                    result.add(add);
+                }
+            } catch (SQLException e) {
+                System.err.println("Could not retrieve all apps" + e);
+            }
+        }
+        return result;
+    }
 
-			//System.out.println(query);
+    /**
+     * This method retrieves a specific entry from the DB.
+     *
+     * @param appID the ID of the application
+     * @return return the entry as an Application object
+     */
+    @GET
+    @Path("/{appid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Application getApp(@PathParam("appid") int appID, @Context HttpServletRequest request) {
+        Application app = new Application();
+        String query = "SELECT * FROM application WHERE aid = ?";
+        if (request.getSession().getAttribute("userEmail") != null) {
+            try {
+                PreparedStatement statement = Tables.getCon().prepareStatement(query);
+                statement.setInt(1, appID);
+                ResultSet resultSet = statement.executeQuery();
 
-			System.out.println("Added to database: " + "name, api_key -> "+
-			input.getName()+ ","+input.getAPIKey());
-			try {
-				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
-				statement.setString(1, input.getName());
-				statement.setString(2, input.getAPIKey());
+                while (resultSet.next()) {
+                    app.setName(resultSet.getString(2));
+                    app.setAPIKey(resultSet.getString(3));
+                    app.setId(resultSet.getInt(1));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return app;
+    }
 
-				statement.executeQuery();
-			} catch (SQLException e) {
-				System.err.println("Could not add application");
-				System.err.println(e.getSQLState());
-				e.printStackTrace();
-			}
-	}
-	
-	
-	//NOT WORKING
-	@DELETE
-	@Path("/{appid}")
-	public void deleteApp(@PathParam("appid") int appid, @Context HttpServletRequest request) {
-		Tables.start();
-		
-		//retrive the App about to be deleted
-		Application add = new Application();
-		String query = "SELECT * FROM application WHERE aid = ?";
-		try {
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
-			statement.setInt(1, appid);
-			ResultSet resultSet = statement.executeQuery();
-			//create an application object 
-			while(resultSet.next()) {
-				add.setName(resultSet.getString(2));
-				add.setAPIKey( resultSet.getString(3));
-				add.setID(resultSet.getInt(1));
-				}
-			} catch (SQLException e) {
-				System.err.println("Coulnd retrive app about to be deleted" + e);
-			}
-		//add the deletion to the history table
-		String title = "DELETE";
-		Tables.addHistoryEntry(title, (String) request.getSession().getAttribute("userEmail"),
-				add.toString()
-				, new Timestamp(System.currentTimeMillis()));
-			
-			query ="DELETE FROM application WHERE aid = ?";
-			try {
-				PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
-				statement.setLong(1, appid);
-				statement.executeUpdate();
-			} catch (SQLException e) {
-				System.err.println("Was not able to delete APP");
-				System.err.println(e.getSQLState());
-				e.printStackTrace();
-			}
-			query = "";
-	}
-	
-	
-	
-	@GET
-	@Produces({MediaType.APPLICATION_JSON})
-	public List<Application> getAllApps(@Context HttpServletRequest request){
-		Tables.start();
-		ArrayList<Application> result = new ArrayList<>();
-		Application add = new Application();
-		String query = "SELECT * FROM application";
+    /**
+     * this function adds an entry to the database.
+     * if it is from a user it is directly added and approved
+     * if not, it is added but not approved
+     *
+     * @param input   the entry about to be added
+     * @param request the request of the client
+     */
+    @SuppressWarnings("StatementWithEmptyBody")
+    @POST
+    @Path("add")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void addApp(Application input, @Context HttpServletRequest request) {
+        Tables.start();
 
-		try {
-		PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+        String doer = Tables.testRequest(request);
+        //tests if the person is allowed to make any modifications
+        if (request.getSession().getAttribute("userEmail") != null) {
+            String title = "ADD";
 
-		ResultSet resultSet = statement.executeQuery();
+            if (!testConflict(input)) {
+                //if there is no conflict
+                Tables.addHistoryEntry(title, doer, input.toString(),
+                        new Timestamp(System.currentTimeMillis()), myName);
+                String query = "SELECT addapplications(?,?)";
+                try {
+                    PreparedStatement statement =
+                            Tables.getCon().prepareStatement(query);
+                    statement.setString(1, input.getName());
+                    statement.setString(2, input.getAPIKey());
 
-		while(resultSet.next()) {
-			//System.out.println(resultSet.getString(1));
-			add = new Application();
-			add.setName(resultSet.getString(2));
-			add.setAPIKey( resultSet.getString(3));
-			add.setID(resultSet.getInt(1));
+                    statement.executeQuery();
+                } catch (SQLException e) {
+                    System.err.println("Could not add application");
+                    System.err.println(e.getSQLState());
+                    e.printStackTrace();
+                }
+            } else {
+                //TODO
+                //what happens when there is a conflict
+            }
+        }
+    }
 
-			result.add(add);
-			}
-		} catch (SQLException e) {
-			System.err.println("Could not retrive all apps" + e);
-		}
+    /**
+     * This method deletes an entry from a table and also adds it to history.
+     *
+     * @param appid the ID of the entry which is deleted
+     */
+    @DELETE
+    @Path("/{appid}")
+    public void deleteApp(@PathParam("appid") int appid, @Context HttpServletRequest request) {
+        Tables.start();
 
-		return result;
-		
-	}
-	
-	
+        //retrieve the App about to be deleted
+        if (request.getSession().getAttribute("userEmail") != null) {
+            Application add = getApp(appid, request);
+            //add the deletion to the history table
+            String title = "DELETE";
+            String doer = Tables.testRequest(request);
+            Tables.addHistoryEntry(title, doer, add.toString(), myName, true);
+            String query = "SELECT deleteapplications(?)";
+            try {
+                PreparedStatement statement = Tables.getCon().prepareStatement(query);
+                statement.setLong(1, appid);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                System.err.println("Was not able to delete APP");
+                System.err.println(e.getSQLState());
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
+     * this method changes an entry in the database.
+     *
+     * @param appid the ID of the entry about to be changed
+     * @param app   the new information for the entry
+     */
+    @PUT
+    @Path("/{appid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void updateApp(@PathParam("appid") int appid,
+                          Application app, @Context HttpServletRequest request) {
+        Application aux = getApp(appid, request);
+        if (request.getSession().getAttribute("userEmail") != null) {
+            String query = "SELECT editapplications(?,?,?)";
+            try {
+                PreparedStatement statement = Tables.getCon().prepareStatement(query);
+                statement.setString(2, app.getName());
+                statement.setString(3, app.getAPIKey());
+                statement.setInt(1, appid);
+                statement.executeQuery();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        Tables.addHistoryEntry("UPDATE", Tables.testRequest(request),
+                aux.toString() + " -->" + app.toString(), myName, false);
+    }
+
+
+    /**
+     * This tests if there a new Application creates a conflict in the DB if it is added
+     * it creates a conflict if the name or API key is the same as another entry in the DB.
+     *
+     * @param test the Application which is tested
+     * @return the id of the port it is on conflict with , or 0 if there is no conflict
+     */
+    private boolean testConflict(Application test) {
+        boolean result = true;
+        String query = "SELECT * FROM appsconflict(?,?)";
+        try {
+            PreparedStatement statement = Tables.getCon().prepareStatement(query);
+            statement.setString(1, test.getName());
+            statement.setString(2, test.getAPIKey());
+            ResultSet resultSet = statement.executeQuery();
+            result = resultSet.next();
+        } catch (SQLException e) {
+            System.err.println("Could not test conflict IN apps" + e);
+        }
+        return result;
+    }
+
 
 }
 

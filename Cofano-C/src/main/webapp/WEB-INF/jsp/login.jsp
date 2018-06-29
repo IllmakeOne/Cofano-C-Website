@@ -33,7 +33,7 @@
     <form class="form-signin">
       <img class="mb-4" src="./img/logo-cofano-c.png" alt="cofano-logo" height="72">
       <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-      <button type="button" class="btn btn-lg btn-block btn-outline-primary"
+      <button id="loginButton" type="button" class="btn btn-lg btn-block btn-outline-primary"
       	onclick="location.href='./googlelogin'">
         <img style="margin-top: -3px;" width="20px" alt="Google &quot;G&quot; Logo" src="./img/google-g-logo.png"/>
         Login with Google

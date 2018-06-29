@@ -1,55 +1,130 @@
 package nl.utwente.di14.Cofano_C.model;
-import java.sql.Date;
+
 import java.sql.Timestamp;
 
+/**
+ * This is the model for an entry in the history table.
+ */
 public class HistoryEntry {
-	
-	private int ID;
-	private String title;
-	private String message;
-	private Timestamp added_at;
-	
-	public HistoryEntry() {}
 
-	public HistoryEntry(int iD, String title, String message, Timestamp added_at) {
-		super();
-		ID = iD;
-		this.title = title;
-		this.message = message;
-		this.added_at = added_at;
-	}
+    private int id;
+    private String title;
+    private String message;
+    private Timestamp addedAt;
+    private String type;
 
-	public int getID() {
-		return ID;
-	}
+    /**
+     * Constructs a blank history entry.
+     */
+    public HistoryEntry() {
+    }
 
-	public void setID(int iD) {
-		ID = iD;
-	}
+    /**
+     * Constructs a new history entry with data.
+     *
+     * @param id      of the history entry
+     * @param title   of the history entry
+     * @param message of the history entry
+     * @param addedAt data the history entry was added
+     * @param type    of the history entry
+     */
+    public HistoryEntry(int id, String title, String message, Timestamp addedAt, String type) {
+        super();
+        this.id = id;
+        this.title = title;
+        this.message = message;
+        this.addedAt = addedAt;
+        this.type = type;
+    }
 
-	public String getTitle() {
-		return title;
-	}
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    /**
+     * Gets the type of the history entry.
+     *
+     * @return the type of the history entry
+     */
+    public String getType() {
+        return type;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    /**
+     * Sets the type of the history entry.
+     *
+     * @param type of the history entry
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    /**
+     * Gets the ID of the history entry.
+     *
+     * @return the ID of the history entry
+     */
+    public int getId() {
+        return id;
+    }
 
-	public Timestamp getAdded_at() {
-		return added_at;
-	}
+    /**
+     * Sets the ID of the history entry.
+     *
+     * @param id of the history entry
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setAdded_at(Timestamp added_at) {
-		this.added_at = added_at;
-	}
-	
-	
+    /**
+     * Gets the title of the history entry.
+     *
+     * @return the title of the history entry
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Sets the title of the history entry.
+     *
+     * @param title of the history entry
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * Gets the message of the history entry.
+     *
+     * @return the message of the history entry
+     */
+    public String getMessage() {
+        return message;
+    }
+
+    /**
+     * Sets the message of the history entry.
+     *
+     * @param message of the history entry
+     */
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    /**
+     * Gets the added at time of the history entry.
+     *
+     * @return the added at time of the history entry
+     */
+    public Timestamp getAddedAt() {
+        return addedAt;
+    }
+
+    /**
+     * Sets the added at time of the history entry.
+     *
+     * @param addedAt the added at time of the history entry
+     */
+    public void setAddedAt(Timestamp addedAt) {
+        this.addedAt = addedAt;
+    }
 }

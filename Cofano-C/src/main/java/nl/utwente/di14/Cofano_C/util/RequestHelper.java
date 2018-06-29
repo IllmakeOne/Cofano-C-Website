@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class RequestHelper {
-	public static void show(final HttpServletRequest request, final HttpServletResponse response,
-							final ServletContext context,
-							final String page) throws ServletException, IOException {
-		request.setAttribute("base", context.getInitParameter("cofano.url"));
-		request.getRequestDispatcher(page).forward(request, response);
-	}
+    public static void show(final HttpServletRequest request, final HttpServletResponse response,
+                            final ServletContext context,
+                            final String page) throws ServletException, IOException {
+        request.setAttribute("base", context.getInitParameter("cofano.url"));
+        request.getRequestDispatcher(page).forward(request, response);
+    }
 }

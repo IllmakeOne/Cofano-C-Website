@@ -25,7 +25,7 @@
                         { data: 'name' },
                         { data: 'email' },
                         {
-                            data: 'lastLogedIn',
+                            data: 'lastLoggedIn',
                             render: function (data, type, row, meta) {
                                 if (type == "sort" || type == 'type') {
                                     return data;
@@ -43,16 +43,22 @@
     <jsp:body>
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Users</h1>
-            <div class="btn-toolbar mb-2 mb-md-0">
-                <div class="btn-group mr-2">
-                    <button class="btn btn-sm btn-outline-secondary">Share</button>
-                    <button class="btn btn-sm btn-outline-secondary">Export</button>
-                </div>
-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                    <span data-feather="calendar"></span>
-                    This week
-                </button>
-            </div>
+            <div class="btn-group mr-2">
+    	    <div class="col-sm-4">
+         		 <div class="dropdown">
+	  				<button class="btn btn-primary dropdown-toggle btn" type="button" data-toggle="dropdown">+
+					  <span class="caret"></span></button>
+					<ul class="dropdown-menu">
+				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ships/add">Ship</a></li>
+			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/applications/add">Application</a></li>
+				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/containers/add">Container Type</a></li>
+			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/terminals/add">Terminal</a></li>
+				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}">UNDG</a></li>
+			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ports/add">Port</a></li>
+					 </ul>
+				</div>
+			</div>
+        </div>
         </div>
 
         <table class="table table-striped table-sm datatables" style="width:100%">

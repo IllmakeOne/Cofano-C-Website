@@ -117,7 +117,7 @@ jQuery.fn.dataTable.Api.register('MakeCellsEditable()', function (settings) {
                         $('#ejbeatycelledit').focus();
                         $("#ejbeatycelledit").keyup(function(event) {
                             if (event.keyCode === 13) {
-                                console.log("heey")
+                                console.log("heey");
                                 $(this).siblings('.btn-primary').click();
                             }
                         });
@@ -132,7 +132,7 @@ jQuery.fn.dataTable.Api.register('MakeCellsEditable()', function (settings) {
 function getInputHtml(currentColumnIndex, settings, oldValue) {
     var inputSetting, inputType, input, inputCss, confirmCss, cancelCss;
 
-    input = {"focus":true,"html":null}
+    input = {"focus":true,"html":null};
 
     if(settings.inputTypes){
 		$.each(settings.inputTypes, function (index, setting) {

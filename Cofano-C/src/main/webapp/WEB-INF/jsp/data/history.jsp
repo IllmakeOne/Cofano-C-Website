@@ -8,7 +8,9 @@
 <t:dashboard>
 
     <jsp:attribute name="header">
-        <link rel="stylesheet" type="text/css" href="${base}/DataTables/datatables.min.css"/>
+        <link rel="stylesheet" type="text/css" href="${base}/DataTables/datatables.min.css"/>   
+        <script type="text/javascript" src="${base}/js/dataTables.cellEdit.js"></script>
+        
     </jsp:attribute>
 
     <jsp:attribute name="footer">
@@ -21,10 +23,11 @@
                         dataSrc: '',
                     },
                     columns: [
-                        { data: 'title' },
-                        { data: 'message' },
+                        { data: 'title', render: $.fn.dataTable.render.text() },
+                        { data: 'message', render: $.fn.dataTable.render.text() },
+                        { data: 'type', render: $.fn.dataTable.render.text() },
                         {
-                            data: 'added_at',
+                            data: 'addedAt',
                             render: function (data, type, row, meta) {
                                 if (type == "sort" || type == 'type') {
                                     return data;
@@ -33,7 +36,7 @@
                             }
                         },
                     ],
-                    order: [[ 2, "desc" ]],
+                    order: [[ 3, "desc" ]],
                     responsive: true
                 });
             } );
@@ -44,14 +47,6 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Recently added data</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
-                <div class="btn-group mr-2">
-                    <button class="btn btn-sm btn-outline-secondary">Share</button>
-                    <button class="btn btn-sm btn-outline-secondary">Export</button>
-                </div>
-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                    <span data-feather="calendar"></span>
-                    This week
-                </button>
             </div>
         </div>
 
@@ -60,6 +55,7 @@
             <tr>
                 <th data-priority="1">Title</th>
                 <th data-priority="1">Message</th>
+                <th data-priority="1">Type</th>
                 <th>Added at</th>
             </tr>
             </thead>

@@ -28,26 +28,17 @@
                                 if (type == "sort" || type == 'type') {
                                     return data;
                                 }
-                                return '<a class="btn btn-info btn-sm" href="'+ data +'" role="button">' +
+                                return '<a class="btn btn-info btn-sm" href="${base}/application/'+ data +'" role="button">' +
                                             '<span data-feather="edit-2"></span>' +
                                        '</a>&nbsp;' +
-                                        '<a class="btn btn-danger btn-sm" href="'+ data +'" role="button">' +
+                                        '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data + '" data-delete-name="' + escapeHtml(row.name) + '" role="button">' +
                                             '<span data-feather="trash-2"></span>' +
-                                        '</a>' ;
+                                        '</button>' ;
                             }
                         },
-                        { data: 'name' },
-                        { data: 'apikey' }
+                        { data: 'name', render: $.fn.dataTable.render.text() },
+                        { data: 'apikey', render: $.fn.dataTable.render.text() }
                     ],
-                    // columnDefs: [
-                    //     {
-                    //         "targets": 0,
-                    //         "render": function ( data, type, row ) {
-                    //             return "<button>Click!" + row[0] + "</button>";
-                    //         }
-                    //     },
-                    //     { "visible": true,  "targets": [ 1 ] }
-                    // ],
                     responsive: true,
                     drawCallback: function( settings ) {
                         feather.replace();
@@ -56,7 +47,21 @@
 
                 function myCallbackFunction (updatedCell, updatedRow, oldValue) {
                     console.log("The new value for the cell is: " + updatedCell.data());
-                    console.log("The values for each cell in that row are: " + updatedRow.data());
+                    console.log(updatedRow.data());
+                    var data = updatedRow.data();
+                    $.ajax({
+                        type: "put",
+                        url: "${base}/api/applications/" + data.id,
+                        data: JSON.stringify(updatedRow.data()),
+                        success: function(data) {
+                            $("#error").hide();
+                        },
+                        error: function(data) {
+                            $("#error").show();
+                        },
+                        contentType: "application/json",
+                        dataType: 'json'
+                    });
                 }
 
                 table.MakeCellsEditable({
@@ -69,7 +74,34 @@
                     },
                 });
 
-            } );
+                var deletingRow;
+                $(document).on('click', '.btn-delete', function () {
+                    $('#delete-name').text($(this).data('delete-name'));
+                    $('#delete-confirm').data('delete-url', "${base}/api/applications/" + $(this).data('delete-id'));
+                    $('#deleteModal').modal('show');
+                    deletingRow = $(this).parents('tr');
+                });
+
+                $(document).on('click', '#delete-confirm', function () {
+                    $.ajax({
+                        type: "delete",
+                        url: $('#delete-confirm').data('delete-url'),
+                        beforeSend: function( xhr ) {
+                            $("#delete-error").hide();
+                        },
+                        success: function(data) {
+                            $('#deleteModal').modal('hide');
+                            table
+                                .row( deletingRow )
+                                .remove()
+                                .draw();
+                        },
+                        error: function(data) {
+                            $("#delete-error").show();
+                        },
+                    });
+                });
+            });
         </script>
 
     </jsp:attribute>
@@ -79,14 +111,29 @@
             <h1 class="h2">Applications</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group mr-2">
-                    <button class="btn btn-sm btn-outline-secondary">Share</button>
-                    <button class="btn btn-sm btn-outline-secondary">Export</button>
+                    <div class="col-sm-4">
+                         <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle btn" type="button" data-toggle="dropdown">+
+                              <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ships/add">Ship</a></li>
+			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/applications/add">Application</a></li>
+				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/containers/add">Container Type</a></li>
+			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/terminals/add">Terminal</a></li>
+				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/undgs/add">UNDG</a></li>
+			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ports/add">Port</a></li>
+                             </ul>
+                        </div>
+                    </div>
                 </div>
-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                    <span data-feather="calendar"></span>
-                    This week
-                </button>
             </div>
+        </div>
+
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error" style="display:none">
+            <strong>Holy guacamole!</strong> Something went wrong with inline editing
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
 
         <table class="table table-striped table-sm datatables" style="width:100%">
@@ -102,6 +149,32 @@
 
             </tbody>
         </table>
+
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="delete modal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm deletion</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="delete-error" style="display:none">
+                            <strong>Holy guacamole!</strong> Something went wrong while deleting
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <p>Are you really sure you want to delete app with name <code id="delete-name"></code>.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-delete-url="" id="delete-confirm">Yes delete it</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
     </jsp:body>

@@ -3,9 +3,11 @@ package nl.utwente.di14.Cofano_C.resources;
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.HistoryEntry;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,37 +19,41 @@ import java.util.ArrayList;
 public class HistoryResource {
 
 
-	@GET
-	@Produces({MediaType.APPLICATION_JSON})
-	public ArrayList<HistoryEntry> getAllContainerTypes(){
-		Tables.start();
-		ArrayList<HistoryEntry> result = new ArrayList<>();
-		String query = "SELECT * " +
-				"FROM history";
+    /**
+     * @return a JSON array of all history entries
+     */
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public ArrayList<HistoryEntry> getAllHistoryEntries(
+            @Context HttpServletRequest request) {
+        Tables.start();
+        ArrayList<HistoryEntry> result = new ArrayList<>();
+        String query = "SELECT * " +
+                "FROM history";
+        if (request.getSession().getAttribute("userEmail") != null) {
+            try {
+                PreparedStatement statement =
+                        Tables.getCon().prepareStatement(query);
 
-		try {
-			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
 
-			ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    HistoryEntry entry = new HistoryEntry();
+                    entry.setId(resultSet.getInt("hid"));
+                    entry.setTitle(resultSet.getString("title"));
+                    entry.setAddedAt(resultSet.getTimestamp("added_at"));
+                    entry.setMessage(resultSet.getString("message"));
+                    entry.setType(resultSet.getString("type"));
 
-			while(resultSet.next()) {
-				//System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " "
-				//		+ resultSet.getString(3) + " " + resultSet.getString(4));
+                    result.add(entry);
+                }
+            } catch (SQLException e) {
+                System.err.println("Could not retrieve all history entries" + e);
+            }
+        }
 
-				HistoryEntry entry = new HistoryEntry();
-				entry.setID(resultSet.getInt("hid"));
-				entry.setTitle(resultSet.getString("title"));
-				entry.setAdded_at(resultSet.getTimestamp("added_at"));
-				entry.setMessage(resultSet.getString("message"));
+        return result;
 
-				result.add(entry);
-			}
-		} catch (SQLException e) {
-			System.err.println("Could not retrieve all history entries" + e);
-		}
-
-		return result;
-
-	}
+    }
 
 }
