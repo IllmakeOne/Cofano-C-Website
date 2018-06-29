@@ -3,7 +3,6 @@ package nl.utwente.di14.Cofano_C.resources;
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.Undg;
 import nl.utwente.di14.Cofano_C.model.UndgDescription;
-import nl.utwente.di14.Cofano_C.util.Util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -618,55 +617,53 @@ public class UndgsResource {
 
             statement.executeUpdate();
 
-			// Lastly update the descriptions
-			StringBuilder descriptionBuilder = new StringBuilder();
-			descriptionBuilder.append("WITH undgs as (SELECT ? as id)," +
-					" data (language, description) AS (" +
-					"    VALUES");
+            // Lastly update the descriptions
+            StringBuilder descriptionBuilder = new StringBuilder();
+            descriptionBuilder.append("WITH undgs as (SELECT ? as id)," +
+                    " data (language, description) AS (" +
+                    "    VALUES");
 
-			for (int i = 1; i <= undg.getDescriptions().size(); i++) {
-				descriptionBuilder.append("(?, ?)");
-				if (i != undg.getDescriptions().size()) {
-					descriptionBuilder.append(", ");
-				}
-			}
+            for (int i = 1; i <= undg.getDescriptions().size(); i++) {
+                descriptionBuilder.append("(?, ?)");
+                if (i != undg.getDescriptions().size()) {
+                    descriptionBuilder.append(", ");
+                }
+            }
 
-			descriptionBuilder.append(
-					"), upsert AS (" +
-							"    UPDATE undgs_descriptions ud" +
-							"    SET description = d.description" +
-							"    FROM data d, undgs" +
-							"    WHERE ud.language = d.language" +
-							"    AND ud.undgs_id = undgs.id" +
-							"    RETURNING ud.*" +
-							")" +
-							" INSERT INTO undgs_descriptions (language, description, undgs_id)" +
-							" SELECT data.language, data.description, undgs.id" +
-							" FROM data, undgs" +
-							" WHERE NOT EXISTS (" +
-							"  SELECT 1" +
-							"  FROM upsert up" +
-							"  WHERE up.language = data.language" +
-							"  AND up.undgs_id = undgs.id" +
-							")");
-
-
-
-			PreparedStatement descriptionStatement =  Tables.getCon().prepareStatement((descriptionBuilder.toString()));
-			descriptionStatement.setInt(1, undgsId);
-			for (int i = 1; i <= undg.getDescriptions().size(); i++) {
-				descriptionStatement.setString(i * 2, undg.getDescriptions().get(i - 1).getLanguage());
-				descriptionStatement.setString(i * 2 + 1, undg.getDescriptions().get(i - 1).getDescription());
-			}
-			System.out.println(descriptionStatement.toString());
-
-			descriptionStatement.executeUpdate();
+            descriptionBuilder.append(
+                    "), upsert AS (" +
+                            "    UPDATE undgs_descriptions ud" +
+                            "    SET description = d.description" +
+                            "    FROM data d, undgs" +
+                            "    WHERE ud.language = d.language" +
+                            "    AND ud.undgs_id = undgs.id" +
+                            "    RETURNING ud.*" +
+                            ")" +
+                            " INSERT INTO undgs_descriptions (language, description, undgs_id)" +
+                            " SELECT data.language, data.description, undgs.id" +
+                            " FROM data, undgs" +
+                            " WHERE NOT EXISTS (" +
+                            "  SELECT 1" +
+                            "  FROM upsert up" +
+                            "  WHERE up.language = data.language" +
+                            "  AND up.undgs_id = undgs.id" +
+                            ")");
 
 
+            PreparedStatement descriptionStatement = Tables.getCon().prepareStatement((descriptionBuilder.toString()));
+            descriptionStatement.setInt(1, undgsId);
+            for (int i = 1; i <= undg.getDescriptions().size(); i++) {
+                descriptionStatement.setString(i * 2, undg.getDescriptions().get(i - 1).getLanguage());
+                descriptionStatement.setString(i * 2 + 1, undg.getDescriptions().get(i - 1).getDescription());
+            }
+            System.out.println(descriptionStatement.toString());
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+            descriptionStatement.executeUpdate();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -883,142 +880,139 @@ public class UndgsResource {
 
             statement.executeUpdate();
 
-			StringBuilder descriptionBuilder = new StringBuilder();
-			descriptionBuilder.append("WITH undgs as (SELECT ? as id)," +
-					" data (language, description) AS (" +
-					"    VALUES");
+            StringBuilder descriptionBuilder = new StringBuilder();
+            descriptionBuilder.append("WITH undgs as (SELECT ? as id)," +
+                    " data (language, description) AS (" +
+                    "    VALUES");
 
-			for (int i = 1; i <= undg.getDescriptions().size(); i++) {
-				descriptionBuilder.append("(?, ?)");
-				if (i != undg.getDescriptions().size()) {
-					descriptionBuilder.append(", ");
-				}
-			}
+            for (int i = 1; i <= undg.getDescriptions().size(); i++) {
+                descriptionBuilder.append("(?, ?)");
+                if (i != undg.getDescriptions().size()) {
+                    descriptionBuilder.append(", ");
+                }
+            }
 
-			descriptionBuilder.append(
-					"), upsert AS (" +
-					"    UPDATE undgs_descriptions ud" +
-					"    SET description = d.description" +
-					"    FROM data d, undgs" +
-					"    WHERE ud.language = d.language" +
-					"    AND ud.undgs_id = undgs.id" +
-					"    RETURNING ud.*" +
-					")" +
-					" INSERT INTO undgs_descriptions (language, description, undgs_id)" +
-					" SELECT data.language, data.description, undgs.id" +
-					" FROM data, undgs" +
-					" WHERE NOT EXISTS (" +
-					"  SELECT 1" +
-					"  FROM upsert up" +
-					"  WHERE up.language = data.language" +
-					"  AND up.undgs_id = undgs.id" +
-					")");
-
-
-
-			PreparedStatement descriptionStatement =  Tables.getCon().prepareStatement((descriptionBuilder.toString()));
-			descriptionStatement.setInt(1, undgsId);
-
-			for (int i = 1; i <= undg.getDescriptions().size(); i++) {
-				descriptionStatement.setString(i * 2, undg.getDescriptions().get(i - 1).getLanguage());
-				descriptionStatement.setString(i * 2 + 1, undg.getDescriptions().get(i - 1).getDescription());
-			}
-			System.out.println(descriptionStatement.toString());
-
-			descriptionStatement.executeUpdate();
+            descriptionBuilder.append(
+                    "), upsert AS (" +
+                            "    UPDATE undgs_descriptions ud" +
+                            "    SET description = d.description" +
+                            "    FROM data d, undgs" +
+                            "    WHERE ud.language = d.language" +
+                            "    AND ud.undgs_id = undgs.id" +
+                            "    RETURNING ud.*" +
+                            ")" +
+                            " INSERT INTO undgs_descriptions (language, description, undgs_id)" +
+                            " SELECT data.language, data.description, undgs.id" +
+                            " FROM data, undgs" +
+                            " WHERE NOT EXISTS (" +
+                            "  SELECT 1" +
+                            "  FROM upsert up" +
+                            "  WHERE up.language = data.language" +
+                            "  AND up.undgs_id = undgs.id" +
+                            ")");
 
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+            PreparedStatement descriptionStatement = Tables.getCon().prepareStatement((descriptionBuilder.toString()));
+            descriptionStatement.setInt(1, undgsId);
 
-	}
+            for (int i = 1; i <= undg.getDescriptions().size(); i++) {
+                descriptionStatement.setString(i * 2, undg.getDescriptions().get(i - 1).getLanguage());
+                descriptionStatement.setString(i * 2 + 1, undg.getDescriptions().get(i - 1).getDescription());
+            }
+            System.out.println(descriptionStatement.toString());
 
-	@DELETE
-	@Path("/{undgsId}/description/{lang}")
-	public void removeDescription(@PathParam("undgsId") int undgsId, @PathParam("lang") String lang) {
-		Tables.start();
-		String query ="DELETE FROM undgs_descriptions WHERE undgs_id = ? AND language = ?";
-		try {
-			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-			statement.setInt(1, undgsId);
-			statement.setString(2, lang);
-			statement.executeUpdate();
-		} catch (SQLException e) {
-			System.err.println("Was not able to delete undgs description");
-			System.err.println(e.getSQLState());
-			e.printStackTrace();
-		}
-	}
+            descriptionStatement.executeUpdate();
 
-	@DELETE
-	@Path("/{undgsId}")
-	public void deletShip(@PathParam("undgsId") int undgsId, @Context HttpServletRequest request) {
-		Tables.start();
 
-		try {
-			PreparedStatement hasLabelStatement = Tables.getCon().prepareStatement("DELETE FROM undgs_has_label WHERE uid = ?");
-			hasLabelStatement.setInt(1, undgsId);
-			hasLabelStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-			PreparedStatement hasTankSpecialProvisionStatement = Tables.getCon().prepareStatement("DELETE FROM undgs_has_tank_special_provision WHERE uid = ?");
-			hasTankSpecialProvisionStatement.setInt(1, undgsId);
-			hasTankSpecialProvisionStatement.executeUpdate();
+    }
 
-			PreparedStatement hasTankCodeStatement = Tables.getCon().prepareStatement("DELETE FROM undgs_has_tankcode WHERE uid = ?");
-			hasTankCodeStatement.setInt(1, undgsId);
-			hasTankCodeStatement.executeUpdate();
+    @DELETE
+    @Path("/{undgsId}/description/{lang}")
+    public void removeDescription(@PathParam("undgsId") int undgsId, @PathParam("lang") String lang) {
+        Tables.start();
+        String query = "DELETE FROM undgs_descriptions WHERE undgs_id = ? AND language = ?";
+        try {
+            PreparedStatement statement = Tables.getCon().prepareStatement(query);
+            statement.setInt(1, undgsId);
+            statement.setString(2, lang);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Was not able to delete undgs description");
+            System.err.println(e.getSQLState());
+            e.printStackTrace();
+        }
+    }
 
-			PreparedStatement descriptionsStatement = Tables.getCon().prepareStatement("DELETE FROM undgs_descriptions WHERE undgs_id = ?");
-			descriptionsStatement.setInt(1, undgsId);
-			descriptionsStatement.executeUpdate();
+    @DELETE
+    @Path("/{undgsId}")
+    public void deletShip(@PathParam("undgsId") int undgsId, @Context HttpServletRequest request) {
+        Tables.start();
 
-			PreparedStatement DELETEStatement = Tables.getCon().prepareStatement("DELETE FROM undgs WHERE uid = ?");
+        try {
+            PreparedStatement hasLabelStatement = Tables.getCon().prepareStatement("DELETE FROM undgs_has_label WHERE uid = ?");
+            hasLabelStatement.setInt(1, undgsId);
+            hasLabelStatement.executeUpdate();
+
+            PreparedStatement hasTankSpecialProvisionStatement = Tables.getCon().prepareStatement("DELETE FROM undgs_has_tank_special_provision WHERE uid = ?");
+            hasTankSpecialProvisionStatement.setInt(1, undgsId);
+            hasTankSpecialProvisionStatement.executeUpdate();
+
+            PreparedStatement hasTankCodeStatement = Tables.getCon().prepareStatement("DELETE FROM undgs_has_tankcode WHERE uid = ?");
+            hasTankCodeStatement.setInt(1, undgsId);
+            hasTankCodeStatement.executeUpdate();
+
+            PreparedStatement descriptionsStatement = Tables.getCon().prepareStatement("DELETE FROM undgs_descriptions WHERE undgs_id = ?");
+            descriptionsStatement.setInt(1, undgsId);
+            descriptionsStatement.executeUpdate();
+
+            PreparedStatement DELETEStatement = Tables.getCon().prepareStatement("DELETE FROM undgs WHERE uid = ?");
             DELETEStatement.setInt(1, undgsId);
             DELETEStatement.executeUpdate();
             System.out.println(DELETEStatement.toString());
 
 
-			// Now cleanup:
-			PreparedStatement cleanUpStatement = Tables.getCon().prepareStatement(
-					"DELETE FROM undgs_labels" +
-							" WHERE NOT EXISTS (" +
-							"    SELECT 1" +
-							"    FROM undgs_has_label" +
-							"    WHERE undgs_has_label.ulid = ulid" +
-							");"
-			);
-			cleanUpStatement.execute();
+            // Now cleanup:
+            PreparedStatement cleanUpStatement = Tables.getCon().prepareStatement(
+                    "DELETE FROM undgs_labels" +
+                            " WHERE NOT EXISTS (" +
+                            "    SELECT 1" +
+                            "    FROM undgs_has_label" +
+                            "    WHERE undgs_has_label.ulid = ulid" +
+                            ");"
+            );
+            cleanUpStatement.execute();
 
-			PreparedStatement cleanUpProvisionsStatement = Tables.getCon().prepareStatement(
-					"DELETE FROM undgs_tank_special_provisions" +
-							" WHERE NOT EXISTS (" +
-							"    SELECT 1" +
-							"    FROM undgs_has_tank_special_provision" +
-							"    WHERE undgs_has_tank_special_provision.utsid = utsid" +
-							");"
-			);
-			cleanUpProvisionsStatement.execute();
+            PreparedStatement cleanUpProvisionsStatement = Tables.getCon().prepareStatement(
+                    "DELETE FROM undgs_tank_special_provisions" +
+                            " WHERE NOT EXISTS (" +
+                            "    SELECT 1" +
+                            "    FROM undgs_has_tank_special_provision" +
+                            "    WHERE undgs_has_tank_special_provision.utsid = utsid" +
+                            ");"
+            );
+            cleanUpProvisionsStatement.execute();
 
-			PreparedStatement cleanUpTankCodeStatement = Tables.getCon().prepareStatement(
-					"DELETE FROM undgs_tankcodes" +
-							" WHERE NOT EXISTS (" +
-							"    SELECT 1" +
-							"    FROM undgs_has_tankcode" +
-							"    WHERE undgs_has_tankcode.utid = utid" +
-							");"
-			);
-			cleanUpTankCodeStatement.execute();
-
-
-		} catch (SQLException e) {
-			System.err.println("Was not able to delete Undgs: ");
-			System.err.println(e.getSQLState());
-			e.printStackTrace();
-		}
-	}
+            PreparedStatement cleanUpTankCodeStatement = Tables.getCon().prepareStatement(
+                    "DELETE FROM undgs_tankcodes" +
+                            " WHERE NOT EXISTS (" +
+                            "    SELECT 1" +
+                            "    FROM undgs_has_tankcode" +
+                            "    WHERE undgs_has_tankcode.utid = utid" +
+                            ");"
+            );
+            cleanUpTankCodeStatement.execute();
 
 
+        } catch (SQLException e) {
+            System.err.println("Was not able to delete Undgs: ");
+            System.err.println(e.getSQLState());
+            e.printStackTrace();
+        }
+    }
 
 
 //	@POST

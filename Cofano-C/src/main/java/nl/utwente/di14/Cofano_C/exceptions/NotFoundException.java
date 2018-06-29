@@ -1,8 +1,8 @@
 package nl.utwente.di14.Cofano_C.exceptions;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.WebApplicationException;
 
 /**
  * Create 404 NOT FOUND exception.

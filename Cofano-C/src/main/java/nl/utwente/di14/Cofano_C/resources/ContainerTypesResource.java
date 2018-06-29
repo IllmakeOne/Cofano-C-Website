@@ -62,12 +62,12 @@ public class ContainerTypesResource {
         ArrayList<ContainerType> result = new ArrayList<>();
         //select all unapproved entries which are not in the conflict table
         String query = "select container_type.* "
-        		+ "from container_type"
-        		+ " where container_type.approved = false "
-        		+ "AND container_type.cid not in (select conflict.entry "
-        										+ "from conflict "
-        										+ "where conflict.\"table\"= 'container_type' )\r\n";
-        
+                + "from container_type"
+                + " where container_type.approved = false "
+                + "AND container_type.cid not in (select conflict.entry "
+                + "from conflict "
+                + "where conflict.\"table\"= 'container_type' )\r\n";
+
         if (request.getSession().getAttribute("userEmail") != null) {
             try {
                 PreparedStatement statement = Tables.getCon().prepareStatement(query);
@@ -224,64 +224,64 @@ public class ContainerTypesResource {
             Tables.addHistoryEntry("DELETE", doer, aux.toString(), myName, true);
         }
     }
-    
-    /**
-	 * this method deletes an entry from a table but doest not enter in in the database
-	 * this method is called for unapproved entries
-	 * this method does not add to the history table
-	 * @param portId the id of the entry which is deleted
-	 */
-	@DELETE
-	@Path("/unapproved/{containerId}")
-	public void deleteContainerUN(@PathParam("containerId") int containerId,
-			@Context HttpServletRequest request) {
-		Tables.start();
-		if(request.getSession().getAttribute("userEmail")!=null) {		
-			String query ="SELECT  deletecontainer_types(?)";
-			try {
-				PreparedStatement statement = 
-						Tables.getCon().prepareStatement(query);
-				statement.setInt(1, containerId);
-				statement.executeQuery();
-			} catch (SQLException e) {
-				System.err.println("Was not able to delete unapproved Container");
-				System.err.println(e.getSQLState());
-				e.printStackTrace();
-			}
-		}
-	}
 
-    
-    
     /**
-	 * this method approves an entry in the database
-	 * @param containerId the id of the contaier which is approved
-	 */
-	@PUT
-	@Path("/approve/{containerId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void approveContainer(@PathParam("containerId") int containerId,
-			@Context HttpServletRequest request) {
-		
-		if(request.getSession().getAttribute("userEmail")!=null) {
-			ContainerType aux = getContainer(containerId, request);
-			String query = "SELECT approvecontainer(?)";
-			try {
-				PreparedStatement statement = 
-						Tables.getCon().prepareStatement(query);
-				statement.setInt(1, containerId);
-				statement.executeQuery();
-	
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			
-			Tables.addHistoryEntry("APPROVE", 
-					request.getSession().getAttribute("userEmail").toString(),
-					aux.toString() , myName, true);
-		}
-	}
+     * this method deletes an entry from a table but doest not enter in in the database
+     * this method is called for unapproved entries
+     * this method does not add to the history table
+     *
+     * @param containerId the id of the entry which is deleted
+     */
+    @DELETE
+    @Path("/unapproved/{containerId}")
+    public void deleteContainerUN(@PathParam("containerId") int containerId,
+                                  @Context HttpServletRequest request) {
+        Tables.start();
+        if (request.getSession().getAttribute("userEmail") != null) {
+            String query = "SELECT  deletecontainer_types(?)";
+            try {
+                PreparedStatement statement =
+                        Tables.getCon().prepareStatement(query);
+                statement.setInt(1, containerId);
+                statement.executeQuery();
+            } catch (SQLException e) {
+                System.err.println("Was not able to delete unapproved Container");
+                System.err.println(e.getSQLState());
+                e.printStackTrace();
+            }
+        }
+    }
 
+
+    /**
+     * this method approves an entry in the database
+     *
+     * @param containerId the id of the contaier which is approved
+     */
+    @PUT
+    @Path("/approve/{containerId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void approveContainer(@PathParam("containerId") int containerId,
+                                 @Context HttpServletRequest request) {
+
+        if (request.getSession().getAttribute("userEmail") != null) {
+            ContainerType aux = getContainer(containerId, request);
+            String query = "SELECT approvecontainer(?)";
+            try {
+                PreparedStatement statement =
+                        Tables.getCon().prepareStatement(query);
+                statement.setInt(1, containerId);
+                statement.executeQuery();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            Tables.addHistoryEntry("APPROVE",
+                    request.getSession().getAttribute("userEmail").toString(),
+                    aux.toString(), myName, true);
+        }
+    }
 
 
     /**
@@ -354,21 +354,21 @@ public class ContainerTypesResource {
         return result;
     }
 
-	private void constructContainerType(ArrayList<ContainerType> result, ResultSet resultSet)
-	        throws SQLException {
-	    while (resultSet.next()) {
-	        ContainerType container = new ContainerType();
-	        container.setDisplayName(resultSet.getString("display_name"));
-	        container.setId(resultSet.getInt("cid"));
-	        container.setIsoCode(resultSet.getString("iso_code"));
-	        container.setDescription(resultSet.getString("description"));
-	        container.setLength(resultSet.getInt("c_length"));
-	        container.setHeight(resultSet.getInt("c_height"));
-	        container.setReefer(resultSet.getBoolean("reefer"));
-	
-	        result.add(container);
-	    }
-	}
+    private void constructContainerType(ArrayList<ContainerType> result, ResultSet resultSet)
+            throws SQLException {
+        while (resultSet.next()) {
+            ContainerType container = new ContainerType();
+            container.setDisplayName(resultSet.getString("display_name"));
+            container.setId(resultSet.getInt("cid"));
+            container.setIsoCode(resultSet.getString("iso_code"));
+            container.setDescription(resultSet.getString("description"));
+            container.setLength(resultSet.getInt("c_length"));
+            container.setHeight(resultSet.getInt("c_height"));
+            container.setReefer(resultSet.getBoolean("reefer"));
+
+            result.add(container);
+        }
+    }
 
 
 }

@@ -26,11 +26,11 @@ public class AddUndgs extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-		request.setAttribute("action", "Add");
-		request.setAttribute("method", "post");
-		request.setAttribute("formUrl",
-				getServletContext().getInitParameter("cofano.url") + "/api/undgs/add" );
-		RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/undgs/edit.jsp");
+        request.setAttribute("action", "Add");
+        request.setAttribute("method", "post");
+        request.setAttribute("formUrl",
+                getServletContext().getInitParameter("cofano.url") + "/api/undgs/add");
+        RequestHelper.show(request, response, getServletContext(), "/WEB-INF/jsp/data/undgs/edit.jsp");
 
-	}
+    }
 }

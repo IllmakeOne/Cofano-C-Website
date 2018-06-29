@@ -32,7 +32,7 @@ public class UndgDescription {
         this.language = language;
     }
 
-    public UndgDescription(String language , String description) {
+    public UndgDescription(String language, String description) {
         this.language = language;
         this.description = description;
     }
