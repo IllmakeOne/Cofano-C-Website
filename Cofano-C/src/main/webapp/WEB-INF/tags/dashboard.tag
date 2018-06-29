@@ -21,20 +21,20 @@
         <title>Cofano-C dashboard</title>
 
         <!-- Bootstrap core CSS -->
-        <link href="./css/bootstrap.min.css" rel="stylesheet">
+        <link href="${(empty base) ? '.' : base}/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Custom styles for this template -->
-        <link href="./css/dashboard.css" rel="stylesheet">
+        <link href="${(empty base) ? '.' : base}/css/dashboard.css" rel="stylesheet">
 
         <!-- Favicons -->
-        <link rel="apple-touch-icon" sizes="76x76" href="./img/favicons/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="./img/favicons/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="./img/favicons/favicon-16x16.png">
-        <link rel="manifest" href="./img/favicons/site.webmanifest">
-        <link rel="mask-icon" href="./img/favicons/safari-pinned-tab.svg" color="#5bbad5">
-        <link rel="shortcut icon" href="./img/favicons/favicon.ico">
+        <link rel="apple-touch-icon" sizes="76x76" href="${(empty base) ? '.' : base}/img/favicons/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="${(empty base) ? '.' : base}/img/favicons/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="${(empty base) ? '.' : base}/img/favicons/favicon-16x16.png">
+        <link rel="manifest" href="${(empty base) ? '.' : base}/img/favicons/site.webmanifest">
+        <link rel="mask-icon" href="${(empty base) ? '.' : base}/img/favicons/safari-pinned-tab.svg" color="#5bbad5">
+        <link rel="shortcut icon" href="${(empty base) ? '.' : base}/img/favicons/favicon.ico">
         <meta name="msapplication-TileColor" content="#00aba9">
-        <meta name="msapplication-config" content="./img/favicons/browserconfig.xml">
+        <meta name="msapplication-config" content="${(empty base) ? '.' : base}/img/favicons/browserconfig.xml">
 
         <jsp:invoke fragment="header"/>
     </head>
@@ -45,14 +45,9 @@
             <div class="row">
                 <c:import url="/WEB-INF/jsp/sidebar.jsp" />
                 <main role="main" class="cofano-main col-md-9 ml-sm-auto col-lg-10 px-4">
-                    <c:choose>
-                        <c:when test="${not empty page}">
-                            <jsp:doBody/>
-                        </c:when>
-                        <c:otherwise>
-                            <c:import url="/WEB-INF/jsp/home.jsp" />
-                        </c:otherwise>
-                    </c:choose>
+                
+       				 
+                    <jsp:doBody/>
                 </main>
             </div>
         </div>
@@ -60,15 +55,37 @@
         <!-- Bootstrap core JavaScript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script>window.jQuery</script>
-        <script src="./js/bootstrap.min.js"></script>
+        <script
+                src="https://code.jquery.com/jquery-3.3.1.min.js"
+                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+                crossorigin="anonymous"></script>        <script>window.jQuery</script>
+        <script src="${(empty base) ? '.' : base}/js/popper.min.js"></script>
+                
+        <script src="${(empty base) ? '.' : base}/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            var entityMap = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;',
+                '/': '&#x2F;',
+                '`': '&#x60;',
+                '=': '&#x3D;'
+            };
+
+            function escapeHtml (string) {
+                return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+                    return entityMap[s];
+                });
+            }
+        </script>
 
         <!-- Icons -->
         <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+        <jsp:invoke fragment="footer"/>
         <script>
             feather.replace()
         </script>
-        <jsp:invoke fragment="footer"/>
     </body>
 </html>
