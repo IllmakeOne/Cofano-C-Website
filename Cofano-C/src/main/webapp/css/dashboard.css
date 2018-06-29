@@ -301,3 +301,20 @@ main {
         display: none;
     }
 }
+
+legend {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.col-form-label {
+    text-align: right;
+    font-weight: bold;
+}
+
+.form-check {
+    padding-top: .4rem;
+}
+
+.selectize-dropdown.col-sm-3 {
+    width: 600px !important;
+}

@@ -22,11 +22,10 @@
                         url: "${base}/api/history",
                         dataSrc: '',
                     },
-                    columns: [                
-                    	{ data: 'title', render: $.fn.dataTable.render.text()},
+                    columns: [
+                        { data: 'title', render: $.fn.dataTable.render.text() },
                         { data: 'message', render: $.fn.dataTable.render.text() },
-                        { data: 'type', render: $.fn.dataTable.render.text()},
-
+                        { data: 'type', render: $.fn.dataTable.render.text() },
                         {
                             data: 'addedAt',
                             render: function (data, type, row, meta) {
