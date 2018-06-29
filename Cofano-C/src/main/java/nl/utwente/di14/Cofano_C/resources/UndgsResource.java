@@ -618,6 +618,52 @@ public class UndgsResource {
 
 			statement.executeUpdate();
 
+			// Lastly update the descriptions
+			StringBuilder descriptionBuilder = new StringBuilder();
+			descriptionBuilder.append("WITH undgs as (SELECT ? as id)," +
+					" data (language, description) AS (" +
+					"    VALUES");
+
+			for (int i = 1; i <= undg.getDescriptions().size(); i++) {
+				descriptionBuilder.append("(?, ?)");
+				if (i != undg.getDescriptions().size()) {
+					descriptionBuilder.append(", ");
+				}
+			}
+
+			descriptionBuilder.append(
+					"), upsert AS (" +
+							"    UPDATE undgs_descriptions ud" +
+							"    SET description = d.description" +
+							"    FROM data d, undgs" +
+							"    WHERE ud.language = d.language" +
+							"    AND ud.undgs_id = undgs.id" +
+							"    RETURNING ud.*" +
+							")" +
+							" INSERT INTO undgs_descriptions (language, description, undgs_id)" +
+							" SELECT data.language, data.description, undgs.id" +
+							" FROM data, undgs" +
+							" WHERE NOT EXISTS (" +
+							"  SELECT 1" +
+							"  FROM upsert up" +
+							"  WHERE up.language = data.language" +
+							"  AND up.undgs_id = undgs.id" +
+							")");
+
+
+
+			PreparedStatement descriptionStatement =  Tables.getCon().prepareStatement((descriptionBuilder.toString()));
+			descriptionStatement.setInt(1, undgsId);
+			for (int i = 1; i <= undg.getDescriptions().size(); i++) {
+				descriptionStatement.setString(i * 2, undg.getDescriptions().get(i - 1).getLanguage());
+				descriptionStatement.setString(i * 2 + 1, undg.getDescriptions().get(i - 1).getDescription());
+			}
+			System.out.println(descriptionStatement.toString());
+
+			descriptionStatement.executeUpdate();
+
+
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -836,6 +882,79 @@ public class UndgsResource {
 
 
 			statement.executeUpdate();
+
+			StringBuilder descriptionBuilder = new StringBuilder();
+			descriptionBuilder.append("WITH undgs as (SELECT ? as id)," +
+					" data (language, description) AS (" +
+					"    VALUES");
+
+			for (int i = 1; i <= undg.getDescriptions().size(); i++) {
+				descriptionBuilder.append("(?, ?)");
+				if (i != undg.getDescriptions().size()) {
+					descriptionBuilder.append(", ");
+				}
+			}
+
+			descriptionBuilder.append(
+					"), upsert AS (" +
+					"    UPDATE undgs_descriptions ud" +
+					"    SET description = d.description" +
+					"    FROM data d, undgs" +
+					"    WHERE ud.language = d.language" +
+					"    AND ud.undgs_id = undgs.id" +
+					"    RETURNING ud.*" +
+					")" +
+					" INSERT INTO undgs_descriptions (language, description, undgs_id)" +
+					" SELECT data.language, data.description, undgs.id" +
+					" FROM data, undgs" +
+					" WHERE NOT EXISTS (" +
+					"  SELECT 1" +
+					"  FROM upsert up" +
+					"  WHERE up.language = data.language" +
+					"  AND up.undgs_id = undgs.id" +
+					")");
+
+
+
+			PreparedStatement descriptionStatement =  Tables.getCon().prepareStatement((descriptionBuilder.toString()));
+			descriptionStatement.setInt(1, undgsId);
+
+			for (int i = 1; i <= undg.getDescriptions().size(); i++) {
+				descriptionStatement.setString(i * 2, undg.getDescriptions().get(i - 1).getLanguage());
+				descriptionStatement.setString(i * 2 + 1, undg.getDescriptions().get(i - 1).getDescription());
+			}
+			System.out.println(descriptionStatement.toString());
+
+			descriptionStatement.executeUpdate();
+
+//
+//
+//
+//
+//
+//			// Lastly update the descriptions
+//			PreparedStatement deleteDescriptions = Tables.getCon().prepareStatement(
+//					"DELETE FROM undgs_descriptions" +
+//							" WHERE undgs_id = ?"
+//			);
+//			deleteDescriptions.setInt(1, undgsId);
+//			deleteDescriptions.execute();
+//
+//
+//			Tables.getCon().setAutoCommit(false);
+//			PreparedStatement addDescriptionsStatement = Tables.getCon().prepareStatement(
+//					"INSERT INTO undgs_descriptions(language, description, undgs_id) VALUES" +
+//							" (?, ?, ?);"
+//			);
+//			for (UndgDescription description : undg.getDescriptions()) {
+//				addDescriptionsStatement.setString(1, description.getLanguage());
+//				addDescriptionsStatement.setString(2, description.getDescription());
+//				addDescriptionsStatement.setInt(3, undgsId);
+//				addDescriptionsStatement.addBatch();
+//			}
+//
+//			addDescriptionsStatement.executeBatch();
+
 
 		} catch (SQLException e) {
 			e.printStackTrace();
