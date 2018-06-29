@@ -14,6 +14,16 @@ public class ShipTest {
     private Ship s2 = new Ship();
 
     @Test
+    public void constructorWithDataTest() {
+        assertNotNull(s1);
+    }
+
+    @Test
+    public void constructorWithoutDataTest() {
+        assertNotNull(s2);
+    }
+
+    @Test
     public void toStringTest() {
         assertEquals(("Ship:  IMO: " + "IMO1" + "; Name: " + "Name1" + "; CallSign: "
                 + "CALL1" + "; MMSI: " + "MMSI1" + "; Depth: " + bd1), s1.toString());

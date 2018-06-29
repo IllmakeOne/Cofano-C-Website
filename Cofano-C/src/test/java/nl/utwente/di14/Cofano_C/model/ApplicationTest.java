@@ -10,6 +10,15 @@ public class ApplicationTest {
     private Application app1 = new Application("Test app 1", "KEY001", 0001);
     private Application app2 = new Application();
 
+    @Test
+    public void constructorWithDataTest() {
+        assertNotNull(app1);
+    }
+
+    @Test
+    public void constructorWithoutDataTest() {
+        assertNotNull(app2);
+    }
 
     @Test
     public void toStringTest() {
