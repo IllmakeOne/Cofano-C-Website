@@ -927,40 +927,96 @@ public class UndgsResource {
 
 			descriptionStatement.executeUpdate();
 
-//
-//
-//
-//
-//
-//			// Lastly update the descriptions
-//			PreparedStatement deleteDescriptions = Tables.getCon().prepareStatement(
-//					"DELETE FROM undgs_descriptions" +
-//							" WHERE undgs_id = ?"
-//			);
-//			deleteDescriptions.setInt(1, undgsId);
-//			deleteDescriptions.execute();
-//
-//
-//			Tables.getCon().setAutoCommit(false);
-//			PreparedStatement addDescriptionsStatement = Tables.getCon().prepareStatement(
-//					"INSERT INTO undgs_descriptions(language, description, undgs_id) VALUES" +
-//							" (?, ?, ?);"
-//			);
-//			for (UndgDescription description : undg.getDescriptions()) {
-//				addDescriptionsStatement.setString(1, description.getLanguage());
-//				addDescriptionsStatement.setString(2, description.getDescription());
-//				addDescriptionsStatement.setInt(3, undgsId);
-//				addDescriptionsStatement.addBatch();
-//			}
-//
-//			addDescriptionsStatement.executeBatch();
-
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 	}
+
+	@DELETE
+	@Path("/{undgsId}/description/{lang}")
+	public void removeDescription(@PathParam("undgsId") int undgsId, @PathParam("lang") String lang) {
+		Tables.start();
+		String query ="DELETE FROM undgs_descriptions WHERE undgs_id = ? AND language = ?";
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setInt(1, undgsId);
+			statement.setString(2, lang);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("Was not able to delete undgs description");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
+	}
+
+	@DELETE
+	@Path("/{undgsId}")
+	public void deletShip(@PathParam("undgsId") int undgsId, @Context HttpServletRequest request) {
+		Tables.start();
+
+		try {
+			PreparedStatement hasLabelStatement = Tables.getCon().prepareStatement("DELETE FROM undgs_has_label WHERE uid = ?");
+			hasLabelStatement.setInt(1, undgsId);
+			hasLabelStatement.executeUpdate();
+
+			PreparedStatement hasTankSpecialProvisionStatement = Tables.getCon().prepareStatement("DELETE FROM undgs_has_tank_special_provision WHERE uid = ?");
+			hasTankSpecialProvisionStatement.setInt(1, undgsId);
+			hasTankSpecialProvisionStatement.executeUpdate();
+
+			PreparedStatement hasTankCodeStatement = Tables.getCon().prepareStatement("DELETE FROM undgs_has_tankcode WHERE uid = ?");
+			hasTankCodeStatement.setInt(1, undgsId);
+			hasTankCodeStatement.executeUpdate();
+
+			PreparedStatement descriptionsStatement = Tables.getCon().prepareStatement("DELETE FROM undgs_descriptions WHERE undgs_id = ?");
+			descriptionsStatement.setInt(1, undgsId);
+			descriptionsStatement.executeUpdate();
+
+			PreparedStatement DELETEStatement = Tables.getCon().prepareStatement("DELETE FROM undgs WHERE uid = ?");
+			hasTankCodeStatement.setInt(1, undgsId);
+			hasTankCodeStatement.executeUpdate();
+
+			// Now cleanup:
+			PreparedStatement cleanUpStatement = Tables.getCon().prepareStatement(
+					"DELETE FROM undgs_labels" +
+							" WHERE NOT EXISTS (" +
+							"    SELECT 1" +
+							"    FROM undgs_has_label" +
+							"    WHERE undgs_has_label.ulid = ulid" +
+							");"
+			);
+			cleanUpStatement.execute();
+
+			PreparedStatement cleanUpProvisionsStatement = Tables.getCon().prepareStatement(
+					"DELETE FROM undgs_tank_special_provisions" +
+							" WHERE NOT EXISTS (" +
+							"    SELECT 1" +
+							"    FROM undgs_has_tank_special_provision" +
+							"    WHERE undgs_has_tank_special_provision.utsid = utsid" +
+							");"
+			);
+			cleanUpProvisionsStatement.execute();
+
+			PreparedStatement cleanUpTankCodeStatement = Tables.getCon().prepareStatement(
+					"DELETE FROM undgs_tankcodes" +
+							" WHERE NOT EXISTS (" +
+							"    SELECT 1" +
+							"    FROM undgs_has_tankcode" +
+							"    WHERE undgs_has_tankcode.utid = utid" +
+							");"
+			);
+			cleanUpTankCodeStatement.execute();
+
+
+		} catch (SQLException e) {
+			System.err.println("Was not able to delete Undgs: ");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
+	}
+
+
 
 
 
