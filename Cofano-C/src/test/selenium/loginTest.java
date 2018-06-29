@@ -12,7 +12,7 @@ public class loginTest {
 
     public static void main(String[] args) {
 
-        String URL = "http://localhost:8080";
+        String URL = args[2];
 
         WebDriverManager.firefoxdriver().setup();
 

@@ -10,6 +10,16 @@ public class PortTest {
     private Port p2 = new Port();
 
     @Test
+    public void constructorWithDataTest() {
+        assertNotNull(p1);
+    }
+
+    @Test
+    public void constructorWithoutDataTest() {
+        assertNotNull(p2);
+    }
+
+    @Test
     public void toStringTest() {
         assertEquals(("Port:  Name: " + "Name1" + "; Unlo: " + "UNLO1"), p1.toString());
     }

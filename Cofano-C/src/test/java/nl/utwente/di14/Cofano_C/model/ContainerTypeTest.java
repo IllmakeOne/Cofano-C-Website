@@ -10,6 +10,16 @@ public class ContainerTypeTest {
     private ContainerType ct2 = new ContainerType();
 
     @Test
+    public void constructorWithDataTest() {
+        assertNotNull(ct1);
+    }
+
+    @Test
+    public void constructorWithoutDataTest() {
+        assertNotNull(ct2);
+    }
+
+    @Test
     public void toStringTest() {
         assertEquals(("  ContainerType:  displayName: " + "Test1" + "; isoCode: " + "ISO001" +
                 "; Description: " + "Description1" +

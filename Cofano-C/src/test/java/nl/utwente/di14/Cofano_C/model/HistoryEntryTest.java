@@ -13,6 +13,16 @@ public class HistoryEntryTest {
     private HistoryEntry entry2 = new HistoryEntry();
 
     @Test
+    public void constructorWithDataTest() {
+        assertNotNull(entry1);
+    }
+
+    @Test
+    public void constructorWithoutDataTest() {
+        assertNotNull(entry2);
+    }
+
+    @Test
     public void getType() {
         assertEquals("Type1", entry1.getType());
     }
