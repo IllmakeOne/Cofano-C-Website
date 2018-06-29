@@ -14,28 +14,35 @@
     <jsp:body>
     <style>
     
-h4 { color:#ff8c1a;
+	h4 
+	{ 
+	color:#ff8c1a;
 	font-size:190%;
-	}	
-h5 {
- color:#ff8c1a; 
- font-size:120%;
-	}	
-	
-	h6 {
- color:#1aa3ff; 
 	}
 		
-	h7 {
- color:#ff471a; 
+	h5 {
+ 	color:#ff8c1a; 
+	font-size:120%;
+	}	
+	
+	h6 
+	{
+ 	color:#1aa3ff; 
+	}
+		
+	h7 
+	{
+ 	color:#ff471a; 
 	}
 	
-	h8 {
- color:#ffbf00; 
+	h8 
+	{
+ 	color:#ffbf00; 
 	}
 	
-	h9 {
- color:#00ff99; 
+	h9 
+	{
+ 	color:#00ff99; 
 	}
 
 </style>

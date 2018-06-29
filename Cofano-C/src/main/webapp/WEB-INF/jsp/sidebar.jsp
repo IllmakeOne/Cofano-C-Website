@@ -21,12 +21,14 @@
                     Recently added data
                 </a>
             </li>
+            <!--
             <li class="nav-item">
                 <a id="conflicts" class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'conflicts')}"> active</c:if>" href="${(empty base) ? '.' : base}#">
                     <span data-feather="alert-triangle"></span>
                     Conflicts
                 </a>
             </li>
+            -->
             <li class="nav-item">
                 <a id="users" class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'users')}"> active</c:if>" href="${(empty base) ? '.' : base}/users">
                     <span data-feather="users"></span>
@@ -90,10 +92,12 @@
                 <span data-feather="book-open"></span>
                 API-documentation
             </a>
-            <a id="settings" class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'settings')}"> active</c:if>" href="${(empty base) ? '.' : base}/settings">
+            <!-- 
+            <a class="nav-link <c:if test="${fn:contains(pageContext.request.requestURI, 'settings')}"> active</c:if>" href="${(empty base) ? '.' : base}/settings">
                 <span data-feather="settings"></span>
                 Settings
             </a>
+            -->
         </ul>
     </div>
 </nav>

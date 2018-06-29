@@ -1,4 +1,4 @@
-package nl.utwente.di14.Cofano_C.model;
+	package nl.utwente.di14.Cofano_C.model;
 
 import java.util.List;
 
@@ -30,6 +30,17 @@ public class Undg {
      * Constructs a UNDG without data.
      */
     public Undg() {
+    }
+    
+    @Override
+    public String toString() {
+    	String descr = "";
+    	for(int  i= 0; i < descriptions.size();i++) {
+    		if(descriptions.get(i).getLanguage().equals("en")) {
+    			descr = descriptions.get(i).getDescription().substring(0,15);
+    		}
+    	}
+    	return "UNDG: ID: " + id + " Classification code: "+ classificationCode + "English descr: " + descr;
     }
 
     /**

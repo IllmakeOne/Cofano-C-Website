@@ -173,18 +173,7 @@
             <h1 class="h2">Undgs</h1>
             <div class="btn-group mr-2">
                 <div class="col-sm-4">
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle btn" type="button" data-toggle="dropdown">+
-                            <span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addship">Ship</a></li>
-                            <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addapp">Application</a></li>
-                            <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addcontainer">Container Type</a></li>
-                            <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addterminal">Terminal</a></li>
-                            <li class="dropdown-item"><a href="${(empty base) ? '.' : base}">UNDG</a></li>
-                            <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/addport">Port</a></li>
-                        </ul>
-                    </div>
+                   <c:import url="/WEB-INF/jsp/addButton.jsp"/>
                 </div>
             </div>
         </div>
