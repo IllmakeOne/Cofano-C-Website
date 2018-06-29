@@ -5,10 +5,10 @@ import java.sql.Timestamp;
 import static org.junit.Assert.*;
 
 public class ConflictTest {
-    Timestamp stamp1 = new Timestamp(1530264090);
-    Timestamp stamp2 = new Timestamp(1530264091);
-    Conflict conf1 = new Conflict(0001, "TestingTable", "Column1", "TestingValue",0010, 0011, stamp1, stamp2);
-    Conflict conf2 = new Conflict();
+   private Timestamp stamp1 = new Timestamp(1530264090);
+    private Timestamp stamp2 = new Timestamp(1530264091);
+   private Conflict conf1 = new Conflict(0001, "TestingTable", "Column1", "TestingValue",0010, 0011, stamp1, stamp2);
+    private Conflict conf2 = new Conflict();
 
     @Test
     public void toStringTest() {

@@ -6,8 +6,8 @@ import static org.junit.Assert.*;
 
 public class ContainerTypeTest {
 
-    ContainerType ct1 = new ContainerType("Test1", "ISO001", "Description1", 100, 50, true, 0001);
-    ContainerType ct2 = new ContainerType();
+    private ContainerType ct1 = new ContainerType("Test1", "ISO001", "Description1", 100, 50, true, 0001);
+    private ContainerType ct2 = new ContainerType();
 
     @Test
     public void toStringTest() {
