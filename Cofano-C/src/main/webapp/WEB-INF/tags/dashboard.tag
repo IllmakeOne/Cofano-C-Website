@@ -45,6 +45,8 @@
             <div class="row">
                 <c:import url="/WEB-INF/jsp/sidebar.jsp" />
                 <main role="main" class="cofano-main col-md-9 ml-sm-auto col-lg-10 px-4">
+                
+       				 
                     <jsp:doBody/>
                 </main>
             </div>
