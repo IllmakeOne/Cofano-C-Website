@@ -331,7 +331,7 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-10">
-                        <button type="button" id="add-description" class="btn btn-outline-primary">Add new description</button>
+                        <button type="button" id="add-description" class="btn btn-outline-primary btn-sm">Add new description</button>
                     </div>
                 </div>
                     <%--<div class="form-group">--%>
