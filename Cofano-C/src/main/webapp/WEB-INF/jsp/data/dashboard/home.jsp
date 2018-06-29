@@ -47,9 +47,9 @@
 
                 var deletingRow;
                 $(document).on('click', '.btn-delete', function () {
-                    $('#delete-name').text($(this).data('delete-name'))
-                    $('#delete-confirm').data('delete-url', "${base}/api/containers/" + $(this).data('delete-id'))
-                    $('#deleteModal').modal('show')
+                    $('#delete-name').text($(this).data('delete-name'));
+                    $('#delete-confirm').data('delete-url', "${base}/api/containers/" + $(this).data('delete-id'));
+                    $('#deleteModal').modal('show');
                     deletingRow = $(this).parents('tr');
                 });
 
@@ -61,7 +61,7 @@
                             $("#delete-error").hide();
                         },
                         success: function(data) {
-                            $('#deleteModal').modal('hide')
+                            $('#deleteModal').modal('hide');
                             table
                                 .row( deletingRow )
                                 .remove()

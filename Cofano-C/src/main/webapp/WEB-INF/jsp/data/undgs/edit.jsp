@@ -90,9 +90,9 @@
                     )
                 });
 
-                var descriptions = []
+                var descriptions = [];
                 $('select[name^="language-selectize"]').each(function(index) {
-                    console.log($('input[name^="description"]').eq(index).val())
+                    console.log($('input[name^="description"]').eq(index).val());
                     descriptions.push({
                         "description": $('input[name^="description"]').eq(index).val(),
                         "language": $(this).val()
@@ -156,7 +156,7 @@
                         labels = undgs.labels;
                         tankSpecialProvisions = undgs.tankSpecialProvisions;
                         tankcodes = undgs.tankCode;
-                        descriptions = undgs.descriptions
+                        descriptions = undgs.descriptions;
 
                         if (labelSelect.options !== "undefined" && labelSelect.options.length > 0) {
                             var selected = [];
@@ -186,10 +186,10 @@
                             $.each(descriptions, function( index, description ) {
                                 if (index > 0) {
                                     var descriptionTemplate = $('#description-template').html();
-                                    descriptionTemplate = descriptionTemplate.replace(/{deleteLang}/g, description.language)
+                                    descriptionTemplate = descriptionTemplate.replace(/{deleteLang}/g, description.language);
                                     $("div.descriptions").append(descriptionTemplate);
                                 }
-                                loadLanguages()
+                                loadLanguages();
                                 $('select[name^="language-selectize"]').eq(index)[0].selectize.setValue(description.language, false);
                                 $('input[name^="description"]').eq(index).val(description.description)
                             });
@@ -214,7 +214,7 @@
                             value: entry.id,
                             text: escapeHtml(entry.name),
                         });
-                    })
+                    });
                     if (labels !== "undefined" && labels != "") {
                         var selected = [];
                         $.each(labels, function( index, value ) {
@@ -231,7 +231,7 @@
                             value: entry.id,
                             text: escapeHtml(entry.name),
                         });
-                    })
+                    });
                     if (tankSpecialProvisions !== "undefined" && tankSpecialProvisions != "") {
                         var selected = [];
                         $.each(tankSpecialProvisions, function( index, value ) {
@@ -248,7 +248,7 @@
                             value: entry.id,
                             text: escapeHtml(entry.name),
                         });
-                    })
+                    });
                     if (tankcodes !== "undefined" && tankcodes != "") {
                         var selected = [];
                         $.each(tankcodes, function( index, value ) {
@@ -273,9 +273,9 @@
             var deletingRow;
             $(document).on('click', '.btn-delete', function () {
                 if ($(this).attr('data-delete-lang') && $(this).data('delete-lang') != "") {
-                    $('#delete-name').text($(this).closest('.language-description').find('select[name^=language-selectize]')[0].selectize.getValue())
+                    $('#delete-name').text($(this).closest('.language-description').find('select[name^=language-selectize]')[0].selectize.getValue());
                     $('#delete-confirm').data('delete-url', "${base}/api/undgs/" + $('form').data('id') + "/description/" + $(this).data('delete-lang'));
-                    $('#deleteModal').modal('show')
+                    $('#deleteModal').modal('show');
                     deletingRow = $(this).closest('.language-description');
                 } else {
                     $(this).closest('.language-description').remove();
@@ -290,7 +290,7 @@
                         $("#delete-error").hide();
                     },
                     success: function(data) {
-                        $('#deleteModal').modal('hide')
+                        $('#deleteModal').modal('hide');
                         deletingRow.remove();
                     },
                     error: function(data) {
