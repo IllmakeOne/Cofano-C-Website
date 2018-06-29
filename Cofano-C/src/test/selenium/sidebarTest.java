@@ -51,7 +51,7 @@ public class sidebarTest {
         Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/");
 
         //Testing the recently added button
-       element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("recent_data")));
+        element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("recent_data")));
         element.click();
         URL = driver.getCurrentUrl();
         Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/history");
@@ -92,11 +92,18 @@ public class sidebarTest {
         URL = driver.getCurrentUrl();
         Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/undgs");
 
+        //Testing the settings button
+        element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("settings")));
+        element.click();
+        URL = driver.getCurrentUrl();
+        Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/settings");
+
         //Testing the ports button
         element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("ports")));
         element.click();
         URL = driver.getCurrentUrl();
         Assert.assertEquals(URL, "http://localhost:8080/Cofano-C/ports");
+
 
         //Stopping the driver
         driver.quit();
