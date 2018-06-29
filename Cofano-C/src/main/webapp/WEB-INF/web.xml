@@ -40,6 +40,6 @@
 
 	<context-param>
 		<param-name>google.hostdomain</param-name>
-		<param-value>*.utwente.nl</param-value>
+		<param-value>utwente.nl</param-value>
 	</context-param>
 </web-app>
