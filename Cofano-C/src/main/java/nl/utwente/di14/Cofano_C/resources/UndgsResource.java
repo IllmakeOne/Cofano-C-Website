@@ -3,7 +3,6 @@ package nl.utwente.di14.Cofano_C.resources;
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.Undg;
 import nl.utwente.di14.Cofano_C.model.UndgDescription;
-import nl.utwente.di14.Cofano_C.util.Util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;

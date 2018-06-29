@@ -1,22 +1,12 @@
 package nl.utwente.di14.Cofano_C.dao;
 
 
-import java.sql.Timestamp;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.postgresql.util.PGobject;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.postgresql.util.PGobject;
 
-import nl.utwente.di14.Cofano_C.model.ContainerType;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.servlet.http.HttpServletRequest;
+import java.sql.*;
 
 /**
  * This class is the Data Access Object for all the database tables.
