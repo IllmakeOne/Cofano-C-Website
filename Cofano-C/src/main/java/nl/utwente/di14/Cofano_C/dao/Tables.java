@@ -148,7 +148,7 @@ public class Tables {
      */
     public static String testRequest(HttpServletRequest request) {
         String result = "";
-        String user = "";
+        String user;
         if (request.getSession().getAttribute("userEmail") != null) {
             return (String) request.getSession().getAttribute("userEmail");
         } else if (request.getHeader("Authorization") != null) {
@@ -193,11 +193,11 @@ public class Tables {
      * this methods takes a strig and reformats it
      * the method is called to reformat string comming from the database
      *
-     * @param str
-     * @return
+     * @param str the string to be inputed
+     * @return the formatted string
      */
 
-    public static String tidyup(String str) {
+    private static String tidyup(String str) {
         String[] aux = str.split(",");
         return aux[0].substring(1) + " " + aux[1].substring(0, aux[1].length() - 1);
     }

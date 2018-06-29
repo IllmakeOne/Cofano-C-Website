@@ -1,6 +1,6 @@
 package nl.utwente.di14.Cofano_C.util;
 
-public class Util {
+class Util {
     public static boolean isInteger(String s, int radix) {
         if (s.isEmpty()) return false;
         for (int i = 0; i < s.length(); i++) {

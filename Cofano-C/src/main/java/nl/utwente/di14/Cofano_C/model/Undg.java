@@ -61,9 +61,9 @@ public class Undg {
     @Override
     public String toString() {
         String descr = "";
-        for (int i = 0; i < descriptions.size(); i++) {
-            if (descriptions.get(i).getLanguage().equals("en")) {
-                descr = descriptions.get(i).getDescription().substring(0, 15);
+        for (UndgDescription description : descriptions) {
+            if (description.getLanguage().equals("en")) {
+                descr = description.getDescription().substring(0, 15);
             }
         }
         return "UNDG: ID: " + id + " Classification code: " + classificationCode + "English descr: " + descr;

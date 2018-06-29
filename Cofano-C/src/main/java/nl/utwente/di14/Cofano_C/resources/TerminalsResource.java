@@ -230,7 +230,7 @@ public class TerminalsResource {
      * this method is called for unapproved entries
      * this method does not add to the history table
      *
-     * @param portId the id of the entry which is deleted
+     * @param terminalId the id of the entry which is deleted
      */
     @DELETE
     @Path("/unapproved/{terminalId}")
