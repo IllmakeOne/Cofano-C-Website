@@ -218,7 +218,7 @@
                     if (labels !== "undefined" && labels != "") {
                         var selected = [];
                         $.each(labels, function( index, value ) {
-                            selected.push(labelSelect.search(value).items[0].id)
+                            selected.push(labelSelect.search(escapeHtml(value)).items[0].id)
                         });
                         labelSelect.setValue(selected, false)
                     }
@@ -235,7 +235,7 @@
                     if (tankSpecialProvisions !== "undefined" && tankSpecialProvisions != "") {
                         var selected = [];
                         $.each(tankSpecialProvisions, function( index, value ) {
-                            selected.push(tankSpecialProvisionsSelect.search(value).items[0].id)
+                            selected.push(tankSpecialProvisionsSelect.search(escapeHtml(value)).items[0].id)
                         });
                         tankSpecialProvisionsSelect.setValue(selected, false)
                     }
@@ -252,7 +252,7 @@
                     if (tankcodes !== "undefined" && tankcodes != "") {
                         var selected = [];
                         $.each(tankcodes, function( index, value ) {
-                            selected.push(tankcodesSelect.search(value).items[0].id)
+                            selected.push(tankcodesSelect.search(escapeHtml(value)).items[0].id)
                         });
                         tankcodesSelect.setValue(selected, false)
                     }

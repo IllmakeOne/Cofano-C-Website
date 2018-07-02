@@ -1,4 +1,4 @@
-# Hello World!
+# Cofano - C
 
 This is the Git repository for the Data & Information module project of group 14.  
 
