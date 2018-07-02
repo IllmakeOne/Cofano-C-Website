@@ -82,7 +82,9 @@
         </script>
 
         <!-- Icons -->
-        <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+        <script src="./js/feather.min.js"></script>
+
+        <%--<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>--%>
         <jsp:invoke fragment="footer"/>
         <script>
             feather.replace()
