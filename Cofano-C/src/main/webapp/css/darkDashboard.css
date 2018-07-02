@@ -28,7 +28,8 @@
 
 body {
     font-size: .875rem;
-    background-color: darkslategrey;
+    background-color: darkslategray;
+    color: whitesmoke;
 }
 
 /* Navbar */
@@ -59,7 +60,7 @@ body {
 }
 
 .sidebar.show, .sidebar.collapsing {
-    display: block!important;
+    display: block !important;
     width: 240px;
 }
 
@@ -171,12 +172,10 @@ body {
     height: 200px;
     background-color: #90caf9;
     border-radius: 5px;
-    color: #fff!important;
+    color: #fff !important;
     text-align: center;
     font-size: 130px;
 }
-
-
 
 .navbar-brand.title .user-info .person {
     line-height: 30px;
@@ -209,12 +208,17 @@ body {
  * Utilities
  */
 
-.border-top { border-top: 1px solid #e5e5e5; }
-.border-bottom { border-bottom: 1px solid #e5e5e5; }
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
 
 /* Main */
 main {
-    background-color: silver;
+    background-color: dimgray;
     margin-top: 15px;
     border-top: 3px solid whitesmoke;
     border-bottom: 3px solid whitesmoke;
@@ -225,8 +229,6 @@ main {
     -webkit-font-smoothing: subpixel-antialiased;
     position: relative;
 }
-
-
 
 @media only screen and (min-width: 768px) and (max-width: 1300px) {
     .sidebar, .navbar-brand {
@@ -243,12 +245,11 @@ main {
     }
 }
 
-@media only screen and (min-width: 1300px){
+@media only screen and (min-width: 1300px) {
     .navbar, .navbar-brand, .sidebar {
         flex: 0 0 20%;
         max-width: 15rem;
     }
-
 
     main.cofano-main {
         margin-left: 250px !important;
@@ -317,4 +318,12 @@ legend {
 
 .selectize-dropdown.col-sm-3 {
     width: 600px !important;
+}
+
+.dropdown-menu {
+    background-color: darkgray;
+}
+
+.h2, h3 {
+    color: whitesmoke
 }
