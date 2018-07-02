@@ -24,7 +24,7 @@
     <link href="${(empty base) ? '.' : base}/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="${(empty base) ? '.' : base}/css/dashboard.css" rel="stylesheet">
+    <link href="${(empty base) ? '.' : base}/css/darkDashboard.css" rel="stylesheet">
 
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="76x76" href="${(empty base) ? '.' : base}/img/favicons/apple-touch-icon.png">
