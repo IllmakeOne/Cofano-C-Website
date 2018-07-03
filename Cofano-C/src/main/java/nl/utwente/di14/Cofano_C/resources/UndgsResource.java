@@ -457,55 +457,7 @@ public class UndgsResource {
             deleteTankCodesStatement.setInt(1, undgsId);
             deleteTankCodesStatement.execute();
 
-            if (undg.getTankCode().size() > 0) {
-
-                StringBuilder tankCodesQueryBuilder = new StringBuilder();
-                tankCodesQueryBuilder.append(
-                        "WITH undgs as (SELECT ? as id)," +
-                                " data (name) AS (" +
-                                "		VALUES ");
-                for (int i = 1; i <= undg.getTankCode().size(); i++) {
-                    tankCodesQueryBuilder.append("(?)");
-                    if (i != undg.getTankCode().size()) {
-                        tankCodesQueryBuilder.append(", ");
-                    }
-                }
-
-                tankCodesQueryBuilder.append("), s AS (" +
-                        "    SELECT utid, ut.name" +
-                        "    FROM undgs_tankcodes ut, data d" +
-                        "    WHERE ut.name = d.name" +
-                        "), i AS (" +
-                        "    INSERT INTO undgs_tankcodes (name)" +
-                        "    SELECT d.name FROM data d" +
-                        "    WHERE NOT EXISTS (SELECT 1 FROM undgs_tankcodes ut WHERE ut.name = d.name)" +
-                        "    returning utid, name" +
-                        "), c AS (" +
-                        "  SELECT utid, name FROM s" +
-                        "  UNION ALL" +
-                        "  SELECT utid, name FROM i" +
-                        ")" +
-                        "" +
-                        "INSERT INTO undgs_has_tankcode (uid, utid)" +
-                        "  SELECT undgs.id, c.utid" +
-                        "  FROM c, undgs" +
-                        "  WHERE NOT EXISTS (" +
-                        "    SELECT 1" +
-                        "    FROM undgs_tankcodes, undgs_has_tankcode" +
-                        "    WHERE undgs_tankcodes.name = c.name" +
-                        "    AND undgs_has_tankcode.uid = undgs.id" +
-                        "    AND undgs_has_tankcode.utid = undgs_tankcodes.utid" +
-                        ")");
-
-                PreparedStatement tankCodeProvisionStatement = Tables.getCon().prepareStatement(tankCodesQueryBuilder.toString());
-                tankCodeProvisionStatement.setInt(1, undgsId);
-
-                for (int i = 1; i <= undg.getTankCode().size(); i++) {
-                    tankCodeProvisionStatement.setString(i + 1, undg.getTankCode().get(i - 1));
-                }
-                System.out.println(tankCodeProvisionStatement.toString());
-                tankCodeProvisionStatement.executeUpdate();
-            }
+            tankCodeBuilder(undgsId, undg);
 
             // Now delete all other stuff that isn't used anymore:
             PreparedStatement cleanUpTankCodeStatement = Tables.getCon().prepareStatement(
@@ -569,6 +521,58 @@ public class UndgsResource {
             e.printStackTrace();
         }
 
+    }
+
+    private void tankCodeBuilder(@PathParam("undgsId") int undgsId, Undg undg) throws SQLException {
+        if (undg.getTankCode().size() > 0) {
+
+            StringBuilder tankCodesQueryBuilder = new StringBuilder();
+            tankCodesQueryBuilder.append(
+                    "WITH undgs as (SELECT ? as id)," +
+                            " data (name) AS (" +
+                            "		VALUES ");
+            for (int i = 1; i <= undg.getTankCode().size(); i++) {
+                tankCodesQueryBuilder.append("(?)");
+                if (i != undg.getTankCode().size()) {
+                    tankCodesQueryBuilder.append(", ");
+                }
+            }
+
+            tankCodesQueryBuilder.append("), s AS (" +
+                    "    SELECT utid, ut.name" +
+                    "    FROM undgs_tankcodes ut, data d" +
+                    "    WHERE ut.name = d.name" +
+                    "), i AS (" +
+                    "    INSERT INTO undgs_tankcodes (name)" +
+                    "    SELECT d.name FROM data d" +
+                    "    WHERE NOT EXISTS (SELECT 1 FROM undgs_tankcodes ut WHERE ut.name = d.name)" +
+                    "    returning utid, name" +
+                    "), c AS (" +
+                    "  SELECT utid, name FROM s" +
+                    "  UNION ALL" +
+                    "  SELECT utid, name FROM i" +
+                    ")" +
+                    "" +
+                    "INSERT INTO undgs_has_tankcode (uid, utid)" +
+                    "  SELECT undgs.id, c.utid" +
+                    "  FROM c, undgs" +
+                    "  WHERE NOT EXISTS (" +
+                    "    SELECT 1" +
+                    "    FROM undgs_tankcodes, undgs_has_tankcode" +
+                    "    WHERE undgs_tankcodes.name = c.name" +
+                    "    AND undgs_has_tankcode.uid = undgs.id" +
+                    "    AND undgs_has_tankcode.utid = undgs_tankcodes.utid" +
+                    ")");
+
+            PreparedStatement tankCodeProvisionStatement = Tables.getCon().prepareStatement(tankCodesQueryBuilder.toString());
+            tankCodeProvisionStatement.setInt(1, undgsId);
+
+            for (int i = 1; i <= undg.getTankCode().size(); i++) {
+                tankCodeProvisionStatement.setString(i + 1, undg.getTankCode().get(i - 1));
+            }
+            System.out.println(tankCodeProvisionStatement.toString());
+            tankCodeProvisionStatement.executeUpdate();
+        }
     }
 
     private void tankSpecialProvisionsBuilder(@PathParam("undgsId") int undgsId, Undg undg) throws SQLException {
@@ -739,55 +743,7 @@ public class UndgsResource {
             deleteTankCodesStatement.setInt(1, undgsId);
             deleteTankCodesStatement.execute();
 
-            if (undg.getTankCode().size() > 0) {
-
-                StringBuilder tankCodesQueryBuilder = new StringBuilder();
-                tankCodesQueryBuilder.append(
-                        "WITH undgs as (SELECT ? as id)," +
-                                " data (name) AS (" +
-                                "		VALUES ");
-                for (int i = 1; i <= undg.getTankCode().size(); i++) {
-                    tankCodesQueryBuilder.append("(?)");
-                    if (i != undg.getTankCode().size()) {
-                        tankCodesQueryBuilder.append(", ");
-                    }
-                }
-
-                tankCodesQueryBuilder.append("), s AS (" +
-                        "    SELECT utid, ut.name" +
-                        "    FROM undgs_tankcodes ut, data d" +
-                        "    WHERE ut.name = d.name" +
-                        "), i AS (" +
-                        "    INSERT INTO undgs_tankcodes (name)" +
-                        "    SELECT d.name FROM data d" +
-                        "    WHERE NOT EXISTS (SELECT 1 FROM undgs_tankcodes ut WHERE ut.name = d.name)" +
-                        "    returning utid, name" +
-                        "), c AS (" +
-                        "  SELECT utid, name FROM s" +
-                        "  UNION ALL" +
-                        "  SELECT utid, name FROM i" +
-                        ")" +
-                        "" +
-                        "INSERT INTO undgs_has_tankcode (uid, utid)" +
-                        "  SELECT undgs.id, c.utid" +
-                        "  FROM c, undgs" +
-                        "  WHERE NOT EXISTS (" +
-                        "    SELECT 1" +
-                        "    FROM undgs_tankcodes, undgs_has_tankcode" +
-                        "    WHERE undgs_tankcodes.name = c.name" +
-                        "    AND undgs_has_tankcode.uid = undgs.id" +
-                        "    AND undgs_has_tankcode.utid = undgs_tankcodes.utid" +
-                        ")");
-
-                PreparedStatement tankCodeProvisionStatement = Tables.getCon().prepareStatement(tankCodesQueryBuilder.toString());
-                tankCodeProvisionStatement.setInt(1, undgsId);
-
-                for (int i = 1; i <= undg.getTankCode().size(); i++) {
-                    tankCodeProvisionStatement.setString(i + 1, undg.getTankCode().get(i - 1));
-                }
-                System.out.println(tankCodeProvisionStatement.toString());
-                tankCodeProvisionStatement.executeUpdate();
-            }
+            tankCodeBuilder(undgsId, undg);
 
 
             statement.executeUpdate();
