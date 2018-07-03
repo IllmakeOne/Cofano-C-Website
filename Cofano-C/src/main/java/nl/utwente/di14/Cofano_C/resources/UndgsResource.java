@@ -433,55 +433,7 @@ public class UndgsResource {
             deleteTankSpecialStatement.setInt(1, undgsId);
             deleteTankSpecialStatement.execute();
 
-            if (undg.getTankSpecialProvisions().size() > 0) {
-
-                StringBuilder tankSpecialProvisionsQueryBuilder = new StringBuilder();
-                tankSpecialProvisionsQueryBuilder.append(
-                        "WITH undgs as (SELECT ? as id)," +
-                                " data (name) AS (" +
-                                "		VALUES ");
-                for (int i = 1; i <= undg.getTankSpecialProvisions().size(); i++) {
-                    tankSpecialProvisionsQueryBuilder.append("(?)");
-                    if (i != undg.getTankSpecialProvisions().size()) {
-                        tankSpecialProvisionsQueryBuilder.append(", ");
-                    }
-                }
-
-                tankSpecialProvisionsQueryBuilder.append("), s AS (" +
-                        "    SELECT utsid, utsp.name" +
-                        "    FROM undgs_tank_special_provisions utsp, data d" +
-                        "    WHERE utsp.name = d.name" +
-                        "), i AS (" +
-                        "    INSERT INTO undgs_tank_special_provisions (name)" +
-                        "    SELECT d.name FROM data d" +
-                        "    WHERE NOT EXISTS (SELECT 1 FROM undgs_tank_special_provisions utsp WHERE utsp.name = d.name)" +
-                        "    returning utsid, name" +
-                        "), c AS (" +
-                        "  SELECT utsid, name FROM s" +
-                        "  UNION ALL" +
-                        "  SELECT utsid, name FROM i" +
-                        ")" +
-                        "" +
-                        "INSERT INTO undgs_has_tank_special_provision (uid, utsid)" +
-                        "  SELECT undgs.id, c.utsid" +
-                        "  FROM c, undgs" +
-                        "  WHERE NOT EXISTS (" +
-                        "    SELECT 1" +
-                        "    FROM undgs_tank_special_provisions, undgs_has_tank_special_provision" +
-                        "    WHERE undgs_tank_special_provisions.name = c.name" +
-                        "    AND undgs_has_tank_special_provision.uid = undgs.id" +
-                        "    AND undgs_has_tank_special_provision.utsid = undgs_tank_special_provisions.utsid" +
-                        ")");
-
-                PreparedStatement tankSpecialProvisionStatement = Tables.getCon().prepareStatement(tankSpecialProvisionsQueryBuilder.toString());
-                tankSpecialProvisionStatement.setInt(1, undgsId);
-
-                for (int i = 1; i <= undg.getTankSpecialProvisions().size(); i++) {
-                    tankSpecialProvisionStatement.setString(i + 1, undg.getTankSpecialProvisions().get(i - 1));
-                }
-                System.out.println(tankSpecialProvisionStatement.toString());
-                tankSpecialProvisionStatement.executeUpdate();
-            }
+            tankSpecialProvisionsBuilder(undgsId, undg);
 
             // Now delete all other stuff that isn't used anymore:
             PreparedStatement cleanUpProvisionsStatement = Tables.getCon().prepareStatement(
@@ -619,6 +571,58 @@ public class UndgsResource {
 
     }
 
+    private void tankSpecialProvisionsBuilder(@PathParam("undgsId") int undgsId, Undg undg) throws SQLException {
+        if (undg.getTankSpecialProvisions().size() > 0) {
+
+            StringBuilder tankSpecialProvisionsQueryBuilder = new StringBuilder();
+            tankSpecialProvisionsQueryBuilder.append(
+                    "WITH undgs as (SELECT ? as id)," +
+                            " data (name) AS (" +
+                            "		VALUES ");
+            for (int i = 1; i <= undg.getTankSpecialProvisions().size(); i++) {
+                tankSpecialProvisionsQueryBuilder.append("(?)");
+                if (i != undg.getTankSpecialProvisions().size()) {
+                    tankSpecialProvisionsQueryBuilder.append(", ");
+                }
+            }
+
+            tankSpecialProvisionsQueryBuilder.append("), s AS (" +
+                    "    SELECT utsid, utsp.name" +
+                    "    FROM undgs_tank_special_provisions utsp, data d" +
+                    "    WHERE utsp.name = d.name" +
+                    "), i AS (" +
+                    "    INSERT INTO undgs_tank_special_provisions (name)" +
+                    "    SELECT d.name FROM data d" +
+                    "    WHERE NOT EXISTS (SELECT 1 FROM undgs_tank_special_provisions utsp WHERE utsp.name = d.name)" +
+                    "    returning utsid, name" +
+                    "), c AS (" +
+                    "  SELECT utsid, name FROM s" +
+                    "  UNION ALL" +
+                    "  SELECT utsid, name FROM i" +
+                    ")" +
+                    "" +
+                    "INSERT INTO undgs_has_tank_special_provision (uid, utsid)" +
+                    "  SELECT undgs.id, c.utsid" +
+                    "  FROM c, undgs" +
+                    "  WHERE NOT EXISTS (" +
+                    "    SELECT 1" +
+                    "    FROM undgs_tank_special_provisions, undgs_has_tank_special_provision" +
+                    "    WHERE undgs_tank_special_provisions.name = c.name" +
+                    "    AND undgs_has_tank_special_provision.uid = undgs.id" +
+                    "    AND undgs_has_tank_special_provision.utsid = undgs_tank_special_provisions.utsid" +
+                    ")");
+
+            PreparedStatement tankSpecialProvisionStatement = Tables.getCon().prepareStatement(tankSpecialProvisionsQueryBuilder.toString());
+            tankSpecialProvisionStatement.setInt(1, undgsId);
+
+            for (int i = 1; i <= undg.getTankSpecialProvisions().size(); i++) {
+                tankSpecialProvisionStatement.setString(i + 1, undg.getTankSpecialProvisions().get(i - 1));
+            }
+            System.out.println(tankSpecialProvisionStatement.toString());
+            tankSpecialProvisionStatement.executeUpdate();
+        }
+    }
+
     private void labelBuilder(@PathParam("undgsId") int undgsId, Undg undg) throws SQLException {
         if (undg.getLabels().size() > 0) {
 
@@ -722,55 +726,7 @@ public class UndgsResource {
              * The tank special provisions
              */
 
-            if (undg.getTankSpecialProvisions().size() > 0) {
-
-                StringBuilder tankSpecialProvisionsQueryBuilder = new StringBuilder();
-                tankSpecialProvisionsQueryBuilder.append(
-                        "WITH undgs as (SELECT ? as id)," +
-                                " data (name) AS (" +
-                                "		VALUES ");
-                for (int i = 1; i <= undg.getTankSpecialProvisions().size(); i++) {
-                    tankSpecialProvisionsQueryBuilder.append("(?)");
-                    if (i != undg.getTankSpecialProvisions().size()) {
-                        tankSpecialProvisionsQueryBuilder.append(", ");
-                    }
-                }
-
-                tankSpecialProvisionsQueryBuilder.append("), s AS (" +
-                        "    SELECT utsid, utsp.name" +
-                        "    FROM undgs_tank_special_provisions utsp, data d" +
-                        "    WHERE utsp.name = d.name" +
-                        "), i AS (" +
-                        "    INSERT INTO undgs_tank_special_provisions (name)" +
-                        "    SELECT d.name FROM data d" +
-                        "    WHERE NOT EXISTS (SELECT 1 FROM undgs_tank_special_provisions utsp WHERE utsp.name = d.name)" +
-                        "    returning utsid, name" +
-                        "), c AS (" +
-                        "  SELECT utsid, name FROM s" +
-                        "  UNION ALL" +
-                        "  SELECT utsid, name FROM i" +
-                        ")" +
-                        "" +
-                        "INSERT INTO undgs_has_tank_special_provision (uid, utsid)" +
-                        "  SELECT undgs.id, c.utsid" +
-                        "  FROM c, undgs" +
-                        "  WHERE NOT EXISTS (" +
-                        "    SELECT 1" +
-                        "    FROM undgs_tank_special_provisions, undgs_has_tank_special_provision" +
-                        "    WHERE undgs_tank_special_provisions.name = c.name" +
-                        "    AND undgs_has_tank_special_provision.uid = undgs.id" +
-                        "    AND undgs_has_tank_special_provision.utsid = undgs_tank_special_provisions.utsid" +
-                        ")");
-
-                PreparedStatement tankSpecialProvisionStatement = Tables.getCon().prepareStatement(tankSpecialProvisionsQueryBuilder.toString());
-                tankSpecialProvisionStatement.setInt(1, undgsId);
-
-                for (int i = 1; i <= undg.getTankSpecialProvisions().size(); i++) {
-                    tankSpecialProvisionStatement.setString(i + 1, undg.getTankSpecialProvisions().get(i - 1));
-                }
-                System.out.println(tankSpecialProvisionStatement.toString());
-                tankSpecialProvisionStatement.executeUpdate();
-            }
+            tankSpecialProvisionsBuilder(undgsId, undg);
 
 
             /*
