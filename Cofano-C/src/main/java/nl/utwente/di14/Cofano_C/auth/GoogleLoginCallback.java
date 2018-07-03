@@ -125,6 +125,7 @@ public class GoogleLoginCallback extends HttpServlet {
                     user.setEmail(resultSet.getString("email"));
                     user.setName(resultSet.getString("name"));
                     user.setDarkMode(resultSet.getBoolean("darkmode"));
+                    user.setId(resultSet.getInt("uid"));
                     req.getSession().setAttribute("user", user);
                 }
                 Tables.shutDown();
