@@ -51,6 +51,7 @@ public class UsersResources {
                 System.err.println("Could not retrieve all apps" + e);
             }
         }
+        Tables.shutDown();
         return end;
     }
 }
