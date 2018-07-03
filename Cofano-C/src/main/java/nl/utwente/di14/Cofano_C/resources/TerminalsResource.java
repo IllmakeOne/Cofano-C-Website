@@ -47,6 +47,7 @@ public class TerminalsResource {
                 System.err.println("Could not retrieve all terminals" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -83,6 +84,7 @@ public class TerminalsResource {
                 System.err.println("Could not retrieve all unapproved terminals" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -160,7 +162,7 @@ public class TerminalsResource {
             Tables.addHistoryEntry("CON", doer,
                     ownID + " " + input.toString() + " con with " + con, myName, false);
         }
-
+        Tables.shutDown();
     }
 
     /**
@@ -226,10 +228,11 @@ public class TerminalsResource {
             }
             Tables.addHistoryEntry("DELETE", doer, aux.toString(), myName, true);
         }
+        Tables.shutDown();
     }
 
     /**
-     * this method deletes an entry from a table but doest not enter in in the database
+     * this method deletes an entry from a table but doest not enter in in the database.
      * this method is called for unapproved entries
      * this method does not add to the history table
      *
@@ -253,11 +256,12 @@ public class TerminalsResource {
                 e.printStackTrace();
             }
         }
+        Tables.shutDown();
     }
 
 
     /**
-     * this method approves an entry in the database
+     * this method approves an entry in the database.
      *
      * @param terminalId the id of the terminal which is approved
      */
@@ -397,6 +401,7 @@ public class TerminalsResource {
                 System.err.println("Could not retrieve all ports" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
