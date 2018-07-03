@@ -327,3 +327,41 @@ legend {
 .h2, h3 {
     color: whitesmoke
 }
+
+.form-control {
+    background-color: slategrey;
+    color: whitesmoke;
+}
+
+.form-control:focus {
+    background-color: slategrey;
+    color: whitesmoke;
+}
+
+.custom-select {
+    color: whitesmoke;
+}
+
+code {
+    color: darkorange;
+}
+
+.page-link {
+    background-color: darkgray;
+    color: whitesmoke;
+}
+
+.page-link:disabled {
+    background-color: darkgray;
+    color: whitesmoke;
+}
+
+.page-item.active .page-link {
+    background-color: slategrey;
+    color: whitesmoke;
+}
+
+.page-item.disabled .page-link {
+    background-color: darkgray;
+    color: whitesmoke;
+}
