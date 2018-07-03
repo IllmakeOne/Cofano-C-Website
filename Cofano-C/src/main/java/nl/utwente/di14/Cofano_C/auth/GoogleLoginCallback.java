@@ -115,6 +115,7 @@ public class GoogleLoginCallback extends HttpServlet {
                     req.getSession().getAttribute("loginDestination"));
 
             try {
+                Tables.start();
                 PreparedStatement statement = Tables.getCon().prepareStatement("SELECT * from addorselectuser(?, ?)");
                 statement.setString(1, (String) userIdResult.get("family_name"));
                 statement.setString(2, (String) userIdResult.get("email"));
