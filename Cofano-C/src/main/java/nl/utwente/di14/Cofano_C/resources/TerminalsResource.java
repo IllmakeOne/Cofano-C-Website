@@ -102,6 +102,7 @@ public class TerminalsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Terminal getTerminal(@PathParam("terminalId") int terminalId,
                                 @Context HttpServletRequest request) {
+        Tables.start();
         Terminal terminal = new Terminal();
         if (!Tables.testRequest(request).equals("")) {
             String query = "SELECT * FROM terminal WHERE tid = ?";
@@ -120,6 +121,7 @@ public class TerminalsResource {
                 e.printStackTrace();
             }
         }
+        Tables.shutDown();
         return terminal;
     }
 
@@ -137,11 +139,12 @@ public class TerminalsResource {
     @Path("add")
     @Consumes(MediaType.APPLICATION_JSON)
     public void addTerminal(Terminal input, @Context HttpServletRequest request) {
-        Tables.start();
         int ownID = 0;
         String title = "ADD";
         String doer = Tables.testRequest(request);
         int con = testConflict(input);
+        Tables.start();
+
 
         if (request.getSession().getAttribute("userEmail") != null && con == 0) {
             //if its from a cofano employee and it doesn't create conflict, add straight to db
@@ -214,10 +217,11 @@ public class TerminalsResource {
     @Path("/{terminalId}")
     public void deleteTerminal(@PathParam("terminalId") int terminalId,
                                @Context HttpServletRequest request) {
-        Tables.start();
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
             Terminal aux = getTerminal(terminalId, request);
+            Tables.start();
+
             String query = "SELECT deleteterminal(?)";
             try {
                 PreparedStatement statement =
@@ -276,6 +280,8 @@ public class TerminalsResource {
 
         if (request.getSession().getAttribute("userEmail") != null) {
             Terminal aux = getTerminal(terminalId, request);
+            Tables.start();
+
             String query = "SELECT approveterminal(?)";
             try {
                 PreparedStatement statement =
@@ -291,6 +297,7 @@ public class TerminalsResource {
                     request.getSession().getAttribute("userEmail").toString(),
                     aux.toString(), myName, true);
         }
+        Tables.shutDown();
     }
 
 
@@ -309,6 +316,8 @@ public class TerminalsResource {
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
             Terminal aux = getTerminal(terminalId, request);
+            Tables.start();
+
             String query = "SELECT editterminals(?,?,?,?,?)";
             try {
                 PreparedStatement statement =
@@ -325,6 +334,7 @@ public class TerminalsResource {
             Tables.addHistoryEntry("UPDATE", doer,
                     aux.toString() + "-->" + terminal.toString(), myName, false);
         }
+        Tables.shutDown();
     }
 
 
@@ -336,6 +346,7 @@ public class TerminalsResource {
      * @return the id of the port it is on conflict with , or 0 if there is no conflict
      */
     private int testConflict(Terminal test) {
+        Tables.start();
         int result = -1;
         String query = "SELECT * FROM terminalconflict(?,?)";
         try {
@@ -352,6 +363,7 @@ public class TerminalsResource {
         } catch (SQLException e) {
             System.err.println("Could not test conflict IN apps" + e);
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -380,11 +392,12 @@ public class TerminalsResource {
     @Path("portids")
     @Produces({MediaType.APPLICATION_JSON})
     public ArrayList<Port> getAvailableIDs(@Context HttpServletRequest request) {
-        Tables.start();
         ArrayList<Port> result = new ArrayList<>();
         String query = "SELECT pid, name FROM port WHERE approved = true";
 
         String name = Tables.testRequest(request);
+        Tables.start();
+
         if (!name.equals("")) {
 
             try {

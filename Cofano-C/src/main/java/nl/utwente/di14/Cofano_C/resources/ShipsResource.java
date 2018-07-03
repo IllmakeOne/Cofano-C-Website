@@ -83,6 +83,8 @@ public class ShipsResource {
                         @Context HttpServletRequest request) {
         Ship ship = new Ship();
         if (!Tables.testRequest(request).equals("")) {
+            Tables.start();
+
             String query = "SELECT * FROM ship WHERE sid = ?";
 
             try {
@@ -105,7 +107,7 @@ public class ShipsResource {
             }
         }
 
-
+        Tables.shutDown();
         return ship;
     }
 
@@ -127,6 +129,8 @@ public class ShipsResource {
         String title = "ADD";
         String doer = Tables.testRequest(request);
         int con = testConflict(input);
+        Tables.start();
+
         if (request.getSession().getAttribute("userEmail") != null && con == 0) {
             //if its from a cofano employee and it doesn't create conflict, add straight to db
             ownID = addEntry(input, true);
@@ -150,6 +154,8 @@ public class ShipsResource {
                     " con with " + con, myName, false);
         }
 
+        Tables.shutDown();
+
 
     }
 
@@ -161,6 +167,7 @@ public class ShipsResource {
      * @return the ID which is assigned to this ship by the database
      */
     private int addEntry(Ship entry, boolean app) {
+        Tables.start();
         String query = "SELECT addships(?,?,?,?,?,?)";
         int rez = 0;
         try {
@@ -184,6 +191,8 @@ public class ShipsResource {
             System.err.println(e.getSQLState());
             e.printStackTrace();
         }
+        Tables.shutDown();
+
         return rez;
     }
 
@@ -196,10 +205,11 @@ public class ShipsResource {
     @Path("/{shipId}")
     public void deleteShip(@PathParam("shipId") int shipId,
                            @Context HttpServletRequest request) {
-        Tables.start();
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
             Ship aux = getShip(shipId, request);
+            Tables.start();
+
             String query = "SELECT deleteships(?)";
             try {
                 PreparedStatement statement =
@@ -258,6 +268,8 @@ public class ShipsResource {
 
         if (request.getSession().getAttribute("userEmail") != null) {
             Ship aux = getShip(shipid, request);
+            Tables.start();
+
             String query = "SELECT approveship(?)";
             try {
                 PreparedStatement statement =
@@ -273,6 +285,7 @@ public class ShipsResource {
                     request.getSession().getAttribute("userEmail").toString(),
                     aux.toString(), myName, true);
         }
+        Tables.shutDown();
     }
 
 
@@ -287,11 +300,12 @@ public class ShipsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public void updateShip(@PathParam("shipId") int shipId,
                            Ship ship, @Context HttpServletRequest request) {
-
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
 
             Ship aux = getShip(shipId, request);
+            Tables.start();
+
             String query = "SELECT editships(?,?,?,?,?,?)";
             try {
                 PreparedStatement statement =
@@ -311,6 +325,7 @@ public class ShipsResource {
                     ship.toString(), myName, false);
 
         }
+        Tables.shutDown();
     }
 
 
@@ -326,7 +341,7 @@ public class ShipsResource {
     private int testConflict(Ship test) {
         int result = -1;
         String query = "SELECT * FROM shipconflict(?,?,?)";
-
+        Tables.start();
         try {
             PreparedStatement statement = Tables.getCon().prepareStatement(query);
             statement.setString(1, test.getImo());
@@ -346,11 +361,13 @@ public class ShipsResource {
         } catch (SQLException e) {
             System.err.println("Could not test conflict IN apps" + e);
         }
+        Tables.shutDown();
         return result;
     }
 
     private void constructShip(ArrayList<Ship> result, String query) {
         Ship ship;
+        Tables.start();
         try {
             PreparedStatement statement =
                     Tables.getCon().prepareStatement(query);
@@ -371,6 +388,7 @@ public class ShipsResource {
         } catch (SQLException e) {
             System.err.println("Could not retrieve all ships" + e);
         }
+        Tables.shutDown();
     }
 
 

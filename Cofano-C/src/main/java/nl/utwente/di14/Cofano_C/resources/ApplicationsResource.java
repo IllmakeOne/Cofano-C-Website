@@ -10,10 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.security.SecureRandom;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -86,14 +83,22 @@ public class ApplicationsResource extends ServletContainer {
             //if there is no conflict
             Tables.addHistoryEntry(title, doer, newApp.toString(),
                     new Timestamp(System.currentTimeMillis()), myName);
-            String query = "SELECT addapplications(?,?)";
+            String query = "SELECT * FROM addapplications(?,?)";
             try {
                 PreparedStatement statement =
                         Tables.getCon().prepareStatement(query);
                 statement.setString(1, newApp.getName());
                 statement.setString(2, newApp.getAPIKey());
-
                 statement.executeQuery();
+
+                try (ResultSet resultSet = statement.getResultSet()) {
+                    while (resultSet.next()) {
+                        System.out.println("Retrieved id:" + resultSet.getInt(1));
+                        newApp.setId(resultSet.getInt(1));
+                    }
+                }
+
+
             } catch (SQLException e) {
                 System.err.println("Could not add application");
                 System.err.println(e.getSQLState());
@@ -115,6 +120,7 @@ public class ApplicationsResource extends ServletContainer {
     @Path("/{appid}")
     @Produces(MediaType.APPLICATION_JSON)
     public Application getApp(@PathParam("appid") int appID, @Context HttpServletRequest request) {
+        Tables.start();
         Application app = new Application();
         String query = "SELECT * FROM application WHERE aid = ?";
         if (request.getSession().getAttribute("userEmail") != null) {
@@ -132,6 +138,7 @@ public class ApplicationsResource extends ServletContainer {
                 e.printStackTrace();
             }
         }
+        Tables.shutDown();
         return app;
     }
 
@@ -187,7 +194,7 @@ public class ApplicationsResource extends ServletContainer {
     @DELETE
     @Path("/{appid}")
     public void deleteApp(@PathParam("appid") int appid, @Context HttpServletRequest request) {
-        Tables.start();
+
 
         //retrieve the App about to be deleted
         if (request.getSession().getAttribute("userEmail") != null) {
@@ -195,12 +202,14 @@ public class ApplicationsResource extends ServletContainer {
             //add the deletion to the history table
             String title = "DELETE";
             String doer = Tables.testRequest(request);
+            Tables.start();
             Tables.addHistoryEntry(title, doer, add.toString(), myName, true);
+            Tables.start();
             String query = "SELECT deleteapplications(?)";
             try {
                 PreparedStatement statement = Tables.getCon().prepareStatement(query);
-                statement.setLong(1, appid);
-                statement.executeUpdate();
+                statement.setInt(1, appid);
+                statement.executeQuery();
             } catch (SQLException e) {
                 System.err.println("Was not able to delete APP");
                 System.err.println(e.getSQLState());
@@ -222,7 +231,9 @@ public class ApplicationsResource extends ServletContainer {
     @Consumes(MediaType.APPLICATION_JSON)
     public void updateApp(@PathParam("appid") int appid,
                           Application app, @Context HttpServletRequest request) {
+
         Application aux = getApp(appid, request);
+        Tables.start();
         if (request.getSession().getAttribute("userEmail") != null) {
             String query = "SELECT editapplications(?,?)";
             try {
@@ -237,6 +248,7 @@ public class ApplicationsResource extends ServletContainer {
         }
         Tables.addHistoryEntry("UPDATE", Tables.testRequest(request),
                 aux.toString() + " -->" + app.toString(), myName, false);
+        Tables.shutDown();
     }
 
 
@@ -250,6 +262,7 @@ public class ApplicationsResource extends ServletContainer {
     private boolean testConflict(Application test) {
         boolean result = true;
         String query = "SELECT * FROM appsconflict(?,?)";
+        Tables.start();
         try {
             PreparedStatement statement = Tables.getCon().prepareStatement(query);
             statement.setString(1, test.getName());
@@ -259,6 +272,7 @@ public class ApplicationsResource extends ServletContainer {
         } catch (SQLException e) {
             System.err.println("Could not test conflict IN apps" + e);
         }
+        Tables.shutDown();
         return result;
     }
 

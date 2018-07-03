@@ -37,10 +37,12 @@
 
 
             function retrieveApp(id) {
+                console.log("BLABLABLA")
                 if ($('form').attr('method') === "put" && id !== "undefined") {
                     $("#loading").show();
                     $.getJSON( "${base}/api/applications/" + id, function(app) {
                         $("#name").val(app.name);
+                        console.log("HEHYHEYE")
                     })
                     .fail(function() {
                         $("#error").show().text("Could not load information")
