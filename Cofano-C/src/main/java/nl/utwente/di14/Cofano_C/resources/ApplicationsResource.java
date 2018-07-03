@@ -9,11 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.security.SecureRandom;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 
@@ -55,8 +57,53 @@ public class ApplicationsResource extends ServletContainer {
                 System.err.println("Could not retrieve all apps" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
+
+
+    @GET
+    @Path("/generate")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Application generateAPI(@Context HttpServletRequest request) {
+
+        SecureRandom random = new SecureRandom();
+        byte bytes[] = new byte[42];
+        random.nextBytes(bytes);
+        Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
+        String token = encoder.encodeToString(bytes);
+
+        Application newApp = new Application("New Application", token);
+
+        Tables.start();
+
+        String doer = Tables.testRequest(request);
+        //tests if the person is allowed to make any modifications
+        System.out.println("TEST");
+        if (request.getSession().getAttribute("userEmail") != null) {
+            String title = "ADD";
+
+            //if there is no conflict
+            Tables.addHistoryEntry(title, doer, newApp.toString(),
+                    new Timestamp(System.currentTimeMillis()), myName);
+            String query = "SELECT addapplications(?,?)";
+            try {
+                PreparedStatement statement =
+                        Tables.getCon().prepareStatement(query);
+                statement.setString(1, newApp.getName());
+                statement.setString(2, newApp.getAPIKey());
+
+                statement.executeQuery();
+            } catch (SQLException e) {
+                System.err.println("Could not add application");
+                System.err.println(e.getSQLState());
+                e.printStackTrace();
+            }
+        }
+        Tables.shutDown();
+        return newApp;
+    }
+
 
     /**
      * This method retrieves a specific entry from the DB.
@@ -88,49 +135,49 @@ public class ApplicationsResource extends ServletContainer {
         return app;
     }
 
-    /**
-     * this function adds an entry to the database.
-     * if it is from a user it is directly added and approved
-     * if not, it is added but not approved
-     *
-     * @param input   the entry about to be added
-     * @param request the request of the client
-     */
-    @SuppressWarnings("StatementWithEmptyBody")
-    @POST
-    @Path("add")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void addApp(Application input, @Context HttpServletRequest request) {
-        Tables.start();
-
-        String doer = Tables.testRequest(request);
-        //tests if the person is allowed to make any modifications
-        if (request.getSession().getAttribute("userEmail") != null) {
-            String title = "ADD";
-
-            if (!testConflict(input)) {
-                //if there is no conflict
-                Tables.addHistoryEntry(title, doer, input.toString(),
-                        new Timestamp(System.currentTimeMillis()), myName);
-                String query = "SELECT addapplications(?,?)";
-                try {
-                    PreparedStatement statement =
-                            Tables.getCon().prepareStatement(query);
-                    statement.setString(1, input.getName());
-                    statement.setString(2, input.getAPIKey());
-
-                    statement.executeQuery();
-                } catch (SQLException e) {
-                    System.err.println("Could not add application");
-                    System.err.println(e.getSQLState());
-                    e.printStackTrace();
-                }
-            } else {
-                //TODO
-                //what happens when there is a conflict
-            }
-        }
-    }
+//    /**
+//     * this function adds an entry to the database.
+//     * if it is from a user it is directly added and approved
+//     * if not, it is added but not approved
+//     *
+//     * @param input   the entry about to be added
+//     * @param request the request of the client
+//     */
+//    @SuppressWarnings("StatementWithEmptyBody")
+//    @POST
+//    @Path("add")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public void addApp(Application input, @Context HttpServletRequest request) {
+//        Tables.start();
+//
+//        String doer = Tables.testRequest(request);
+//        //tests if the person is allowed to make any modifications
+//        if (request.getSession().getAttribute("userEmail") != null) {
+//            String title = "ADD";
+//
+//            if (!testConflict(input)) {
+//                //if there is no conflict
+//                Tables.addHistoryEntry(title, doer, input.toString(),
+//                        new Timestamp(System.currentTimeMillis()), myName);
+//                String query = "SELECT addapplications(?,?)";
+//                try {
+//                    PreparedStatement statement =
+//                            Tables.getCon().prepareStatement(query);
+//                    statement.setString(1, input.getName());
+//                    statement.setString(2, input.getAPIKey());
+//
+//                    statement.executeQuery();
+//                } catch (SQLException e) {
+//                    System.err.println("Could not add application");
+//                    System.err.println(e.getSQLState());
+//                    e.printStackTrace();
+//                }
+//            } else {
+//                //TODO
+//                //what happens when there is a conflict
+//            }
+//        }
+//    }
 
     /**
      * This method deletes an entry from a table and also adds it to history.
@@ -160,6 +207,7 @@ public class ApplicationsResource extends ServletContainer {
                 e.printStackTrace();
             }
         }
+        Tables.shutDown();
     }
 
 
@@ -176,11 +224,10 @@ public class ApplicationsResource extends ServletContainer {
                           Application app, @Context HttpServletRequest request) {
         Application aux = getApp(appid, request);
         if (request.getSession().getAttribute("userEmail") != null) {
-            String query = "SELECT editapplications(?,?,?)";
+            String query = "SELECT editapplications(?,?)";
             try {
                 PreparedStatement statement = Tables.getCon().prepareStatement(query);
                 statement.setString(2, app.getName());
-                statement.setString(3, app.getAPIKey());
                 statement.setInt(1, appid);
                 statement.executeQuery();
 

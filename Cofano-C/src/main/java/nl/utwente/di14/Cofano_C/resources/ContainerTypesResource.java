@@ -44,6 +44,7 @@ public class ContainerTypesResource {
                 System.err.println("Could not retrieve all approved containers" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -77,6 +78,7 @@ public class ContainerTypesResource {
                 System.err.println("Could not retrieve all unapproved containers" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -159,6 +161,7 @@ public class ContainerTypesResource {
             Tables.addHistoryEntry("CON", doer,
                     ownID + " " + input.toString() + " con with " + con, myName, false);
         }
+        Tables.shutDown();
     }
 
 
@@ -223,6 +226,7 @@ public class ContainerTypesResource {
             }
             Tables.addHistoryEntry("DELETE", doer, aux.toString(), myName, true);
         }
+        Tables.shutDown();
     }
 
     /**
@@ -250,6 +254,7 @@ public class ContainerTypesResource {
                 e.printStackTrace();
             }
         }
+        Tables.shutDown();
     }
 
 

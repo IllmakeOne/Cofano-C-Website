@@ -68,48 +68,37 @@
         </div>
 
         <form <c:if test="${not empty app}">data-id="${fn:escapeXml(app)}"</c:if>action="${formUrl}" method="${method}">
-            <div class="col-sm-10">
-                <div class="table-responsive" style="margin: 35px">
-                    <table class="table table-striped table-sm">
-                        <thead>
-                        <tr>
-                            <th><h5>Field</h5></th>
-                            <th><h5>Data</h5></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Name</td>
-                            <td>
-                                <input type="text" placeholder="TestName" id="name" name="name" autocomplete="off" required>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>UNLO</td>
-                            <td>
-                                <input type="text" placeholder="UnloExample" id="unlo" name="unlo" autocomplete="off">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <button type="submit" class="btn btn-sm btn-outline">
-                                    <c:choose>
-                                        <c:when test="${method eq 'put'}">
-                                            Edit
-                                        </c:when>
-                                        <c:otherwise>
-                                            Add
-                                        </c:otherwise>
-                                    </c:choose>
-                                    port
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <fieldset>
+                <legend>Port data</legend>
+                <div class="form-group row">
+                    <label for="name" class="col-sm-3 col-form-label">Name</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="TestName" id="name" name="name" autocomplete="off" required>
+                    </div>
                 </div>
-            </div>
+
+                <div class="form-group row">
+                    <label for="name" class="col-sm-3 col-form-label">UNLO:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="UnloExample" id="unlo" name="unlo" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <button type="submit" class="btn btn-primary">
+                            <c:choose>
+                                <c:when test="${method eq 'put'}">
+                                    Save
+                                </c:when>
+                                <c:otherwise>
+                                    Add
+                                </c:otherwise>
+                            </c:choose>
+                            port
+                        </button>
+                    </div>
+                </div>
+            </fieldset>
         </form>
     </jsp:body>
 </t:dashboard>

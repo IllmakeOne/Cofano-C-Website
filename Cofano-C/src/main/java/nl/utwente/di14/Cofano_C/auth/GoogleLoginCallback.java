@@ -97,8 +97,9 @@ public class GoogleLoginCallback extends HttpServlet {
         // From this map, extract the relevant profile info and store it in the session.
         // See also: https://developers.google.com/+/web/api/rest/openidconnect/getOpenIdConnect
 
-        if (userIdResult != null && ((String) userIdResult.get("hd")).contains((getServletContext()
-                .getInitParameter("google.hostdomain")))) { //TODO check
+        if (userIdResult != null && ((String) userIdResult.get("hd")).equals((getServletContext()
+                .getInitParameter("google.hostdomain"))) || ((String) userIdResult.get("hd")).endsWith(
+                        "." + getServletContext().getInitParameter("google.hostdomain"))) {
             req.getSession().setAttribute("userEmail", userIdResult.get("email"));
             req.getSession().setAttribute("userId", userIdResult.get("sub"));
             req.getSession().setAttribute("userImageUrl", userIdResult.get("picture"));

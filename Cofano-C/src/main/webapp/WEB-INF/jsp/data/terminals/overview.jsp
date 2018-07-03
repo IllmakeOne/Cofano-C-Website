@@ -40,7 +40,7 @@
                         { data: 'terminalCode', render: $.fn.dataTable.render.text() },
                         { data: 'type', render: $.fn.dataTable.render.text() },
                         { data: 'unlo', render: $.fn.dataTable.render.text() },
-                        { data: 'portId', render: $.fn.dataTable.render.text() },
+                        { data: 'portName', render: $.fn.dataTable.render.text() },
                     ],
                     responsive: true,
                     drawCallback: function( settings ) {
@@ -118,12 +118,12 @@
         <table class="table table-striped table-sm datatables" style="width:100%">
             <thead>
             <tr>
-                <th data-priority="1">#</th>
+                <th data-priority="1" style="min-width:90px; max-width: 90px">#</th>
                 <th data-priority="1">Name</th>
                 <th>Terminal Code</th>
                 <th>Type</th>
                 <th>Unlo</th>
-                <th>Port id</th>
+                <th>Port Name</th>
             </tr>
             </thead>
             <tbody>

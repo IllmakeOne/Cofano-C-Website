@@ -30,9 +30,11 @@ public class TerminalsResource {
     public ArrayList<Terminal> getAllTerminals(@Context HttpServletRequest request) {
         Tables.start();
         ArrayList<Terminal> result = new ArrayList<>();
-        String query = "SELECT * " +
-                "FROM terminal " +
-                "WHERE approved = true";
+        String query =
+                "SELECT terminal.*, port.name AS port_name" +
+                " FROM terminal" +
+                " JOIN port on terminal.port_id = port.pid" +
+                " WHERE terminal.approved = true";
         String name = Tables.testRequest(request);
         if (!name.equals("")) {
 
@@ -45,6 +47,7 @@ public class TerminalsResource {
                 System.err.println("Could not retrieve all terminals" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -61,7 +64,8 @@ public class TerminalsResource {
         Tables.start();
         ArrayList<Terminal> result = new ArrayList<>();
         //select all unapproved entries which are not in the conflict table
-        String query = "select terminal.* from terminal"
+        String query = "SELECT terminal.*, port.name AS port_name"
+                + " JOIN port on terminal.port_id = port.pid"
                 + " where terminal.approved = false"
                 + " AND terminal.tid not in (select conflict.entry "
                 + "from conflict "
@@ -80,6 +84,7 @@ public class TerminalsResource {
                 System.err.println("Could not retrieve all unapproved terminals" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -157,7 +162,7 @@ public class TerminalsResource {
             Tables.addHistoryEntry("CON", doer,
                     ownID + " " + input.toString() + " con with " + con, myName, false);
         }
-
+        Tables.shutDown();
     }
 
     /**
@@ -223,10 +228,11 @@ public class TerminalsResource {
             }
             Tables.addHistoryEntry("DELETE", doer, aux.toString(), myName, true);
         }
+        Tables.shutDown();
     }
 
     /**
-     * this method deletes an entry from a table but doest not enter in in the database
+     * this method deletes an entry from a table but doest not enter in in the database.
      * this method is called for unapproved entries
      * this method does not add to the history table
      *
@@ -250,11 +256,12 @@ public class TerminalsResource {
                 e.printStackTrace();
             }
         }
+        Tables.shutDown();
     }
 
 
     /**
-     * this method approves an entry in the database
+     * this method approves an entry in the database.
      *
      * @param terminalId the id of the terminal which is approved
      */
@@ -355,6 +362,7 @@ public class TerminalsResource {
             terminal.setType(resultSet.getString("type"));
             terminal.setUnlo(resultSet.getString("unlo"));
             terminal.setPortId(resultSet.getInt("port_id"));
+            terminal.setPortName(resultSet.getString("port_name"));
             result.add(terminal);
         }
     }
@@ -393,6 +401,7 @@ public class TerminalsResource {
                 System.err.println("Could not retrieve all ports" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
