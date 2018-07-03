@@ -68,7 +68,7 @@ public class UndgsResource {
                 System.err.println("Could not retrieve all undgs" + e);
             }
         }
-
+        Tables.shutDown();
         return result;
 
     }
@@ -174,7 +174,7 @@ public class UndgsResource {
                 System.err.println("Could not retrieve all undgs" + e);
             }
         }
-
+        Tables.shutDown();
         return result;
 
     }
@@ -301,6 +301,7 @@ public class UndgsResource {
                 System.err.println("Could not retrieve all labels" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -331,6 +332,7 @@ public class UndgsResource {
                 System.err.println("Could not retrieve all tank codes" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -361,6 +363,8 @@ public class UndgsResource {
                 System.err.println("Could not retrieve all tank special provisions" + e);
             }
         }
+        Tables.shutDown();
+
         return result;
     }
 
@@ -813,6 +817,7 @@ public class UndgsResource {
             System.err.println(e.getSQLState());
             e.printStackTrace();
         }
+        Tables.shutDown();
     }
 
     @DELETE
@@ -880,6 +885,7 @@ public class UndgsResource {
             System.err.println(e.getSQLState());
             e.printStackTrace();
         }
+        Tables.shutDown();
     }
 
 
