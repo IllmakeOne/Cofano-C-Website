@@ -111,32 +111,6 @@
                     },
                 });
 
-                function inlineEditCallback (updatedCell, updatedRow, oldValue) {
-                    $.ajax({
-                        type: "put",
-                        url: "${base}/api/undgs/" + updatedRow.data().id,
-                        data: JSON.stringify(updatedRow.data()),
-                        success: function(data) {
-                            $("#error").hide();
-                        },
-                        error: function(data) {
-                            $("#error").show();
-                        },
-                        contentType: "application/json",
-                        dataType: 'json'
-                    });
-                }
-
-                table.MakeCellsEditable({
-                    "onUpdate": inlineEditCallback,
-                    "columns": [1,2,3,4,5],
-                    "inputCss": 'form-cotrol',
-                    "confirmationButton": { // could also be true
-                        "confirmCss": 'btn btn-sm btn-primary',
-                        "cancelCss": 'btn btn-sm btn-danger'
-                    },
-                });
-
                 var deletingRow;
                 $(document).on('click', '.btn-delete', function () {
                     $('#delete-name').text($(this).data('delete-name'));

@@ -34,10 +34,16 @@
                                         '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data + '" data-delete-name="' + escapeHtml(row.name) + '" role="button">' +
                                             '<span data-feather="trash-2"></span>' +
                                         '</button>' ;
-                            }
+                            },
+                            class: "seqNum"
                         },
                         { data: 'name', render: $.fn.dataTable.render.text() },
-                        { data: 'apikey', render: $.fn.dataTable.render.text() }
+                        {
+                            data: 'apikey',
+                            render: function (data, type, row, meta) {
+                                return "<code>" + escapeHtml(data) + "</code>";
+                            }
+                        }
                     ],
                     responsive: true,
                     drawCallback: function( settings ) {
@@ -66,7 +72,7 @@
 
                 table.MakeCellsEditable({
                     "onUpdate": myCallbackFunction,
-                    "columns": [1,2],
+                    "columns": [1],
                     "inputCss": 'form-cotrol',
                     "confirmationButton": { // could also be true
                         "confirmCss": 'btn btn-sm btn-primary',
@@ -101,7 +107,42 @@
                         },
                     });
                 });
+
+                function maxIntValue(table, colSelector) {
+                    var valArray = table.column(colSelector)
+                        .data()
+                        .sort()
+                        .reverse();
+                    for (var i=0;i<valArray.length;i++) {
+                        if (!isNaN(valArray[i])) {
+                            return parseInt(valArray[i]);
+                        }
+                    }
+                    return 1;
+                }
+
+
+
+                $(document).on('click', '#addnew', function () {
+                    $.ajax({
+                        type: "get",
+                        url: "${base}/api/applications/generate",
+                        contentType: "application/json",
+                        success: function(data) {
+                            console.log(data);
+                            table.row.add({
+                                "id": maxIntValue(table, ".seqNum") + 1,
+                                "name": data.name,
+                                "apikey": data.apikey
+                            }).draw( true );
+                        }
+
+                    });
+
+                });
             });
+
+
         </script>
 
     </jsp:attribute>
@@ -111,20 +152,7 @@
             <h1 class="h2">Applications</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group mr-2">
-                    <div class="col-sm-4">
-                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle btn" type="button" data-toggle="dropdown">+
-                              <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ships/add">Ship</a></li>
-			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/applications/add">Application</a></li>
-				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/containers/add">Container Type</a></li>
-			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/terminals/add">Terminal</a></li>
-				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/undgs/add">UNDG</a></li>
-			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ports/add">Port</a></li>
-                             </ul>
-                        </div>
-                    </div>
+                    <button role="button" id="addnew" class="btn btn-sm btn-outline-secondary" href="${base}/applications">Add new</button>
                 </div>
             </div>
         </div>
@@ -139,7 +167,7 @@
         <table class="table table-striped table-sm datatables" style="width:100%">
             <thead>
             <tr>
-                <th data-priority="1">#</th>
+                <th data-priority="1" style="min-width:90px; max-width: 90px">#</th>
                 <th data-priority="1">Name</th>
                 <th>API-Key</th>
             </tr>

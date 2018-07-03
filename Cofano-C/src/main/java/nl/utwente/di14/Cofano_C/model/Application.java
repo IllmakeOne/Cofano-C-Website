@@ -33,6 +33,11 @@ public class Application {
         this.id = id;
     }
 
+    public Application(String name, String key) {
+        this.name = name;
+        this.apiKey = key;
+    }
+
     /**
      * Returns the applications data as a string.
      *
