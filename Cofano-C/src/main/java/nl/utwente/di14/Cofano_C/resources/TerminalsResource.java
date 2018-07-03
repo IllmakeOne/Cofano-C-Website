@@ -63,12 +63,15 @@ public class TerminalsResource {
         Tables.start();
         ArrayList<Terminal> result = new ArrayList<>();
         //select all unapproved entries which are not in the conflict table
-        String query = "SELECT terminal.*, port.name AS port_name"
-                + " JOIN port on terminal.port_id = port.pid"
-                + " where terminal.approved = false"
-                + " AND terminal.tid not in (select conflict.entry "
-                + "from conflict "
-                + "where conflict.\"table\"= 'terminal' ) ";
+        String query = "SELECT terminal.*, port.name AS port_name" +
+                " FROM terminal" +
+                " JOIN port on terminal.port_id = port.pid" +
+                " WHERE terminal.approved = false" +
+                " AND terminal.tid not in (" +
+                "  select conflict.entry" +
+                "  FROM conflict" +
+                "  WHERE conflict.\"table\" = 'terminal'" +
+                ")";
 
         if (request.getSession().getAttribute("userEmail") != null) {
 
