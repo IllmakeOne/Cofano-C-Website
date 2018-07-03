@@ -43,7 +43,7 @@ public class PortsResource {
                 System.err.println("Could not retrieve all approved ports" + e);
             }
         }
-
+        Tables.shutDown();
         return result;
     }
 
@@ -77,7 +77,7 @@ public class PortsResource {
                 System.err.println("Could not retrieve all unapproved ports" + e);
             }
         }
-
+        Tables.shutDown();
         return result;
 
     }
@@ -161,6 +161,7 @@ public class PortsResource {
             Tables.addHistoryEntry("CON", doer, ownID + " "
                     + input.toString() + " con with " + con, myName, false);
         }
+        Tables.shutDown();
     }
 
 
@@ -226,6 +227,7 @@ public class PortsResource {
             Tables.addHistoryEntry("DELETE", doer,
                     aux.toString(), myName, true);
         }
+        Tables.shutDown();
     }
 
     /**
@@ -253,6 +255,7 @@ public class PortsResource {
                 e.printStackTrace();
             }
         }
+        Tables.shutDown();
     }
 
 

@@ -51,7 +51,7 @@ public class HistoryResource {
                 System.err.println("Could not retrieve all history entries" + e);
             }
         }
-
+        Tables.shutDown();
         return result;
 
     }
