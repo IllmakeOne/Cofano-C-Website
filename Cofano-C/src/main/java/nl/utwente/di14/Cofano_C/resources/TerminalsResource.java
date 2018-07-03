@@ -30,9 +30,11 @@ public class TerminalsResource {
     public ArrayList<Terminal> getAllTerminals(@Context HttpServletRequest request) {
         Tables.start();
         ArrayList<Terminal> result = new ArrayList<>();
-        String query = "SELECT * " +
-                "FROM terminal " +
-                "WHERE approved = true";
+        String query =
+                "SELECT terminal.*, port.name AS port_name" +
+                " FROM terminal" +
+                " JOIN port on terminal.port_id = port.pid" +
+                " WHERE terminal.approved = true";
         String name = Tables.testRequest(request);
         if (!name.equals("")) {
 
@@ -61,7 +63,8 @@ public class TerminalsResource {
         Tables.start();
         ArrayList<Terminal> result = new ArrayList<>();
         //select all unapproved entries which are not in the conflict table
-        String query = "select terminal.* from terminal"
+        String query = "SELECT terminal.*, port.name AS port_name"
+                + " JOIN port on terminal.port_id = port.pid"
                 + " where terminal.approved = false"
                 + " AND terminal.tid not in (select conflict.entry "
                 + "from conflict "
@@ -355,6 +358,7 @@ public class TerminalsResource {
             terminal.setType(resultSet.getString("type"));
             terminal.setUnlo(resultSet.getString("unlo"));
             terminal.setPortId(resultSet.getInt("port_id"));
+            terminal.setPortName(resultSet.getString("port_name"));
             result.add(terminal);
         }
     }

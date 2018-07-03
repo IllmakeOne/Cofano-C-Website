@@ -66,7 +66,7 @@
 
                 table.MakeCellsEditable({
                     "onUpdate": inlineEditCallback,
-                    "columns": [1,2,3,4,5],
+                    "columns": [1,2,3,4],
                     "inputCss": 'form-cotrol',
                     "confirmationButton": { // could also be true
                         "confirmCss": 'btn btn-sm btn-primary',
@@ -131,7 +131,7 @@
         <table class="table table-striped table-sm datatables" style="width:100%">
             <thead>
             <tr>
-                <th data-priority="1">#</th>
+                <th data-priority="1" style="min-width:90px; max-width: 90px">#</th>
                 <th data-priority="1">Name</th>
                 <th>IMO</th>
                 <th>CallSign</th>

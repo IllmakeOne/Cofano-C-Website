@@ -115,7 +115,7 @@
         <table class="table table-striped table-sm datatables" style="width:100%">
             <thead>
             <tr>
-                <th data-priority="1">#</th>
+                <th data-priority="1" style="min-width:90px; max-width: 90px">#</th>
                 <th data-priority="1">Name</th>
                 <th>Unlo</th>
             </tr>
