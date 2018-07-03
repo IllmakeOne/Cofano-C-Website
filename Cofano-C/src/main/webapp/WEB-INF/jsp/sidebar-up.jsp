@@ -14,7 +14,7 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="settings-dropdown">
                         <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><a class="dropdown-item" href="#">Dark mode ${fn:escapeXml(user.isDarkMode())}</a></li>
+                        <li><a class="dropdown-item" href="${(empty base) ? '.' : base}/darkmode">Dark mode</a></li>
                         <li><a class="dropdown-item" href="./logout">Sign out</a></li>
                     </ul>
                 </div>
