@@ -370,3 +370,31 @@ code {
     background-color: darkgray;
     color: whitesmoke;
 }
+
+.btn-primary {
+    background-color: darkgray;
+    border-color: grey;
+    color: whitesmoke;
+}
+
+.btn-primary:hover {
+    background-color: whitesmoke;
+    border-color: grey;
+    color: black;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active {
+    background-color: darkgray;
+    border-color: grey;
+    color: whitesmoke;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show > .btn-primary.dropdown-toggle {
+    background-color: darkgray;
+    border-color: grey;
+    color: whitesmoke;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show > .btn-primary.dropdown-toggle:focus {
+    box-shadow: 0 0 0 .2rem rgba(245,245,245,.25);
+}
