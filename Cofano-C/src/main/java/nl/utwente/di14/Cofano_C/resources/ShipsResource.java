@@ -36,7 +36,7 @@ public class ShipsResource {
 
             constructShip(result, query);
         }
-
+        Tables.shutDown();
         return result;
 
     }
@@ -65,7 +65,7 @@ public class ShipsResource {
         if (request.getSession().getAttribute("userEmail") != null) {
             constructShip(result, query);
         }
-
+        Tables.shutDown();
         return result;
 
     }
@@ -213,10 +213,11 @@ public class ShipsResource {
             }
             Tables.addHistoryEntry("DELETE", doer, aux.toString(), myName, true);
         }
+        Tables.shutDown();
     }
 
     /**
-     * this method deletes an entry from a table but doest not enter in in the database
+     * this method deletes an entry from a table but doest not enter in in the database.
      * this method is called for unapproved entries
      * this method does not add to the history table
      *
@@ -240,11 +241,12 @@ public class ShipsResource {
                 e.printStackTrace();
             }
         }
+        Tables.shutDown();
     }
 
 
     /**
-     * this method approves an entry in the database
+     * this method approves an entry in the database.
      *
      * @param shipid the id of the ship which is approved
      */

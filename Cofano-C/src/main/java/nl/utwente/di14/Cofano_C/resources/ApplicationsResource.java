@@ -1,7 +1,6 @@
 package nl.utwente.di14.Cofano_C.resources;
 
 
-import nl.utwente.di14.Cofano_C.App;
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.Application;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -31,8 +30,6 @@ public class ApplicationsResource extends ServletContainer {
     private final String myName = "Application";
 
 
-
-
     /**
      * @return a JSON array of all approved Application
      */
@@ -60,6 +57,7 @@ public class ApplicationsResource extends ServletContainer {
                 System.err.println("Could not retrieve all apps" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -102,10 +100,9 @@ public class ApplicationsResource extends ServletContainer {
                 e.printStackTrace();
             }
         }
-
+        Tables.shutDown();
         return newApp;
     }
-
 
 
     /**
@@ -210,6 +207,7 @@ public class ApplicationsResource extends ServletContainer {
                 e.printStackTrace();
             }
         }
+        Tables.shutDown();
     }
 
 

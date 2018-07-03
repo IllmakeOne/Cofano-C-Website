@@ -68,7 +68,7 @@ public class UndgsResource {
                 System.err.println("Could not retrieve all undgs" + e);
             }
         }
-
+        Tables.shutDown();
         return result;
 
     }
@@ -174,7 +174,7 @@ public class UndgsResource {
                 System.err.println("Could not retrieve all undgs" + e);
             }
         }
-
+        Tables.shutDown();
         return result;
 
     }
@@ -301,6 +301,7 @@ public class UndgsResource {
                 System.err.println("Could not retrieve all labels" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -331,6 +332,7 @@ public class UndgsResource {
                 System.err.println("Could not retrieve all tank codes" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -361,6 +363,8 @@ public class UndgsResource {
                 System.err.println("Could not retrieve all tank special provisions" + e);
             }
         }
+        Tables.shutDown();
+
         return result;
     }
 
@@ -408,55 +412,7 @@ public class UndgsResource {
             deleteStatement.setInt(1, undgsId);
             deleteStatement.execute();
 
-            if (undg.getLabels().size() > 0) {
-
-                StringBuilder labelQueryBuilder = new StringBuilder();
-                labelQueryBuilder.append(
-                        "WITH undgs as (SELECT ? as id)," +
-                                " data (name) AS (" +
-                                "		VALUES ");
-                for (int i = 1; i <= undg.getLabels().size(); i++) {
-                    labelQueryBuilder.append("(?)");
-                    if (i != undg.getLabels().size()) {
-                        labelQueryBuilder.append(", ");
-                    }
-                }
-
-                labelQueryBuilder.append("), s AS (" +
-                        "    SELECT ulid, ul.name" +
-                        "    FROM undgs_labels ul, data d" +
-                        "    WHERE ul.name = d.name" +
-                        "), i AS (" +
-                        "    INSERT INTO undgs_labels (name)" +
-                        "    SELECT d.name FROM data d" +
-                        "    WHERE NOT EXISTS (SELECT 1 FROM undgs_labels ul WHERE ul.name = d.name)" +
-                        "    returning ulid, name" +
-                        "), c AS (" +
-                        "  SELECT ulid, name FROM s" +
-                        "  UNION ALL" +
-                        "  SELECT ulid, name FROM i" +
-                        ")" +
-                        "" +
-                        "INSERT INTO undgs_has_label (uid, ulid)" +
-                        "  SELECT undgs.id, c.ulid" +
-                        "  FROM c, undgs" +
-                        "  WHERE NOT EXISTS (" +
-                        "    SELECT 1" +
-                        "    FROM undgs_labels, undgs_has_label" +
-                        "    WHERE undgs_labels.name = c.name" +
-                        "    AND undgs_has_label.uid = undgs.id" +
-                        "    AND undgs_has_label.ulid = undgs_labels.ulid" +
-                        ")");
-
-                PreparedStatement labelStatement = Tables.getCon().prepareStatement(labelQueryBuilder.toString());
-                labelStatement.setInt(1, undgsId);
-
-                for (int i = 1; i <= undg.getLabels().size(); i++) {
-                    labelStatement.setString(i + 1, undg.getLabels().get(i - 1));
-                }
-                System.out.println(labelStatement.toString());
-                labelStatement.executeUpdate();
-            }
+            labelBuilder(undgsId, undg);
 
             // Now delete all other stuff that isn't used anymore:
             PreparedStatement cleanUpStatement = Tables.getCon().prepareStatement(
@@ -481,55 +437,7 @@ public class UndgsResource {
             deleteTankSpecialStatement.setInt(1, undgsId);
             deleteTankSpecialStatement.execute();
 
-            if (undg.getTankSpecialProvisions().size() > 0) {
-
-                StringBuilder tankSpecialProvisionsQueryBuilder = new StringBuilder();
-                tankSpecialProvisionsQueryBuilder.append(
-                        "WITH undgs as (SELECT ? as id)," +
-                                " data (name) AS (" +
-                                "		VALUES ");
-                for (int i = 1; i <= undg.getTankSpecialProvisions().size(); i++) {
-                    tankSpecialProvisionsQueryBuilder.append("(?)");
-                    if (i != undg.getTankSpecialProvisions().size()) {
-                        tankSpecialProvisionsQueryBuilder.append(", ");
-                    }
-                }
-
-                tankSpecialProvisionsQueryBuilder.append("), s AS (" +
-                        "    SELECT utsid, utsp.name" +
-                        "    FROM undgs_tank_special_provisions utsp, data d" +
-                        "    WHERE utsp.name = d.name" +
-                        "), i AS (" +
-                        "    INSERT INTO undgs_tank_special_provisions (name)" +
-                        "    SELECT d.name FROM data d" +
-                        "    WHERE NOT EXISTS (SELECT 1 FROM undgs_tank_special_provisions utsp WHERE utsp.name = d.name)" +
-                        "    returning utsid, name" +
-                        "), c AS (" +
-                        "  SELECT utsid, name FROM s" +
-                        "  UNION ALL" +
-                        "  SELECT utsid, name FROM i" +
-                        ")" +
-                        "" +
-                        "INSERT INTO undgs_has_tank_special_provision (uid, utsid)" +
-                        "  SELECT undgs.id, c.utsid" +
-                        "  FROM c, undgs" +
-                        "  WHERE NOT EXISTS (" +
-                        "    SELECT 1" +
-                        "    FROM undgs_tank_special_provisions, undgs_has_tank_special_provision" +
-                        "    WHERE undgs_tank_special_provisions.name = c.name" +
-                        "    AND undgs_has_tank_special_provision.uid = undgs.id" +
-                        "    AND undgs_has_tank_special_provision.utsid = undgs_tank_special_provisions.utsid" +
-                        ")");
-
-                PreparedStatement tankSpecialProvisionStatement = Tables.getCon().prepareStatement(tankSpecialProvisionsQueryBuilder.toString());
-                tankSpecialProvisionStatement.setInt(1, undgsId);
-
-                for (int i = 1; i <= undg.getTankSpecialProvisions().size(); i++) {
-                    tankSpecialProvisionStatement.setString(i + 1, undg.getTankSpecialProvisions().get(i - 1));
-                }
-                System.out.println(tankSpecialProvisionStatement.toString());
-                tankSpecialProvisionStatement.executeUpdate();
-            }
+            tankSpecialProvisionsBuilder(undgsId, undg);
 
             // Now delete all other stuff that isn't used anymore:
             PreparedStatement cleanUpProvisionsStatement = Tables.getCon().prepareStatement(
@@ -553,55 +461,7 @@ public class UndgsResource {
             deleteTankCodesStatement.setInt(1, undgsId);
             deleteTankCodesStatement.execute();
 
-            if (undg.getTankCode().size() > 0) {
-
-                StringBuilder tankCodesQueryBuilder = new StringBuilder();
-                tankCodesQueryBuilder.append(
-                        "WITH undgs as (SELECT ? as id)," +
-                                " data (name) AS (" +
-                                "		VALUES ");
-                for (int i = 1; i <= undg.getTankCode().size(); i++) {
-                    tankCodesQueryBuilder.append("(?)");
-                    if (i != undg.getTankCode().size()) {
-                        tankCodesQueryBuilder.append(", ");
-                    }
-                }
-
-                tankCodesQueryBuilder.append("), s AS (" +
-                        "    SELECT utid, ut.name" +
-                        "    FROM undgs_tankcodes ut, data d" +
-                        "    WHERE ut.name = d.name" +
-                        "), i AS (" +
-                        "    INSERT INTO undgs_tankcodes (name)" +
-                        "    SELECT d.name FROM data d" +
-                        "    WHERE NOT EXISTS (SELECT 1 FROM undgs_tankcodes ut WHERE ut.name = d.name)" +
-                        "    returning utid, name" +
-                        "), c AS (" +
-                        "  SELECT utid, name FROM s" +
-                        "  UNION ALL" +
-                        "  SELECT utid, name FROM i" +
-                        ")" +
-                        "" +
-                        "INSERT INTO undgs_has_tankcode (uid, utid)" +
-                        "  SELECT undgs.id, c.utid" +
-                        "  FROM c, undgs" +
-                        "  WHERE NOT EXISTS (" +
-                        "    SELECT 1" +
-                        "    FROM undgs_tankcodes, undgs_has_tankcode" +
-                        "    WHERE undgs_tankcodes.name = c.name" +
-                        "    AND undgs_has_tankcode.uid = undgs.id" +
-                        "    AND undgs_has_tankcode.utid = undgs_tankcodes.utid" +
-                        ")");
-
-                PreparedStatement tankCodeProvisionStatement = Tables.getCon().prepareStatement(tankCodesQueryBuilder.toString());
-                tankCodeProvisionStatement.setInt(1, undgsId);
-
-                for (int i = 1; i <= undg.getTankCode().size(); i++) {
-                    tankCodeProvisionStatement.setString(i + 1, undg.getTankCode().get(i - 1));
-                }
-                System.out.println(tankCodeProvisionStatement.toString());
-                tankCodeProvisionStatement.executeUpdate();
-            }
+            tankCodeBuilder(undgsId, undg);
 
             // Now delete all other stuff that isn't used anymore:
             PreparedStatement cleanUpTankCodeStatement = Tables.getCon().prepareStatement(
@@ -667,6 +527,162 @@ public class UndgsResource {
 
     }
 
+    private void tankCodeBuilder(@PathParam("undgsId") int undgsId, Undg undg) throws SQLException {
+        if (undg.getTankCode().size() > 0) {
+
+            StringBuilder tankCodesQueryBuilder = new StringBuilder();
+            tankCodesQueryBuilder.append(
+                    "WITH undgs as (SELECT ? as id)," +
+                            " data (name) AS (" +
+                            "		VALUES ");
+            for (int i = 1; i <= undg.getTankCode().size(); i++) {
+                tankCodesQueryBuilder.append("(?)");
+                if (i != undg.getTankCode().size()) {
+                    tankCodesQueryBuilder.append(", ");
+                }
+            }
+
+            tankCodesQueryBuilder.append("), s AS (" +
+                    "    SELECT utid, ut.name" +
+                    "    FROM undgs_tankcodes ut, data d" +
+                    "    WHERE ut.name = d.name" +
+                    "), i AS (" +
+                    "    INSERT INTO undgs_tankcodes (name)" +
+                    "    SELECT d.name FROM data d" +
+                    "    WHERE NOT EXISTS (SELECT 1 FROM undgs_tankcodes ut WHERE ut.name = d.name)" +
+                    "    returning utid, name" +
+                    "), c AS (" +
+                    "  SELECT utid, name FROM s" +
+                    "  UNION ALL" +
+                    "  SELECT utid, name FROM i" +
+                    ")" +
+                    "" +
+                    "INSERT INTO undgs_has_tankcode (uid, utid)" +
+                    "  SELECT undgs.id, c.utid" +
+                    "  FROM c, undgs" +
+                    "  WHERE NOT EXISTS (" +
+                    "    SELECT 1" +
+                    "    FROM undgs_tankcodes, undgs_has_tankcode" +
+                    "    WHERE undgs_tankcodes.name = c.name" +
+                    "    AND undgs_has_tankcode.uid = undgs.id" +
+                    "    AND undgs_has_tankcode.utid = undgs_tankcodes.utid" +
+                    ")");
+
+            PreparedStatement tankCodeProvisionStatement = Tables.getCon().prepareStatement(tankCodesQueryBuilder.toString());
+            tankCodeProvisionStatement.setInt(1, undgsId);
+
+            for (int i = 1; i <= undg.getTankCode().size(); i++) {
+                tankCodeProvisionStatement.setString(i + 1, undg.getTankCode().get(i - 1));
+            }
+            System.out.println(tankCodeProvisionStatement.toString());
+            tankCodeProvisionStatement.executeUpdate();
+        }
+    }
+
+    private void tankSpecialProvisionsBuilder(@PathParam("undgsId") int undgsId, Undg undg) throws SQLException {
+        if (undg.getTankSpecialProvisions().size() > 0) {
+
+            StringBuilder tankSpecialProvisionsQueryBuilder = new StringBuilder();
+            tankSpecialProvisionsQueryBuilder.append(
+                    "WITH undgs as (SELECT ? as id)," +
+                            " data (name) AS (" +
+                            "		VALUES ");
+            for (int i = 1; i <= undg.getTankSpecialProvisions().size(); i++) {
+                tankSpecialProvisionsQueryBuilder.append("(?)");
+                if (i != undg.getTankSpecialProvisions().size()) {
+                    tankSpecialProvisionsQueryBuilder.append(", ");
+                }
+            }
+
+            tankSpecialProvisionsQueryBuilder.append("), s AS (" +
+                    "    SELECT utsid, utsp.name" +
+                    "    FROM undgs_tank_special_provisions utsp, data d" +
+                    "    WHERE utsp.name = d.name" +
+                    "), i AS (" +
+                    "    INSERT INTO undgs_tank_special_provisions (name)" +
+                    "    SELECT d.name FROM data d" +
+                    "    WHERE NOT EXISTS (SELECT 1 FROM undgs_tank_special_provisions utsp WHERE utsp.name = d.name)" +
+                    "    returning utsid, name" +
+                    "), c AS (" +
+                    "  SELECT utsid, name FROM s" +
+                    "  UNION ALL" +
+                    "  SELECT utsid, name FROM i" +
+                    ")" +
+                    "" +
+                    "INSERT INTO undgs_has_tank_special_provision (uid, utsid)" +
+                    "  SELECT undgs.id, c.utsid" +
+                    "  FROM c, undgs" +
+                    "  WHERE NOT EXISTS (" +
+                    "    SELECT 1" +
+                    "    FROM undgs_tank_special_provisions, undgs_has_tank_special_provision" +
+                    "    WHERE undgs_tank_special_provisions.name = c.name" +
+                    "    AND undgs_has_tank_special_provision.uid = undgs.id" +
+                    "    AND undgs_has_tank_special_provision.utsid = undgs_tank_special_provisions.utsid" +
+                    ")");
+
+            PreparedStatement tankSpecialProvisionStatement = Tables.getCon().prepareStatement(tankSpecialProvisionsQueryBuilder.toString());
+            tankSpecialProvisionStatement.setInt(1, undgsId);
+
+            for (int i = 1; i <= undg.getTankSpecialProvisions().size(); i++) {
+                tankSpecialProvisionStatement.setString(i + 1, undg.getTankSpecialProvisions().get(i - 1));
+            }
+            System.out.println(tankSpecialProvisionStatement.toString());
+            tankSpecialProvisionStatement.executeUpdate();
+        }
+    }
+
+    private void labelBuilder(@PathParam("undgsId") int undgsId, Undg undg) throws SQLException {
+        if (undg.getLabels().size() > 0) {
+
+            StringBuilder labelQueryBuilder = new StringBuilder();
+            labelQueryBuilder.append(
+                    "WITH undgs as (SELECT ? as id)," +
+                            " data (name) AS (" +
+                            "		VALUES ");
+            for (int i = 1; i <= undg.getLabels().size(); i++) {
+                labelQueryBuilder.append("(?)");
+                if (i != undg.getLabels().size()) {
+                    labelQueryBuilder.append(", ");
+                }
+            }
+
+            labelQueryBuilder.append("), s AS (" +
+                    "    SELECT ulid, ul.name" +
+                    "    FROM undgs_labels ul, data d" +
+                    "    WHERE ul.name = d.name" +
+                    "), i AS (" +
+                    "    INSERT INTO undgs_labels (name)" +
+                    "    SELECT d.name FROM data d" +
+                    "    WHERE NOT EXISTS (SELECT 1 FROM undgs_labels ul WHERE ul.name = d.name)" +
+                    "    returning ulid, name" +
+                    "), c AS (" +
+                    "  SELECT ulid, name FROM s" +
+                    "  UNION ALL" +
+                    "  SELECT ulid, name FROM i" +
+                    ")" +
+                    "" +
+                    "INSERT INTO undgs_has_label (uid, ulid)" +
+                    "  SELECT undgs.id, c.ulid" +
+                    "  FROM c, undgs" +
+                    "  WHERE NOT EXISTS (" +
+                    "    SELECT 1" +
+                    "    FROM undgs_labels, undgs_has_label" +
+                    "    WHERE undgs_labels.name = c.name" +
+                    "    AND undgs_has_label.uid = undgs.id" +
+                    "    AND undgs_has_label.ulid = undgs_labels.ulid" +
+                    ")");
+
+            PreparedStatement labelStatement = Tables.getCon().prepareStatement(labelQueryBuilder.toString());
+            labelStatement.setInt(1, undgsId);
+
+            for (int i = 1; i <= undg.getLabels().size(); i++) {
+                labelStatement.setString(i + 1, undg.getLabels().get(i - 1));
+            }
+            System.out.println(labelStatement.toString());
+            labelStatement.executeUpdate();
+        }
+    }
+
     @POST
     @Path("add")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -711,110 +727,14 @@ public class UndgsResource {
 
             System.out.println("Ja hier zijn we weer ***");
 
-            if (undg.getLabels().size() > 0) {
-
-                StringBuilder labelQueryBuilder = new StringBuilder();
-                labelQueryBuilder.append(
-                        "WITH undgs as (SELECT ? as id)," +
-                                " data (name) AS (" +
-                                "		VALUES ");
-                for (int i = 1; i <= undg.getLabels().size(); i++) {
-                    labelQueryBuilder.append("(?)");
-                    if (i != undg.getLabels().size()) {
-                        labelQueryBuilder.append(", ");
-                    }
-                }
-
-                labelQueryBuilder.append("), s AS (" +
-                        "    SELECT ulid, ul.name" +
-                        "    FROM undgs_labels ul, data d" +
-                        "    WHERE ul.name = d.name" +
-                        "), i AS (" +
-                        "    INSERT INTO undgs_labels (name)" +
-                        "    SELECT d.name FROM data d" +
-                        "    WHERE NOT EXISTS (SELECT 1 FROM undgs_labels ul WHERE ul.name = d.name)" +
-                        "    returning ulid, name" +
-                        "), c AS (" +
-                        "  SELECT ulid, name FROM s" +
-                        "  UNION ALL" +
-                        "  SELECT ulid, name FROM i" +
-                        ")" +
-                        "" +
-                        "INSERT INTO undgs_has_label (uid, ulid)" +
-                        "  SELECT undgs.id, c.ulid" +
-                        "  FROM c, undgs" +
-                        "  WHERE NOT EXISTS (" +
-                        "    SELECT 1" +
-                        "    FROM undgs_labels, undgs_has_label" +
-                        "    WHERE undgs_labels.name = c.name" +
-                        "    AND undgs_has_label.uid = undgs.id" +
-                        "    AND undgs_has_label.ulid = undgs_labels.ulid" +
-                        ")");
-
-                PreparedStatement labelStatement = Tables.getCon().prepareStatement(labelQueryBuilder.toString());
-                labelStatement.setInt(1, undgsId);
-
-                for (int i = 1; i <= undg.getLabels().size(); i++) {
-                    labelStatement.setString(i + 1, undg.getLabels().get(i - 1));
-                }
-                System.out.println(labelStatement.toString());
-                labelStatement.executeUpdate();
-            }
+            labelBuilder(undgsId, undg);
 
 
             /*
              * The tank special provisions
              */
 
-            if (undg.getTankSpecialProvisions().size() > 0) {
-
-                StringBuilder tankSpecialProvisionsQueryBuilder = new StringBuilder();
-                tankSpecialProvisionsQueryBuilder.append(
-                        "WITH undgs as (SELECT ? as id)," +
-                                " data (name) AS (" +
-                                "		VALUES ");
-                for (int i = 1; i <= undg.getTankSpecialProvisions().size(); i++) {
-                    tankSpecialProvisionsQueryBuilder.append("(?)");
-                    if (i != undg.getTankSpecialProvisions().size()) {
-                        tankSpecialProvisionsQueryBuilder.append(", ");
-                    }
-                }
-
-                tankSpecialProvisionsQueryBuilder.append("), s AS (" +
-                        "    SELECT utsid, utsp.name" +
-                        "    FROM undgs_tank_special_provisions utsp, data d" +
-                        "    WHERE utsp.name = d.name" +
-                        "), i AS (" +
-                        "    INSERT INTO undgs_tank_special_provisions (name)" +
-                        "    SELECT d.name FROM data d" +
-                        "    WHERE NOT EXISTS (SELECT 1 FROM undgs_tank_special_provisions utsp WHERE utsp.name = d.name)" +
-                        "    returning utsid, name" +
-                        "), c AS (" +
-                        "  SELECT utsid, name FROM s" +
-                        "  UNION ALL" +
-                        "  SELECT utsid, name FROM i" +
-                        ")" +
-                        "" +
-                        "INSERT INTO undgs_has_tank_special_provision (uid, utsid)" +
-                        "  SELECT undgs.id, c.utsid" +
-                        "  FROM c, undgs" +
-                        "  WHERE NOT EXISTS (" +
-                        "    SELECT 1" +
-                        "    FROM undgs_tank_special_provisions, undgs_has_tank_special_provision" +
-                        "    WHERE undgs_tank_special_provisions.name = c.name" +
-                        "    AND undgs_has_tank_special_provision.uid = undgs.id" +
-                        "    AND undgs_has_tank_special_provision.utsid = undgs_tank_special_provisions.utsid" +
-                        ")");
-
-                PreparedStatement tankSpecialProvisionStatement = Tables.getCon().prepareStatement(tankSpecialProvisionsQueryBuilder.toString());
-                tankSpecialProvisionStatement.setInt(1, undgsId);
-
-                for (int i = 1; i <= undg.getTankSpecialProvisions().size(); i++) {
-                    tankSpecialProvisionStatement.setString(i + 1, undg.getTankSpecialProvisions().get(i - 1));
-                }
-                System.out.println(tankSpecialProvisionStatement.toString());
-                tankSpecialProvisionStatement.executeUpdate();
-            }
+            tankSpecialProvisionsBuilder(undgsId, undg);
 
 
             /*
@@ -827,55 +747,7 @@ public class UndgsResource {
             deleteTankCodesStatement.setInt(1, undgsId);
             deleteTankCodesStatement.execute();
 
-            if (undg.getTankCode().size() > 0) {
-
-                StringBuilder tankCodesQueryBuilder = new StringBuilder();
-                tankCodesQueryBuilder.append(
-                        "WITH undgs as (SELECT ? as id)," +
-                                " data (name) AS (" +
-                                "		VALUES ");
-                for (int i = 1; i <= undg.getTankCode().size(); i++) {
-                    tankCodesQueryBuilder.append("(?)");
-                    if (i != undg.getTankCode().size()) {
-                        tankCodesQueryBuilder.append(", ");
-                    }
-                }
-
-                tankCodesQueryBuilder.append("), s AS (" +
-                        "    SELECT utid, ut.name" +
-                        "    FROM undgs_tankcodes ut, data d" +
-                        "    WHERE ut.name = d.name" +
-                        "), i AS (" +
-                        "    INSERT INTO undgs_tankcodes (name)" +
-                        "    SELECT d.name FROM data d" +
-                        "    WHERE NOT EXISTS (SELECT 1 FROM undgs_tankcodes ut WHERE ut.name = d.name)" +
-                        "    returning utid, name" +
-                        "), c AS (" +
-                        "  SELECT utid, name FROM s" +
-                        "  UNION ALL" +
-                        "  SELECT utid, name FROM i" +
-                        ")" +
-                        "" +
-                        "INSERT INTO undgs_has_tankcode (uid, utid)" +
-                        "  SELECT undgs.id, c.utid" +
-                        "  FROM c, undgs" +
-                        "  WHERE NOT EXISTS (" +
-                        "    SELECT 1" +
-                        "    FROM undgs_tankcodes, undgs_has_tankcode" +
-                        "    WHERE undgs_tankcodes.name = c.name" +
-                        "    AND undgs_has_tankcode.uid = undgs.id" +
-                        "    AND undgs_has_tankcode.utid = undgs_tankcodes.utid" +
-                        ")");
-
-                PreparedStatement tankCodeProvisionStatement = Tables.getCon().prepareStatement(tankCodesQueryBuilder.toString());
-                tankCodeProvisionStatement.setInt(1, undgsId);
-
-                for (int i = 1; i <= undg.getTankCode().size(); i++) {
-                    tankCodeProvisionStatement.setString(i + 1, undg.getTankCode().get(i - 1));
-                }
-                System.out.println(tankCodeProvisionStatement.toString());
-                tankCodeProvisionStatement.executeUpdate();
-            }
+            tankCodeBuilder(undgsId, undg);
 
 
             statement.executeUpdate();
@@ -945,6 +817,7 @@ public class UndgsResource {
             System.err.println(e.getSQLState());
             e.printStackTrace();
         }
+        Tables.shutDown();
     }
 
     @DELETE
@@ -1012,171 +885,172 @@ public class UndgsResource {
             System.err.println(e.getSQLState());
             e.printStackTrace();
         }
+        Tables.shutDown();
     }
 
 
-//	@POST
-//	@Path("add")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void addApp(ContainerType input, @Context HttpServletRequest request) {
-//		Tables.start();
-//
-//
-//		int ownID = 0;
-//		String title = "ADD";
-//		String doer = Tables.testRequest(request);
-//
-//		int con = testConflict(input);
-//
-//
-//		if(request.getSession().getAttribute("userEmail")!=null && con == 0 ) {
-//			//if its from a cofano employee and it doesnt create conflcit, add straight to db
-//			ownID = addEntry(input,true);
-//			Tables.addHistoryEntry(title, doer, input.toString(),myname,true);
-//		} else if(request.getSession().getAttribute("userEmail")!=null && con != 0 ) {
-//			//if its froma cofano emplyee and it create sconflcit, add but unapproved
-//			ownID = addEntry(input,false);
-//
-//			Tables.addHistoryEntry(title, doer, input.toString(),myname,false);
-//		} else if(!doer.equals("")) {
-//			//if its from an api add to unapproved
-//			ownID = addEntry(input,false);
-//			Tables.addHistoryEntry(title, doer, input.toString(),myname,false);
-//		}
-//
-//		if(con != 0) {
-//			//if it creates a conflcit, add it to conflict table
-//			Tables.addtoConflicts(myname, doer, ownID, con);
-//			//add to history
-//			Tables.addHistoryEntry("CON", doer, ownID + " " + input.toString()+" con with "+con,myname,false);
-//		}
-//
-//
-//	}
-//
-//	public int addEntry(ContainerType entry, boolean app) {
-//		String query = "SELECT addcontainer_type(?,?,?,?,?,?,?)";
-//		int rez =0;
-//		//gets here if the request is from API
-//		//add to conflicts table
-//		try {
-//			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
-//			//add the data to the statement's query
-//			statement.setString(1, entry.getDisplayName());
-//			statement.setString(2,entry.getIsoCode());
-//			statement.setString(3, entry.getDescription());
-//			statement.setInt(4, entry.getLength());
-//			statement.setInt(5, entry.getHeight());
-//			statement.setBoolean(6, entry.getReefer());
-//			statement.setBoolean(7, app);
-//
-//			ResultSet res = statement.executeQuery();
-//			res.next();
-//			rez = res.getInt(1);
-//		} catch (SQLException e) {
-//			System.err.println("Could not add container types ");
-//			System.err.println(e.getSQLState());
-//			e.printStackTrace();
-//		}
-//		return rez;
-//	}
-//
-//	@DELETE
-//	@Path("/{containerId}")
-//	public void deletShip(@PathParam("containerId") int containerId, @Context HttpServletRequest request) {
-//		Tables.start();
-//
-//		String query ="DELETE FROM container_type WHERE cid = ?";
-//		try {
-//			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-//			statement.setLong(1, containerId);
-//			statement.executeUpdate();
-//		} catch (SQLException e) {
-//			System.err.println("Was not able to delete Container");
-//			System.err.println(e.getSQLState());
-//			e.printStackTrace();
-//		}
-//	}
-//
-//
-//	@GET
-//	@Path("/{containerId}")
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public ContainerType getShip(@PathParam("containerId") int containerId, @Context HttpServletRequest request) {
-//		ContainerType container = new ContainerType();
-//		String query = "SELECT * FROM container_type WHERE cid = ?";
-//
-//		try {
-//			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-//			statement.setInt(1, containerId);
-//			ResultSet resultSet = statement.executeQuery();
-//
-//			while(resultSet.next()) {
-//				container.setDisplayName(resultSet.getString("display_name"));
-//				container.setIsoCode(resultSet.getString("iso_code"));
-//				container.setDescription(resultSet.getString("description"));
-//				container.setLength(resultSet.getInt("c_length"));
-//				container.setHeight(resultSet.getInt("c_height"));
-//				container.setReefer(resultSet.getBoolean("reefer"));
-//				container.setId(resultSet.getInt("cid"));
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//
-//
-//		return container;
-//	}
-//
-//	@PUT
-//	@Path("/{containerId}")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void updateContainer(@PathParam("containerId") int containerId, ContainerType container) {
-//		System.out.println("Joohoooo");
-//		System.out.print(containerId);
-//		String query = "UPDATE container_type SET display_name = ?, iso_code = ?, description = ?, c_length = ?, c_height = ?, reefer = ? WHERE cid = ?";
-//		try {
-//			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-//			statement.setString(1, container.getDisplayName());
-//			statement.setString(2, container.getIsoCode());
-//			statement.setString(3, container.getDescription());
-//			statement.setInt(4, container.getLength());
-//			statement.setInt(5, container.getHeight());
-//			statement.setBoolean(6, container.getReefer());
-//			statement.setInt(7, containerId);
-//
-//			statement.executeQuery();
-//
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//
-//	}
-//
-//
-//
-//
-//	public int testConflict(ContainerType test) {
-//		int result = 0;
-//		String query = "SELECT * FROM containerconflict(?,?)";
-//
-//		try {
-//			PreparedStatement statement = Tables.getCon().prepareStatement(query);
-//			statement.setString(1, test.getDisplayName());
-//			statement.setString(2, test.getIsoCode());
-//
-//			ResultSet resultSet = statement.executeQuery();
-//
-//			if(!resultSet.next()) {
-//				result = 0;
-//			} else {
-//				result = resultSet.getInt("cid");
-//			}
-//
-//		} catch (SQLException e) {
-//			System.err.println("Could not test conflcit IN apps" + e);
-//		}
-//		return result;
-//	}
+	/*@POST
+	@Path("add")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void addApp(ContainerType input, @Context HttpServletRequest request) {
+		Tables.start();
+
+
+		int ownID = 0;
+		String title = "ADD";
+		String doer = Tables.testRequest(request);
+
+		int con = testConflict(input);
+
+
+		if(request.getSession().getAttribute("userEmail")!=null && con == 0 ) {
+			//if its from a cofano employee and it doesnt create conflcit, add straight to db
+			ownID = addEntry(input,true);
+			Tables.addHistoryEntry(title, doer, input.toString(),myname,true);
+		} else if(request.getSession().getAttribute("userEmail")!=null && con != 0 ) {
+			//if its froma cofano emplyee and it create sconflcit, add but unapproved
+			ownID = addEntry(input,false);
+
+			Tables.addHistoryEntry(title, doer, input.toString(),myname,false);
+		} else if(!doer.equals("")) {
+			//if its from an api add to unapproved
+			ownID = addEntry(input,false);
+			Tables.addHistoryEntry(title, doer, input.toString(),myname,false);
+		}
+
+		if(con != 0) {
+			//if it creates a conflcit, add it to conflict table
+			Tables.addtoConflicts(myname, doer, ownID, con);
+			//add to history
+			Tables.addHistoryEntry("CON", doer, ownID + " " + input.toString()+" con with "+con,myname,false);
+		}
+
+
+	}
+
+	public int addEntry(ContainerType entry, boolean app) {
+		String query = "SELECT addcontainer_type(?,?,?,?,?,?,?)";
+		int rez =0;
+		//gets here if the request is from API
+		//add to conflicts table
+		try {
+			PreparedStatement statement = (PreparedStatement) Tables.getCon().prepareStatement(query);
+			//add the data to the statement's query
+			statement.setString(1, entry.getDisplayName());
+			statement.setString(2,entry.getIsoCode());
+			statement.setString(3, entry.getDescription());
+			statement.setInt(4, entry.getLength());
+			statement.setInt(5, entry.getHeight());
+			statement.setBoolean(6, entry.getReefer());
+			statement.setBoolean(7, app);
+
+			ResultSet res = statement.executeQuery();
+			res.next();
+			rez = res.getInt(1);
+		} catch (SQLException e) {
+			System.err.println("Could not add container types ");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
+		return rez;
+	}
+
+	@DELETE
+	@Path("/{containerId}")
+	public void deletShip(@PathParam("containerId") int containerId, @Context HttpServletRequest request) {
+		Tables.start();
+
+		String query ="DELETE FROM container_type WHERE cid = ?";
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setLong(1, containerId);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("Was not able to delete Container");
+			System.err.println(e.getSQLState());
+			e.printStackTrace();
+		}
+	}
+
+
+	@GET
+	@Path("/{containerId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ContainerType getShip(@PathParam("containerId") int containerId, @Context HttpServletRequest request) {
+		ContainerType container = new ContainerType();
+		String query = "SELECT * FROM container_type WHERE cid = ?";
+
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setInt(1, containerId);
+			ResultSet resultSet = statement.executeQuery();
+
+			while(resultSet.next()) {
+				container.setDisplayName(resultSet.getString("display_name"));
+				container.setIsoCode(resultSet.getString("iso_code"));
+				container.setDescription(resultSet.getString("description"));
+				container.setLength(resultSet.getInt("c_length"));
+				container.setHeight(resultSet.getInt("c_height"));
+				container.setReefer(resultSet.getBoolean("reefer"));
+				container.setId(resultSet.getInt("cid"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+
+		return container;
+	}
+
+	@PUT
+	@Path("/{containerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateContainer(@PathParam("containerId") int containerId, ContainerType container) {
+		System.out.println("Joohoooo");
+		System.out.print(containerId);
+		String query = "UPDATE container_type SET display_name = ?, iso_code = ?, description = ?, c_length = ?, c_height = ?, reefer = ? WHERE cid = ?";
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setString(1, container.getDisplayName());
+			statement.setString(2, container.getIsoCode());
+			statement.setString(3, container.getDescription());
+			statement.setInt(4, container.getLength());
+			statement.setInt(5, container.getHeight());
+			statement.setBoolean(6, container.getReefer());
+			statement.setInt(7, containerId);
+
+			statement.executeQuery();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+
+
+
+	public int testConflict(ContainerType test) {
+		int result = 0;
+		String query = "SELECT * FROM containerconflict(?,?)";
+
+		try {
+			PreparedStatement statement = Tables.getCon().prepareStatement(query);
+			statement.setString(1, test.getDisplayName());
+			statement.setString(2, test.getIsoCode());
+
+			ResultSet resultSet = statement.executeQuery();
+
+			if(!resultSet.next()) {
+				result = 0;
+			} else {
+				result = resultSet.getInt("cid");
+			}
+
+		} catch (SQLException e) {
+			System.err.println("Could not test conflcit IN apps" + e);
+		}
+		return result;
+	}*/
 
 }
