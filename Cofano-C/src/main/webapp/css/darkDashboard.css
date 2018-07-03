@@ -406,3 +406,7 @@ code {
 .dropdown-item {
     color: whitesmoke;
 }
+
+.delete-p {
+    color: black;
+}
