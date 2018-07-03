@@ -336,6 +336,7 @@ legend {
 .form-control:focus {
     background-color: slategrey;
     color: whitesmoke;
+    box-shadow: 0 0 0 .2rem rgba(254, 254, 254, 0.87);
 }
 
 .custom-select {
