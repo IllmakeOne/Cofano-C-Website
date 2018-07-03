@@ -342,7 +342,7 @@
 
         <form <c:if test="${not empty app}">data-id="${fn:escapeXml(app)}"</c:if>action="${formUrl}" method="${method}" class="container-fluid">
             <fieldset>
-                <legend>Undgs descriptions</legend>
+                <legend>UNDG descriptions</legend>
                 <div class="descriptions">
                     <div class="form-group row">
                         <div class="col-sm-3">
@@ -372,7 +372,7 @@
             </fieldset>
 
             <fieldset>
-                <legend>Undgs data</legend>
+                <legend>UNDG data</legend>
                 <div class="form-group row">
                     <label for="unNo" class="col-sm-3 col-form-label">unNo</label>
                     <div class="col-sm-5">
@@ -624,7 +624,7 @@
                                     Add
                                 </c:otherwise>
                             </c:choose>
-                            undgs
+                            UNDG's
                         </button>
                     </div>
                 </div>
