@@ -408,55 +408,7 @@ public class UndgsResource {
             deleteStatement.setInt(1, undgsId);
             deleteStatement.execute();
 
-            if (undg.getLabels().size() > 0) {
-
-                StringBuilder labelQueryBuilder = new StringBuilder();
-                labelQueryBuilder.append(
-                        "WITH undgs as (SELECT ? as id)," +
-                                " data (name) AS (" +
-                                "		VALUES ");
-                for (int i = 1; i <= undg.getLabels().size(); i++) {
-                    labelQueryBuilder.append("(?)");
-                    if (i != undg.getLabels().size()) {
-                        labelQueryBuilder.append(", ");
-                    }
-                }
-
-                labelQueryBuilder.append("), s AS (" +
-                        "    SELECT ulid, ul.name" +
-                        "    FROM undgs_labels ul, data d" +
-                        "    WHERE ul.name = d.name" +
-                        "), i AS (" +
-                        "    INSERT INTO undgs_labels (name)" +
-                        "    SELECT d.name FROM data d" +
-                        "    WHERE NOT EXISTS (SELECT 1 FROM undgs_labels ul WHERE ul.name = d.name)" +
-                        "    returning ulid, name" +
-                        "), c AS (" +
-                        "  SELECT ulid, name FROM s" +
-                        "  UNION ALL" +
-                        "  SELECT ulid, name FROM i" +
-                        ")" +
-                        "" +
-                        "INSERT INTO undgs_has_label (uid, ulid)" +
-                        "  SELECT undgs.id, c.ulid" +
-                        "  FROM c, undgs" +
-                        "  WHERE NOT EXISTS (" +
-                        "    SELECT 1" +
-                        "    FROM undgs_labels, undgs_has_label" +
-                        "    WHERE undgs_labels.name = c.name" +
-                        "    AND undgs_has_label.uid = undgs.id" +
-                        "    AND undgs_has_label.ulid = undgs_labels.ulid" +
-                        ")");
-
-                PreparedStatement labelStatement = Tables.getCon().prepareStatement(labelQueryBuilder.toString());
-                labelStatement.setInt(1, undgsId);
-
-                for (int i = 1; i <= undg.getLabels().size(); i++) {
-                    labelStatement.setString(i + 1, undg.getLabels().get(i - 1));
-                }
-                System.out.println(labelStatement.toString());
-                labelStatement.executeUpdate();
-            }
+            labelBuilder(undgsId, undg);
 
             // Now delete all other stuff that isn't used anymore:
             PreparedStatement cleanUpStatement = Tables.getCon().prepareStatement(
@@ -667,6 +619,58 @@ public class UndgsResource {
 
     }
 
+    private void labelBuilder(@PathParam("undgsId") int undgsId, Undg undg) throws SQLException {
+        if (undg.getLabels().size() > 0) {
+
+            StringBuilder labelQueryBuilder = new StringBuilder();
+            labelQueryBuilder.append(
+                    "WITH undgs as (SELECT ? as id)," +
+                            " data (name) AS (" +
+                            "		VALUES ");
+            for (int i = 1; i <= undg.getLabels().size(); i++) {
+                labelQueryBuilder.append("(?)");
+                if (i != undg.getLabels().size()) {
+                    labelQueryBuilder.append(", ");
+                }
+            }
+
+            labelQueryBuilder.append("), s AS (" +
+                    "    SELECT ulid, ul.name" +
+                    "    FROM undgs_labels ul, data d" +
+                    "    WHERE ul.name = d.name" +
+                    "), i AS (" +
+                    "    INSERT INTO undgs_labels (name)" +
+                    "    SELECT d.name FROM data d" +
+                    "    WHERE NOT EXISTS (SELECT 1 FROM undgs_labels ul WHERE ul.name = d.name)" +
+                    "    returning ulid, name" +
+                    "), c AS (" +
+                    "  SELECT ulid, name FROM s" +
+                    "  UNION ALL" +
+                    "  SELECT ulid, name FROM i" +
+                    ")" +
+                    "" +
+                    "INSERT INTO undgs_has_label (uid, ulid)" +
+                    "  SELECT undgs.id, c.ulid" +
+                    "  FROM c, undgs" +
+                    "  WHERE NOT EXISTS (" +
+                    "    SELECT 1" +
+                    "    FROM undgs_labels, undgs_has_label" +
+                    "    WHERE undgs_labels.name = c.name" +
+                    "    AND undgs_has_label.uid = undgs.id" +
+                    "    AND undgs_has_label.ulid = undgs_labels.ulid" +
+                    ")");
+
+            PreparedStatement labelStatement = Tables.getCon().prepareStatement(labelQueryBuilder.toString());
+            labelStatement.setInt(1, undgsId);
+
+            for (int i = 1; i <= undg.getLabels().size(); i++) {
+                labelStatement.setString(i + 1, undg.getLabels().get(i - 1));
+            }
+            System.out.println(labelStatement.toString());
+            labelStatement.executeUpdate();
+        }
+    }
+
     @POST
     @Path("add")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -711,55 +715,7 @@ public class UndgsResource {
 
             System.out.println("Ja hier zijn we weer ***");
 
-            if (undg.getLabels().size() > 0) {
-
-                StringBuilder labelQueryBuilder = new StringBuilder();
-                labelQueryBuilder.append(
-                        "WITH undgs as (SELECT ? as id)," +
-                                " data (name) AS (" +
-                                "		VALUES ");
-                for (int i = 1; i <= undg.getLabels().size(); i++) {
-                    labelQueryBuilder.append("(?)");
-                    if (i != undg.getLabels().size()) {
-                        labelQueryBuilder.append(", ");
-                    }
-                }
-
-                labelQueryBuilder.append("), s AS (" +
-                        "    SELECT ulid, ul.name" +
-                        "    FROM undgs_labels ul, data d" +
-                        "    WHERE ul.name = d.name" +
-                        "), i AS (" +
-                        "    INSERT INTO undgs_labels (name)" +
-                        "    SELECT d.name FROM data d" +
-                        "    WHERE NOT EXISTS (SELECT 1 FROM undgs_labels ul WHERE ul.name = d.name)" +
-                        "    returning ulid, name" +
-                        "), c AS (" +
-                        "  SELECT ulid, name FROM s" +
-                        "  UNION ALL" +
-                        "  SELECT ulid, name FROM i" +
-                        ")" +
-                        "" +
-                        "INSERT INTO undgs_has_label (uid, ulid)" +
-                        "  SELECT undgs.id, c.ulid" +
-                        "  FROM c, undgs" +
-                        "  WHERE NOT EXISTS (" +
-                        "    SELECT 1" +
-                        "    FROM undgs_labels, undgs_has_label" +
-                        "    WHERE undgs_labels.name = c.name" +
-                        "    AND undgs_has_label.uid = undgs.id" +
-                        "    AND undgs_has_label.ulid = undgs_labels.ulid" +
-                        ")");
-
-                PreparedStatement labelStatement = Tables.getCon().prepareStatement(labelQueryBuilder.toString());
-                labelStatement.setInt(1, undgsId);
-
-                for (int i = 1; i <= undg.getLabels().size(); i++) {
-                    labelStatement.setString(i + 1, undg.getLabels().get(i - 1));
-                }
-                System.out.println(labelStatement.toString());
-                labelStatement.executeUpdate();
-            }
+            labelBuilder(undgsId, undg);
 
 
             /*
