@@ -94,6 +94,7 @@ public class PortsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Port getPort(@PathParam("portId") int portId,
                         @Context HttpServletRequest request) {
+        Tables.start();
         Port port = new Port();
         String query = "SELECT * FROM port WHERE pid = ?";
         if (!Tables.testRequest(request).equals("")) {
@@ -112,7 +113,7 @@ public class PortsResource {
                 e.printStackTrace();
             }
         }
-
+        Tables.shutDown();
         return port;
     }
 
@@ -174,6 +175,7 @@ public class PortsResource {
      */
     private int addEntry(Port entry, boolean app) {
         String query = "SELECT addport(?,?,?)";
+        Tables.start();
         int rez = 0;
         //gets here if the request is from API
         //add to conflicts table
@@ -194,6 +196,7 @@ public class PortsResource {
             System.err.println(e.getSQLState());
             e.printStackTrace();
         }
+        Tables.shutDown();
         return rez;
     }
 
@@ -207,12 +210,12 @@ public class PortsResource {
     @Path("/{portId}")
     public void deletePort(@PathParam("portId") int portId,
                            @Context HttpServletRequest request) {
-        Tables.start();
 
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
 
             Port aux = getPort(portId, request);
+            Tables.start();
             String query = "SELECT deleteport(?)";
             try {
                 PreparedStatement statement =
@@ -272,6 +275,7 @@ public class PortsResource {
 
         if (request.getSession().getAttribute("userEmail") != null) {
             Port aux = getPort(portid, request);
+            Tables.start();
             String query = "SELECT approveport(?)";
             try {
                 PreparedStatement statement =
@@ -287,6 +291,7 @@ public class PortsResource {
                     request.getSession().getAttribute("userEmail").toString(),
                     aux.toString(), myName, true);
         }
+        Tables.shutDown();
     }
 
 
@@ -305,6 +310,7 @@ public class PortsResource {
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
             Port aux = getPort(portId, request);
+            Tables.start();
             String query = "SELECT editports(?,?,?)";
             try {
                 PreparedStatement statement =
@@ -322,6 +328,7 @@ public class PortsResource {
             Tables.addHistoryEntry("UPDATE", doer,
                     aux.toString() + "-->" + port.toString(), myName, false);
         }
+        Tables.shutDown();
 
     }
 
@@ -357,6 +364,7 @@ public class PortsResource {
     private int testConflict(Port test) {
         int result = -1;
         String query = "SELECT * FROM portconflict(?,?)";
+        Tables.start();
 
         try {
             PreparedStatement statement =
@@ -375,6 +383,7 @@ public class PortsResource {
         } catch (SQLException e) {
             System.err.println("Could not test conflict IN port " + e);
         }
+        Tables.shutDown();
         return result;
     }
 

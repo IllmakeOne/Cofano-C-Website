@@ -185,6 +185,7 @@ public class UndgsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Undg getContainer(@PathParam("undgsId") int undgsId,
                              @Context HttpServletRequest request) {
+
         Undg undg = new Undg();
         String query = "SELECT" +
                 "  undgs.*," +
@@ -206,6 +207,7 @@ public class UndgsResource {
                 "  ORDER BY undgs.uid;";
 
         if (!Tables.testRequest(request).equals("")) {
+            Tables.start();
 
             try {
                 PreparedStatement statement =
@@ -271,6 +273,7 @@ public class UndgsResource {
                 e.printStackTrace();
             }
         }
+        Tables.shutDown();
         return undg;
     }
 
@@ -373,6 +376,7 @@ public class UndgsResource {
     @Path("/{undgsId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public void updateContainer(@PathParam("undgsId") int undgsId, Undg undg) {
+        Tables.start();
         String query = "UPDATE undgs" +
                 " SET classification = ?," +
                 " classification_code = ?," +
@@ -524,6 +528,7 @@ public class UndgsResource {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        Tables.shutDown();
 
     }
 

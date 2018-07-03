@@ -129,7 +129,7 @@
                                     Add
                                 </c:otherwise>
                             </c:choose>
-                            Unlo
+                            terminal
                         </button>
                     </div>
                 </div>

@@ -86,8 +86,6 @@ public class Tables {
             System.err.println(e.getSQLState());
             e.printStackTrace();
         }
-
-        resetLastLogin(who);
     }
 
     /**
@@ -100,7 +98,7 @@ public class Tables {
      * @param approved If the data added is approved or not
      */
     public static void addHistoryEntry(String title, String who, String message, String type, boolean approved) {
-
+        Tables.start();
         String query = "SELECT addhistory(?,?,?,?)";
         try {
             PreparedStatement statement = Tables.getCon().prepareStatement(query);
@@ -115,8 +113,8 @@ public class Tables {
             System.err.println(e.getSQLState());
             e.printStackTrace();
         }
+        Tables.shutDown();
 
-        resetLastLogin(who);
     }
 
 

@@ -131,7 +131,7 @@
                         success: function(data) {
                             console.log(data);
                             table.row.add({
-                                "id": maxIntValue(table, ".seqNum") + 1,
+                                "id": data.id == 0? maxIntValue(table, ".seqNum") + 1 : data.id,
                                 "name": data.name,
                                 "apikey": data.apikey
                             }).draw( true );

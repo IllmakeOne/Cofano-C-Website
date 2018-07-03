@@ -93,6 +93,7 @@ public class ContainerTypesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ContainerType getContainer(@PathParam("containerId") int containerId,
                                       @Context HttpServletRequest request) {
+        Tables.start();
         ContainerType container = new ContainerType();
         String query = "SELECT * FROM container_type WHERE cid = ?";
 
@@ -117,6 +118,7 @@ public class ContainerTypesResource {
                 e.printStackTrace();
             }
         }
+        Tables.shutDown();
         return container;
     }
 
@@ -175,6 +177,7 @@ public class ContainerTypesResource {
     private int addEntry(ContainerType entry, boolean app) {
         String query = "SELECT addcontainer_type(?,?,?,?,?,?,?)";
         int rez = 0;
+        Tables.start();
         //gets here if the request is from API
         //add to conflicts table
         try {
@@ -197,6 +200,7 @@ public class ContainerTypesResource {
             System.err.println(e.getSQLState());
             e.printStackTrace();
         }
+        Tables.shutDown();
         return rez;
     }
 
@@ -209,10 +213,10 @@ public class ContainerTypesResource {
     @Path("/{containerId}")
     public void deleteContainer(@PathParam("containerId") int containerId,
                                 @Context HttpServletRequest request) {
-        Tables.start();
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
             ContainerType aux = getContainer(containerId, request);
+            Tables.start();
             String query = "SELECT  deletecontainer_types(?)";
             try {
                 PreparedStatement statement =
@@ -271,6 +275,7 @@ public class ContainerTypesResource {
 
         if (request.getSession().getAttribute("userEmail") != null) {
             ContainerType aux = getContainer(containerId, request);
+            Tables.start();
             String query = "SELECT approvecontainer(?)";
             try {
                 PreparedStatement statement =
@@ -286,6 +291,7 @@ public class ContainerTypesResource {
                     request.getSession().getAttribute("userEmail").toString(),
                     aux.toString(), myName, true);
         }
+        Tables.shutDown();
     }
 
 
@@ -304,6 +310,7 @@ public class ContainerTypesResource {
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
             ContainerType aux = getContainer(containerId, request);
+            Tables.start();
             String query = "SELECT editcontainer_types(?,?,?,?,?,?,?)";
             try {
                 PreparedStatement statement =
@@ -326,6 +333,8 @@ public class ContainerTypesResource {
                     aux.toString() + "-->" + container.toString(), myName, false);
         }
 
+        Tables.shutDown();
+
     }
 
 
@@ -339,6 +348,7 @@ public class ContainerTypesResource {
     private int testConflict(ContainerType test) {
         int result = -1;
         String query = "SELECT * FROM containerconflict(?,?)";
+        Tables.start();
 
         try {
             PreparedStatement statement =
@@ -356,6 +366,7 @@ public class ContainerTypesResource {
         } catch (SQLException e) {
             System.err.println("Could not test conflict IN apps" + e);
         }
+        Tables.shutDown();
         return result;
     }
 
