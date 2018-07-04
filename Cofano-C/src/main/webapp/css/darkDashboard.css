@@ -347,6 +347,10 @@ code {
     color: darkorange;
 }
 
+.dropdown-link {
+    color: whitesmoke;
+}
+
 .page-link {
     background-color: darkgray;
     color: whitesmoke;
@@ -358,8 +362,9 @@ code {
 }
 
 .page-link:focus {
-    box-shadow: 0 0 0 .2rem rgba(245,245,245,.25);
+    box-shadow: 0 0 0 .2rem rgba(245, 245, 245, .25);
 }
+
 .page-link:hover {
     color: black;
 }
@@ -400,7 +405,7 @@ code {
 }
 
 .btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show > .btn-primary.dropdown-toggle:focus {
-    box-shadow: 0 0 0 .2rem rgba(245,245,245,.25);
+    box-shadow: 0 0 0 .2rem rgba(245, 245, 245, .25);
 }
 
 .dropdown-item {
