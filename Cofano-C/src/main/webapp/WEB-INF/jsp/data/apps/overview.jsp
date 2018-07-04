@@ -182,7 +182,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm deletion</h5>
+                        <h5 class="modal-title delete-h5">Confirm deletion</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -194,7 +194,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <p>Are you really sure you want to delete app with name <code id="delete-name"></code>.</p>
+                        <p class="delete-p">Are you really sure you want to delete app with name <code id="delete-name"></code>.</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-delete-url="" id="delete-confirm">Yes delete it</button>
