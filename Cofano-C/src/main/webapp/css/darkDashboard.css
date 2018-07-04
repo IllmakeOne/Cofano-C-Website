@@ -351,6 +351,10 @@ code {
     color: whitesmoke;
 }
 
+.dropdown-link:hover {
+    color: black
+}
+
 .page-link {
     background-color: darkgray;
     color: whitesmoke;
