@@ -94,6 +94,7 @@ public class UndgsResource {
                 "  FULL OUTER JOIN undgs_has_tankcode tankcode on undgs.uid = tankcode.uid" +
                 "  FULL OUTER JOIN undgs_tankcodes ut on tankcode.utid = ut.utid" +
                 "  FULL OUTER JOIN undgs_descriptions ud on undgs.uid = ud.undgs_id" +
+                "  WHERE approved = true " +
                 "  GROUP BY undgs.uid, label, tankcode, tank_special_provision, ud.language, ud.description" +
                 "  ORDER BY undgs.uid;";
 
@@ -205,7 +206,7 @@ public class UndgsResource {
                 "  GROUP BY undgs.uid, label, tankcode, tank_special_provision, ud.language, ud.description" +
                 "  ORDER BY undgs.uid;";
         
-      //  System.out.println(query);
+       System.out.println(query);
 
         String name = Tables.testRequest(request);
         if (!name.equals("")) {
@@ -224,9 +225,11 @@ public class UndgsResource {
 
 
                 while (resultSet.next()) {
+                	System.out.println("ive got one");
                     if (lastUndg != null && lastUndg.getId() == resultSet.getInt("uid")) {
                         if (!undgLabels.contains(resultSet.getString("label"))) {
                             undgLabels.add(resultSet.getString("label"));
+                            System.out.println("in first if if");
                         }
                         if (!tankSpecialProvisions.contains(resultSet.getString("tank_special_provision"))) {
                             tankSpecialProvisions.add(resultSet.getString("tank_special_provision"));
@@ -245,7 +248,7 @@ public class UndgsResource {
                             lastUndg.setTankSpecialProvisions(tankSpecialProvisions);
                             lastUndg.setTankCode(tankcodes);
                             lastUndg.setDescriptions(new ArrayList<>(descriptions.values()));
-
+                            System.out.println(lastUndg);
                             result.add(lastUndg);
 
                             undgLabels = new ArrayList<>();
@@ -275,6 +278,7 @@ public class UndgsResource {
                                 new UndgDescription(resultSet.getString("language"),
                                         resultSet.getString("description")));
                         lastUndg = undg;
+                   //	     System.out.println(lastUndg);
 
                     }
                 }
