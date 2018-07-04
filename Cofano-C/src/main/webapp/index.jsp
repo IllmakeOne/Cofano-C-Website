@@ -16,9 +16,19 @@
         <script type="text/javascript" src="${(empty base) ? '.' : base}/DataTables/datatables.min.js"></script>
         <script type="text/javascript" src="${(empty base) ? '.' : base}/js/dataTables.cellEdit.js"></script>
         <script type="text/javascript">
-        $(document).ready( function () {
-        	var empties = 0;
-            var portstable = $('#portstable').DataTable({
+        $(document).ready(Start());
+        		
+        var portstable;
+        var terminaltable;
+        var shipstable;
+        var containerstable;
+        var undgstable;
+        
+
+    	var empties = 0;
+        
+        function Start() {
+            portstable = $('#portstable').DataTable({
                 ajax: {
                     url: "${(empty base) ? '.' : base}/api/ports/unapproved",
                     dataSrc: '',
@@ -47,22 +57,23 @@
                 responsive: true,
                 drawCallback: function( settings ) {
                     feather.replace();
-                    /*
-                    console.log(this.data());
-                    if(!this.data().any()){
-                    	this.destroy();
-                    	document.getElementById("portstable").outerHTML = "";
-                    	document.getElementById("portname").outerHTML = "";
-                    	empties +=1;
-                    }
-                    */
+                    
                 },
+                initComplete: function(settings, json) {
+                	 if(!portstable.data().any()){
+                		portstable.destroy();
+                     	document.getElementById("portstable").outerHTML = "";
+                     	document.getElementById("portname").outerHTML = "";
+                     	empties +=1;
+                    	calll();
+                     }
+                }
             });	
           //  console.log(portstable.data());
             
             
             
-                var terminaltable = $(' #terminalstable').DataTable({
+                terminaltable = $(' #terminalstable').DataTable({
                     ajax: {
                         url: "${(empty base) ? '.' : base}/api/terminals/unapproved",
                         dataSrc: '',
@@ -93,17 +104,23 @@
                     ],
                     responsive: true,
                     drawCallback: function( settings ) {
-                        feather.replace();/*
-                        if(!this.data().any()){
-                        	this.destroy();
+                        feather.replace();
+                       // testone();
+                    },
+                    initComplete: function(settings, json) {
+                    	if(!terminaltable.data().any()){
+                    		terminaltable.destroy();
                         	document.getElementById("terminalstable").outerHTML = "";
                         	document.getElementById("termname").outerHTML = "";
                         	empties+=1;
-                        }*/
-                    },
+                        	calll();
+                        }
+                      }
                 });
                 
-                var shipstable = $('#shipstable').DataTable({
+              
+                
+                shipstable = $('#shipstable').DataTable({
                     ajax: {
                         url: "${(empty base) ? '.' : base}/api/ships/unapproved",
                         dataSrc: '',
@@ -142,9 +159,18 @@
                         	empties+=1;
                         }*/
                     },
+                    initComplete: function(settings, json) {
+                    	if(!shipstable.data().any()){
+                    		shipstable.destroy();
+                        	document.getElementById("shipstable").outerHTML = "";
+                        	document.getElementById("shipname").outerHTML = "";
+                        	empties+=1;
+                        	calll();
+                 	   }
+                    }
                 });
                 
-                var containerstable = $('#containerstable').DataTable({
+                containerstable = $('#containerstable').DataTable({
                     ajax: {
                         url: "${(empty base) ? '.' : base}/api/containers/unapproved",
                         dataSrc: '',
@@ -176,18 +202,22 @@
                     ],
                     responsive: true,
                     drawCallback: function( settings ) {
-                        feather.replace();        /*                
-                        if(!this.data().any()){
-                        	this.destroy();
+                        feather.replace();
+                    },
+                    
+                    initComplete: function(settings, json) {
+                    	if(!containerstable.data().any()){
+                    		containerstable.destroy();
                         	document.getElementById("containerstable").outerHTML = "";
                         	document.getElementById("conname").outerHTML = "";
                         	empties+=1;
-                        }*/
-                        
-                    },
+                        	calll();
+                        	console.log(empties);
+                    	}
+                    }
                 });
                 
-                var undgstable = $('.undgstable').DataTable({
+                undgstable = $('.undgstable').DataTable({
                     ajax: {
                         url: "${base}/api/undgs/full/unapproved",
                         dataSrc: '',
@@ -283,6 +313,15 @@
                     drawCallback: function( settings ) {
                         feather.replace();
                     },
+                    
+                    initComplete: function(settings, json) {
+                    	if(!undgstable.data().any()){
+                    		undgstable.destroy();
+                        	document.getElementById("undgstable").outerHTML = "";
+                        	document.getElementById("undgsname").outerHTML = "";
+                        	empties+=1;
+                    	}
+                    }
                 });
                 
                 var approvingRow;
@@ -329,20 +368,24 @@
                     });
                 });
                 
-             
-              
-                /*
                 
-                if(empties === 4){
-                	document.getElementById("title").outerHTML = "<h2>Nothing to be approved</h2>";
-                } else {
-                	document.getElementById("title").outerHTML = "<h3>These entries need approval</h3>";
-                }
-                */
+               //callback();
+          
+                
                 
 
 
-           });
+           }
+           
+        
+         
+         function calll() {
+        	 console.log("in calll/" + empties);
+        	 //console.log(empties === 4)
+        	 if(empties === 4){
+             	document.getElementById("title").outerHTML = "<h2>Nothing to be approved</h2>";
+             } 
+         }
         </script>
         
         </jsp:attribute>
