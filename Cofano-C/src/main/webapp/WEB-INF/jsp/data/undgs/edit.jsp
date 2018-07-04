@@ -259,7 +259,6 @@
                 });
 
             }
-
             document.onload = retrieveUndgs($('form').data('id'));
 
 
@@ -306,8 +305,8 @@
         <script type="text/template" id="description-template">
             <div class="form-group row language-description">
                 <div class="col-sm-3">
-                    <select class="custom-select custom-select-sm form-control form-control-sm"
-                            name="language-selectize[]" placeholder="Select a Language">
+                    <select name="language-selectize[]" placeholder="Select a Language"
+                            class="custom-select custom-select-sm form-control form-control-sm">
                         <option value="">Select a language...</option>
                     </select>
                 </div>
@@ -351,8 +350,8 @@
                 <div class="descriptions">
                     <div class="form-group row">
                         <div class="col-sm-3">
-                            <select class="custom-select custom-select-sm form-control form-control-sm"
-                                    name="language-selectize[]" placeholder="Select a Language">
+                            <select name="language-selectize[]" placeholder="Select a Language"
+                                    class="custom-select custom-select-sm form-control form-control-sm">
                                 <option value="">Select a language...</option>
                             </select>
                         </div>
@@ -481,8 +480,9 @@
                 <div class="form-group row">
                     <label for="vehicleTankCarriage" class="col-sm-3 col-form-label">Labels</label>
                     <div class="col-sm-5">
-                        <select class="custom-select custom-select-sm form-control form-control-sm" id="labels"
-                                name="labels[]" multiple class="select" placeholder="Select labels...">
+                        <select id="labels" name="labels[]" multiple
+                                class="custom-select custom-select-sm form-control form-control-sm"
+                                placeholder="Select labels...">
                             <option value="">Select labels...</option>
                         </select>
                     </div>
@@ -490,8 +490,8 @@
                 <div class="form-group row">
                     <label for="vehicleTankCarriage" class="col-sm-3 col-form-label">Tank Special Provisions</label>
                     <div class="col-sm-5">
-                        <select class="custom-select custom-select-sm form-control form-control-sm"
-                                id="tankSpecialProvisions" name="tankSpecialProvisions[]" multiple class="select"
+                        <select id="tankSpecialProvisions" name="tankSpecialProvisions[]" multiple
+                                class="custom-select custom-select-sm form-control form-control-sm"
                                 placeholder="Select tank special provisions...">
                             <option value="">Select tank special provisions...</option>
                         </select>
@@ -500,8 +500,9 @@
                 <div class="form-group row">
                     <label for="vehicleTankCarriage" class="col-sm-3 col-form-label">Tank Codes</label>
                     <div class="col-sm-5">
-                        <select class="custom-select custom-select-sm form-control form-control-sm" id="tankcodes"
-                                name="tankcodes[]" multiple class="select" placeholder="Select tank codes...">
+                        <select id="tankcodes" name="tankcodes[]" multiple
+                                class="custom-select custom-select-sm form-control form-control-sm"
+                                placeholder="Select tank codes...">
                             <option value="">Select tank codes...</option>
                         </select>
                     </div>
