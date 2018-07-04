@@ -22,10 +22,10 @@
 		
 	h5 {
  	color:#ff8c1a; 
-	font-size:120%;
+	font-size:130%;
 	}	
 	
-	h6 
+	h12 
 	{
  	color:#1aa3ff; 
 	}
@@ -46,7 +46,7 @@
 	}
 	h10 
 	{
-	font-size:120%;
+	font-size:110%;
 	}
 
 </style>
@@ -54,27 +54,47 @@
        	
       </div>
         <h2>API Documentation</h2>
-        
-        <h10>	To see the exact form of any object please look at the received Json documents received from making calls to the api.<h10>
-  			<p><h10> When making an edit or adding a new entry, in the request there must be a json object in the request with 
-  			everything except id. This applies for all the different objects.
-  			</h10>
+        	
+        	<h5>General for adding, editing and deleting</h5>
+      	    <h10>	To see the exact form of any object please look at the received Json documents by making calls to the api.</h10>
+      	    <h10> <br> All entries which are edited or added through API are unapproved and await approval by a Cofano employee</h10>
+      	    
+  			<p><h10> When making an edit(<h9>PUT</h9>) or adding (<h8>POST</h8>) a new entry, 
+  			in the request there must be a json object. This applies for all the types of entries.
+  			</h10></p>
+  			
+  			<p><h10> Deletion is direct and permanet. 
+  			We advise making the delete function hard to reach in your applications to limit its use by non-Cofano users.
+  			</h10></p>
+  			
+  			<h5>Conflicts</h5>
+  			<p><h10> When testing for conflicts, the attribute specifed is tested to not be the exact same as another entry in the table.
+  			</h10></p>
+  			
   		<div class="row">
-  			<div class="col-sm-4">
+  			<div class="col-sm-6">
   				<h5>Ships</h5>
-  		
+  				<h10>Adding, deleting and editing has no special requirement.</h10>
+  				<h10><p>IMO,MMSI and Callsign are taken into account when testing for conflicts.</p></h10>		
   			</div>
- 			 <div class="col-sm-8">
+ 			 <div class="col-sm-6">
 				<h5>Ports</h5>
+				<h10>Adding, deleting and editing has no special requirement.</h10>
+  				<h10><p>Name and Unlo are taken into account when testing for conflicts.  </p></h10>	
 			</div>
 		</div>
 		
 		<div class="row">
-  			<div class="col-sm-4">
+  			<div class="col-sm-6">
   				<h5>Terminals</h5>
+				<h10>When adding or editing an terminal, please take into accout it has a foreign key to Ports. <br> </h10>
+				<h10>A <h12>GET</h12> request came be made to ./terminals/portids to receive all available ports</h10>
+  				<h10><p>Name and Terminal code are taken into account when testing for conflicts.  </p></h10>
   			</div>
- 			 <div class="col-sm-8">
+ 			 <div class="col-sm-6">
 				<h5>Container Types</h5>
+				<h10>Adding, deleting and editing has no special requirement.</h10>
+  				<h10><p>Display name and ISO-code are taken into account when testing for conflicts.  </p></h10>	
 			</div>
 		</div>
 		
@@ -86,11 +106,10 @@
         
    
 		<p>  <h5>All API request are required to have an "Authorization" header which has as value an API key assiged by cofano. 
-		</h5><h10>These API keys must be stored in the database in the Applications table</h10></p>	
-	
-	   <h10>  When adding or editing an entry, the request must contain a JSON object stuctured like the ones received from the DBs</h10>
+		</h5><h10>These API keys must be stored in the database in the Applications table.</h10></p>	
+		<p><h10> <h12>GET</h12>, <h7>DELETE</h7>, <h8>POST</h8>, <h9>PUT</h9> are the types of HTTP request.</h10></p>
 	  
-
+	<h5> The "." in "./" stands for <h12> "http://farm05.ewi.utwente.nl:7027/Cofano-C/api/"</h12></h5>
 <div>	  
 	    <table class="table table-striped table " style="width:100%">
             <thead>
@@ -104,19 +123,19 @@
 		    </tr>
              <tr>
 		        <th><h5>Get all</h5></th>
-		        <th><h6>GET</h6> ./ships</th>
-		        <th><h6>GET</h6> ./ports</th>
-		        <th><h6>GET</h6> ./terminals</th>
-		        <th><h6>GET</h6> ./containers</th>
-		        <th><h6>GET</h6> ./undgs</th>
+		        <th><h12>GET</h12> ./ships</th>
+		        <th><h12>GET</h12> ./ports</th>
+		        <th><h12>GET</h12> ./terminals</th>
+		        <th><h12>GET</h12> ./containers</th>
+		        <th><h12>GET</h12> ./undgs</th>
 		    </tr>
 		    <tr>
 		        <th><h5>Get a certain entry</h5></th>
-		        <th><h6>GET</h6> ./ships/{id}</th>
-		        <th><h6>GET</h6> ./ports/{id}</th>
-		        <th><h6>GET</h6> ./terminals/{id}</th>
-		        <th><h6>GET</h6> ./containers/{id}</th>
-		        <th><h6>GET</h6> ./undgs/{id}</th>
+		        <th><h12>GET</h12> ./ships/{id}</th>
+		        <th><h12>GET</h12> ./ports/{id}</th>
+		        <th><h12>GET</h12> ./terminals/{id}</th>
+		        <th><h12>GET</h12> ./containers/{id}</th>
+		        <th><h12>GET</h12> ./undgs/{id}</th>
 		    </tr>
 		    <tr>
 		        <th><h5>Delete a certain entry</h5></th>
