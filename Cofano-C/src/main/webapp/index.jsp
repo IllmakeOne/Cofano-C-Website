@@ -16,7 +16,7 @@
         <script type="text/javascript" src="${(empty base) ? '.' : base}/DataTables/datatables.min.js"></script>
         <script type="text/javascript" src="${(empty base) ? '.' : base}/js/dataTables.cellEdit.js"></script>
         <script type="text/javascript">
-        $(document).ready(Start(calll()));
+        $(document).ready(Start());
         		
         var portstable;
         var terminaltable;
@@ -27,7 +27,7 @@
 
     	var empties = 0;
         
-        function Start(callback) {
+        function Start() {
             portstable = $('#portstable').DataTable({
                 ajax: {
                     url: "${(empty base) ? '.' : base}/api/ports/unapproved",
@@ -380,12 +380,11 @@
         
          
          function calll() {
+        	 console.log("in calll/" + empties);
+        	 //console.log(empties === 4)
         	 if(empties === 4){
              	document.getElementById("title").outerHTML = "<h2>Nothing to be approved</h2>";
-             } else {
-             	document.getElementById("title").outerHTML = "<h3>These entries need approval</h3>";
-             }
-        	 console.log("in calll/" + empties);
+             } 
          }
         </script>
         
