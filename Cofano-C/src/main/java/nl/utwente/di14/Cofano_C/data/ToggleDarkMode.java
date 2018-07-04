@@ -40,9 +40,7 @@ public class ToggleDarkMode extends HttpServlet {
             System.out.println(" Setting dark mode failed because: " + e.getMessage());
         }
         Tables.shutDown();
-        System.out.print("Context path" + request.getContextPath());
 
-        response.sendRedirect(request.getContextPath());
-        System.out.println(getServletContext());
+        response.sendRedirect(request.getHeader("Referer"));
     }
 }
