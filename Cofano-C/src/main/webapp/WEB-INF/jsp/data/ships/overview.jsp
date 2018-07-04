@@ -15,7 +15,7 @@
         <script type="text/javascript" src="${base}/DataTables/datatables.min.js"></script>
         <script type="text/javascript" src="${base}/js/dataTables.cellEdit.js"></script>
         <script type="text/javascript">
-            $(document).ready( function () {
+            $(document).ready(function () {
                 var table = $('.datatables').DataTable({
                     ajax: {
                         url: "${base}/api/ships",
@@ -28,35 +28,35 @@
                                 if (type == "sort" || type == 'type') {
                                     return data;
                                 }
-                                return '<a class="btn btn-info btn-sm" href="${base}/ship/'+ data +'" role="button">' +
+                                return '<a class="btn btn-info btn-sm" href="${base}/ship/' + data + '" role="button">' +
                                     '<span data-feather="edit-2"></span>' +
                                     '</a>&nbsp;' +
                                     '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data + '" data-delete-name="' + escapeHtml(row.name) + '" role="button">' +
                                     '<span data-feather="trash-2"></span>' +
-                                    '</button>' ;
+                                    '</button>';
                             }
                         },
-                        { data: 'name', render: $.fn.dataTable.render.text() },
-                        { data: 'imo', render: $.fn.dataTable.render.text() },
-                        { data: 'callSign', render: $.fn.dataTable.render.text() },
-                        { data: 'mmsi', render: $.fn.dataTable.render.text() },
-                        { data: 'depth', render: $.fn.dataTable.render.text() },
+                        {data: 'name', render: $.fn.dataTable.render.text()},
+                        {data: 'imo', render: $.fn.dataTable.render.text()},
+                        {data: 'callSign', render: $.fn.dataTable.render.text()},
+                        {data: 'mmsi', render: $.fn.dataTable.render.text()},
+                        {data: 'depth', render: $.fn.dataTable.render.text()},
                     ],
                     responsive: true,
-                    drawCallback: function( settings ) {
+                    drawCallback: function (settings) {
                         feather.replace();
                     },
                 });
 
-                function inlineEditCallback (updatedCell, updatedRow, oldValue) {
+                function inlineEditCallback(updatedCell, updatedRow, oldValue) {
                     $.ajax({
                         type: "put",
                         url: "${base}/api/ships/" + updatedRow.data().id,
                         data: JSON.stringify(updatedRow.data()),
-                        success: function(data) {
+                        success: function (data) {
                             $("#error").hide();
                         },
-                        error: function(data) {
+                        error: function (data) {
                             $("#error").show();
                         },
                         contentType: "application/json",
@@ -66,7 +66,7 @@
 
                 table.MakeCellsEditable({
                     "onUpdate": inlineEditCallback,
-                    "columns": [1,2,3,4],
+                    "columns": [1, 2, 3, 4],
                     "inputCss": 'form-cotrol',
                     "confirmationButton": { // could also be true
                         "confirmCss": 'btn btn-sm btn-primary',
@@ -86,17 +86,17 @@
                     $.ajax({
                         type: "delete",
                         url: $('#delete-confirm').data('delete-url'),
-                        beforeSend: function( xhr ) {
+                        beforeSend: function (xhr) {
                             $("#delete-error").hide();
                         },
-                        success: function(data) {
+                        success: function (data) {
                             $('#deleteModal').modal('hide');
                             table
-                                .row( deletingRow )
+                                .row(deletingRow)
                                 .remove()
                                 .draw();
                         },
-                        error: function(data) {
+                        error: function (data) {
                             $("#delete-error").show();
                         },
                     });
@@ -111,18 +111,7 @@
             <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group mr-2">
                     <div class="col-sm-4">
-                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle btn" type="button" data-toggle="dropdown">+
-                              <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-							    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ships/add">Ship</a></li>
-						    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/applications/add">Application</a></li>
-							    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/containers/add">Container Type</a></li>
-						    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/terminals/add">Terminal</a></li>
-							    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}">UNDG</a></li>
-						    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ports/add">Port</a></li>
-                             </ul>
-                        </div>
+                        <c:import url="/WEB-INF/jsp/addButton.jsp"/>
                     </div>
                 </div>
             </div>
@@ -143,7 +132,8 @@
             </tbody>
         </table>
 
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="delete modal" aria-hidden="true">
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="delete modal"
+             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -153,7 +143,8 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="delete-error" style="display:none">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="delete-error"
+                             style="display:none">
                             <strong>Holy guacamole!</strong> Something went wrong while deleting
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -162,7 +153,9 @@
                         <p>Are you really sure you want to delete ship with name <code id="delete-name"></code>.</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-delete-url="" id="delete-confirm">Yes delete it</button>
+                        <button type="button" class="btn btn-primary" data-delete-url="" id="delete-confirm">Yes delete
+                            it
+                        </button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>
