@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -114,12 +115,13 @@ public class GoogleLoginCallback extends HttpServlet {
             resp.sendRedirect(getServletContext().getInitParameter("cofano.url") +
                     req.getSession().getAttribute("loginDestination"));
 
-            try {
-                Tables.start();
-                PreparedStatement statement = Tables.getCon().prepareStatement("SELECT * from addorselectuser(?, ?)");
-                statement.setString(1, (String) userIdResult.get("family_name"));
+            String sql = "SELECT * from addorselectuser(?, ?)";
+
+            try (Connection connection = Tables.getCon(); PreparedStatement statement = Tables.getCon().prepareStatement(sql)) {
+                statement.setString(1, (String) userIdResult.get("name"));
                 statement.setString(2, (String) userIdResult.get("email"));
                 ResultSet resultSet = statement.executeQuery();
+                connection.commit();
                 while (resultSet.next()) {
                     User user = new User();
                     user.setEmail(resultSet.getString("email"));
@@ -128,11 +130,13 @@ public class GoogleLoginCallback extends HttpServlet {
                     user.setId(resultSet.getInt("uid"));
                     req.getSession().setAttribute("user", user);
                 }
-                Tables.shutDown();
 
             } catch (SQLException e) {
-                Tables.shutDown();
-                e.printStackTrace();
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                resp.setContentType("text/html");
+                PrintWriter out = resp.getWriter();
+                out.append("Could not connect to the Database.");
+                out.close();
             }
 
         } else {

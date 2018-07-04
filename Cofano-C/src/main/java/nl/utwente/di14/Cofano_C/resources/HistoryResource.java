@@ -5,10 +5,12 @@ import nl.utwente.di14.Cofano_C.model.HistoryEntry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,16 +28,18 @@ public class HistoryResource {
     @Produces({MediaType.APPLICATION_JSON})
     public ArrayList<HistoryEntry> getAllHistoryEntries(
             @Context HttpServletRequest request) {
-        Tables.start();
-        ArrayList<HistoryEntry> result = new ArrayList<>();
-        String query = "SELECT * " +
-                "FROM history";
-        if (request.getSession().getAttribute("userEmail") != null) {
-            try {
-                PreparedStatement statement =
-                        Tables.getCon().prepareStatement(query);
 
-                ResultSet resultSet = statement.executeQuery();
+        ArrayList<HistoryEntry> result = new ArrayList<>();
+
+
+        if (request.getSession().getAttribute("userEmail") != null) {
+
+            String query = "SELECT * " +
+                    "FROM history";
+
+
+            try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                    connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet.next()) {
                     HistoryEntry entry = new HistoryEntry();
@@ -49,9 +53,10 @@ public class HistoryResource {
                 }
             } catch (SQLException e) {
                 System.err.println("Could not retrieve all history entries" + e);
+                throw new InternalServerErrorException();
             }
         }
-        Tables.shutDown();
+
         return result;
 
     }

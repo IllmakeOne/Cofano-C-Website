@@ -5,10 +5,12 @@ import nl.utwente.di14.Cofano_C.model.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,16 +29,16 @@ public class UsersResources {
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public List<User> getAllUsers(@Context HttpServletRequest request) {
-        Tables.start();
+
         ArrayList<User> end = new ArrayList<>();
-        User add;
-        String query = "SELECT * " +
-                "FROM public.user";
+
         if (request.getSession().getAttribute("userEmail") != null) {
-            try {
-                PreparedStatement statement = Tables.getCon().
-                        prepareStatement(query);
-                ResultSet resultSet = statement.executeQuery();
+            String query = "SELECT * " +
+                    "FROM public.user";
+            try (Connection connection = Tables.getCon(); PreparedStatement statement = connection.
+                    prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
+
+                User add;
 
                 while (resultSet.next()) {
                     add = new User();
@@ -47,11 +49,15 @@ public class UsersResources {
 
                     end.add(add);
                 }
+
+
             } catch (SQLException e) {
-                System.err.println("Could not retrieve all apps" + e);
+                System.err.println("Something went wrong while retrieving all users because: " + e.getSQLState());
+                e.printStackTrace();
+                throw new InternalServerErrorException();
             }
         }
-        Tables.shutDown();
+
         return end;
     }
 }
