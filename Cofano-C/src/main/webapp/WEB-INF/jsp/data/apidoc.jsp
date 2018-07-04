@@ -52,8 +52,37 @@
 </style>
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
        	
-        </div>
+      </div>
         <h2>API Documentation</h2>
+        
+        <h10>	To see the exact form of any object please look at the received Json documents received from making calls to the api.<h10>
+  			<p><h10> When making an edit or adding a new entry, in the request there must be a json object in the request with 
+  			everything except id. This applies for all the different objects.
+  			</h10>
+  		<div class="row">
+  			<div class="col-sm-4">
+  				<h5>Ships</h5>
+  		
+  			</div>
+ 			 <div class="col-sm-8">
+				<h5>Ports</h5>
+			</div>
+		</div>
+		
+		<div class="row">
+  			<div class="col-sm-4">
+  				<h5>Terminals</h5>
+  			</div>
+ 			 <div class="col-sm-8">
+				<h5>Container Types</h5>
+			</div>
+		</div>
+		
+		<div class="row">
+  			<div class="col-sm-12">
+  				<h5>UNDGs</h5>
+  			</div>
+		</div>
         
    
 		<p>  <h5>All API request are required to have an "Authorization" header which has as value an API key assiged by cofano. 
