@@ -152,7 +152,9 @@
             <h1 class="h2">Applications</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group mr-2">
-                    <button role="button" id="addnew" class="btn btn-sm btn-outline-secondary" href="${base}/applications">Add new</button>
+                    <button role="button" id="addnew" class="btn btn-sm btn-outline-primary"
+                            href="${base}/applications">Add new
+                    </button>
                 </div>
             </div>
         </div>
