@@ -111,37 +111,11 @@
                     },
                 });
 
-                function inlineEditCallback (updatedCell, updatedRow, oldValue) {
-                    $.ajax({
-                        type: "put",
-                        url: "${base}/api/undgs/" + updatedRow.data().id,
-                        data: JSON.stringify(updatedRow.data()),
-                        success: function(data) {
-                            $("#error").hide();
-                        },
-                        error: function(data) {
-                            $("#error").show();
-                        },
-                        contentType: "application/json",
-                        dataType: 'json'
-                    });
-                }
-
-                table.MakeCellsEditable({
-                    "onUpdate": inlineEditCallback,
-                    "columns": [1,2,3,4,5],
-                    "inputCss": 'form-cotrol',
-                    "confirmationButton": { // could also be true
-                        "confirmCss": 'btn btn-sm btn-primary',
-                        "cancelCss": 'btn btn-sm btn-danger'
-                    },
-                });
-
                 var deletingRow;
                 $(document).on('click', '.btn-delete', function () {
-                    $('#delete-name').text($(this).data('delete-name'))
-                    $('#delete-confirm').data('delete-url', "${base}/api/undgs/" + $(this).data('delete-id'))
-                    $('#deleteModal').modal('show')
+                    $('#delete-name').text($(this).data('delete-name'));
+                    $('#delete-confirm').data('delete-url', "${base}/api/undgs/" + $(this).data('delete-id'));
+                    $('#deleteModal').modal('show');
                     deletingRow = $(this).parents('tr');
                 });
 
@@ -153,7 +127,7 @@
                             $("#delete-error").hide();
                         },
                         success: function(data) {
-                            $('#deleteModal').modal('hide')
+                            $('#deleteModal').modal('hide');
                             table
                                 .row( deletingRow )
                                 .remove()
@@ -170,7 +144,7 @@
 
     <jsp:body>
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">Undgs</h1>
+            <h1 class="h2">UNDG's</h1>
             <div class="btn-group mr-2">
                 <div class="col-sm-4">
                    <c:import url="/WEB-INF/jsp/addButton.jsp"/>
@@ -223,7 +197,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <p>Are you really sure you want to delete UNDGS with unNo <code id="delete-name"></code>.</p>
+                        <p>Are you really sure you want to delete UNDG with unNo <code id="delete-name"></code>.</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-delete-url="" id="delete-confirm">Yes delete it</button>

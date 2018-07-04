@@ -30,9 +30,11 @@ public class TerminalsResource {
     public ArrayList<Terminal> getAllTerminals(@Context HttpServletRequest request) {
         Tables.start();
         ArrayList<Terminal> result = new ArrayList<>();
-        String query = "SELECT * " +
-                "FROM terminal " +
-                "WHERE approved = true";
+        String query =
+                "SELECT terminal.*, port.name AS port_name" +
+                " FROM terminal" +
+                " JOIN port on terminal.port_id = port.pid" +
+                " WHERE terminal.approved = true";
         String name = Tables.testRequest(request);
         if (!name.equals("")) {
 
@@ -45,6 +47,7 @@ public class TerminalsResource {
                 System.err.println("Could not retrieve all terminals" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -61,11 +64,15 @@ public class TerminalsResource {
         Tables.start();
         ArrayList<Terminal> result = new ArrayList<>();
         //select all unapproved entries which are not in the conflict table
-        String query = "select terminal.* from terminal"
-        		+ " where terminal.approved = false"
-        		+ " AND terminal.tid not in (select conflict.entry "
-        									+ "from conflict "
-        									+ "where conflict.\"table\"= 'terminal' ) ";
+        String query = "SELECT terminal.*, port.name AS port_name" +
+                " FROM terminal" +
+                " JOIN port on terminal.port_id = port.pid" +
+                " WHERE terminal.approved = false" +
+                " AND terminal.tid not in (" +
+                "  select conflict.entry" +
+                "  FROM conflict" +
+                "  WHERE conflict.\"table\" = 'terminal'" +
+                ")";
 
         if (request.getSession().getAttribute("userEmail") != null) {
 
@@ -80,6 +87,7 @@ public class TerminalsResource {
                 System.err.println("Could not retrieve all unapproved terminals" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 
@@ -94,24 +102,26 @@ public class TerminalsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Terminal getTerminal(@PathParam("terminalId") int terminalId,
                                 @Context HttpServletRequest request) {
+        Tables.start();
         Terminal terminal = new Terminal();
-	        if(!Tables.testRequest(request).equals("")) {
-	        String query = "SELECT * FROM terminal WHERE tid = ?";
-	        try {
-	            PreparedStatement statement = Tables.getCon().prepareStatement(query);
-	            statement.setInt(1, terminalId);
-	            ResultSet resultSet = statement.executeQuery();
-	            while (resultSet.next()) {
-	                terminal.setName(resultSet.getString("name"));
-	                terminal.setTerminalCode(resultSet.getString("terminal_code"));
-	                terminal.setType(resultSet.getString("type"));
-	                terminal.setUnlo(resultSet.getString("unlo"));
-	                terminal.setPortId(resultSet.getInt("port_id"));
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
+        if (!Tables.testRequest(request).equals("")) {
+            String query = "SELECT * FROM terminal WHERE tid = ?";
+            try {
+                PreparedStatement statement = Tables.getCon().prepareStatement(query);
+                statement.setInt(1, terminalId);
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    terminal.setName(resultSet.getString("name"));
+                    terminal.setTerminalCode(resultSet.getString("terminal_code"));
+                    terminal.setType(resultSet.getString("type"));
+                    terminal.setUnlo(resultSet.getString("unlo"));
+                    terminal.setPortId(resultSet.getInt("port_id"));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+        Tables.shutDown();
         return terminal;
     }
 
@@ -129,11 +139,12 @@ public class TerminalsResource {
     @Path("add")
     @Consumes(MediaType.APPLICATION_JSON)
     public void addTerminal(Terminal input, @Context HttpServletRequest request) {
-        Tables.start();
         int ownID = 0;
         String title = "ADD";
         String doer = Tables.testRequest(request);
         int con = testConflict(input);
+        Tables.start();
+
 
         if (request.getSession().getAttribute("userEmail") != null && con == 0) {
             //if its from a cofano employee and it doesn't create conflict, add straight to db
@@ -157,7 +168,7 @@ public class TerminalsResource {
             Tables.addHistoryEntry("CON", doer,
                     ownID + " " + input.toString() + " con with " + con, myName, false);
         }
-
+        Tables.shutDown();
     }
 
     /**
@@ -206,10 +217,11 @@ public class TerminalsResource {
     @Path("/{terminalId}")
     public void deleteTerminal(@PathParam("terminalId") int terminalId,
                                @Context HttpServletRequest request) {
-        Tables.start();
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
             Terminal aux = getTerminal(terminalId, request);
+            Tables.start();
+
             String query = "SELECT deleteterminal(?)";
             try {
                 PreparedStatement statement =
@@ -223,64 +235,70 @@ public class TerminalsResource {
             }
             Tables.addHistoryEntry("DELETE", doer, aux.toString(), myName, true);
         }
+        Tables.shutDown();
     }
-    
+
     /**
-	 * this method deletes an entry from a table but doest not enter in in the database
-	 * this method is called for unapproved entries
-	 * this method does not add to the history table
-	 * @param portId the id of the entry which is deleted
-	 */
+     * this method deletes an entry from a table but doest not enter in in the database.
+     * this method is called for unapproved entries
+     * this method does not add to the history table
+     *
+     * @param terminalId the id of the entry which is deleted
+     */
     @DELETE
-	@Path("/unapproved/{terminalId}")
-	public void deletTerminalUN(@PathParam("terminalId") int terminalId, 
-			@Context HttpServletRequest request) {
-		Tables.start();	
-		if(request.getSession().getAttribute("userEmail")!=null) {
-			String query ="SELECT deleteterminal(?)";
-			try {
-				PreparedStatement statement = 
-						Tables.getCon().prepareStatement(query);
-				statement.setInt(1, terminalId);
-				statement.executeQuery();
-			} catch (SQLException e) {
-				System.err.println("Was not able to delete unapproved Terminal");
-				System.err.println(e.getSQLState());
-				e.printStackTrace();
-			}
-		}
-	}
+    @Path("/unapproved/{terminalId}")
+    public void deletTerminalUN(@PathParam("terminalId") int terminalId,
+                                @Context HttpServletRequest request) {
+        Tables.start();
+        if (request.getSession().getAttribute("userEmail") != null) {
+            String query = "SELECT deleteterminal(?)";
+            try {
+                PreparedStatement statement =
+                        Tables.getCon().prepareStatement(query);
+                statement.setInt(1, terminalId);
+                statement.executeQuery();
+            } catch (SQLException e) {
+                System.err.println("Was not able to delete unapproved Terminal");
+                System.err.println(e.getSQLState());
+                e.printStackTrace();
+            }
+        }
+        Tables.shutDown();
+    }
 
-    
+
     /**
-	 * this method approves an entry in the database
-	 * @param terminalId the id of the terminal which is approved
-	 */
-	@PUT
-	@Path("/approve/{terminalId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void approveContainer(@PathParam("terminalId") int terminalId,
-			@Context HttpServletRequest request) {
-		
-		if(request.getSession().getAttribute("userEmail")!=null) {
-			Terminal aux = getTerminal(terminalId, request);
-			String query = "SELECT approveterminal(?)";
-			try {
-				PreparedStatement statement = 
-						Tables.getCon().prepareStatement(query);
-				statement.setInt(1, terminalId);
-				statement.executeQuery();
-	
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			
-			Tables.addHistoryEntry("APPROVE", 
-					request.getSession().getAttribute("userEmail").toString(),
-					aux.toString() , myName, true);
-		}
-	}
+     * this method approves an entry in the database.
+     *
+     * @param terminalId the id of the terminal which is approved
+     */
+    @PUT
+    @Path("/approve/{terminalId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void approveContainer(@PathParam("terminalId") int terminalId,
+                                 @Context HttpServletRequest request) {
 
+        if (request.getSession().getAttribute("userEmail") != null) {
+            Terminal aux = getTerminal(terminalId, request);
+            Tables.start();
+
+            String query = "SELECT approveterminal(?)";
+            try {
+                PreparedStatement statement =
+                        Tables.getCon().prepareStatement(query);
+                statement.setInt(1, terminalId);
+                statement.executeQuery();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            Tables.addHistoryEntry("APPROVE",
+                    request.getSession().getAttribute("userEmail").toString(),
+                    aux.toString(), myName, true);
+        }
+        Tables.shutDown();
+    }
 
 
     /**
@@ -298,6 +316,8 @@ public class TerminalsResource {
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
             Terminal aux = getTerminal(terminalId, request);
+            Tables.start();
+
             String query = "SELECT editterminals(?,?,?,?,?)";
             try {
                 PreparedStatement statement =
@@ -314,6 +334,7 @@ public class TerminalsResource {
             Tables.addHistoryEntry("UPDATE", doer,
                     aux.toString() + "-->" + terminal.toString(), myName, false);
         }
+        Tables.shutDown();
     }
 
 
@@ -325,6 +346,7 @@ public class TerminalsResource {
      * @return the id of the port it is on conflict with , or 0 if there is no conflict
      */
     private int testConflict(Terminal test) {
+        Tables.start();
         int result = -1;
         String query = "SELECT * FROM terminalconflict(?,?)";
         try {
@@ -341,24 +363,26 @@ public class TerminalsResource {
         } catch (SQLException e) {
             System.err.println("Could not test conflict IN apps" + e);
         }
+        Tables.shutDown();
         return result;
     }
 
     private void constructTerminal(ArrayList<Terminal> result, ResultSet resultSet)
-	        throws SQLException {
-	    while (resultSet.next()) {
-	        Terminal terminal = new Terminal();
-	        terminal.setID(resultSet.getInt("tid"));
-	        terminal.setName(resultSet.getString("name"));
-	        terminal.setTerminalCode(resultSet.getString("terminal_code"));
-	        terminal.setType(resultSet.getString("type"));
-	        terminal.setUnlo(resultSet.getString("unlo"));
-	        terminal.setPortId(resultSet.getInt("port_id"));
-	        result.add(terminal);
-	    }
-	}
+            throws SQLException {
+        while (resultSet.next()) {
+            Terminal terminal = new Terminal();
+            terminal.setID(resultSet.getInt("tid"));
+            terminal.setName(resultSet.getString("name"));
+            terminal.setTerminalCode(resultSet.getString("terminal_code"));
+            terminal.setType(resultSet.getString("type"));
+            terminal.setUnlo(resultSet.getString("unlo"));
+            terminal.setPortId(resultSet.getInt("port_id"));
+            terminal.setPortName(resultSet.getString("port_name"));
+            result.add(terminal);
+        }
+    }
 
-	/**
+    /**
      * this function is used in the Adding of a terminal.
      * Terminal have a foreign key to Ports
      *
@@ -368,11 +392,12 @@ public class TerminalsResource {
     @Path("portids")
     @Produces({MediaType.APPLICATION_JSON})
     public ArrayList<Port> getAvailableIDs(@Context HttpServletRequest request) {
-        Tables.start();
         ArrayList<Port> result = new ArrayList<>();
         String query = "SELECT pid, name FROM port WHERE approved = true";
 
         String name = Tables.testRequest(request);
+        Tables.start();
+
         if (!name.equals("")) {
 
             try {
@@ -392,6 +417,7 @@ public class TerminalsResource {
                 System.err.println("Could not retrieve all ports" + e);
             }
         }
+        Tables.shutDown();
         return result;
     }
 

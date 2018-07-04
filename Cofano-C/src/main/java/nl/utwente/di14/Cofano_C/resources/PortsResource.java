@@ -43,7 +43,7 @@ public class PortsResource {
                 System.err.println("Could not retrieve all approved ports" + e);
             }
         }
-
+        Tables.shutDown();
         return result;
     }
 
@@ -61,10 +61,10 @@ public class PortsResource {
         ArrayList<Port> result = new ArrayList<>();
         //select all unapproved entries which are not in the conflict table
         String query = "select port.* from port "
-        		+ "where port.approved = false "
-        		+ "AND port.pid not in (select conflict.entry"
-        								+ " from conflict "
-        								+ "where conflict.\"table\"= 'port' ) ";
+                + "where port.approved = false "
+                + "AND port.pid not in (select conflict.entry"
+                + " from conflict "
+                + "where conflict.\"table\"= 'port' ) ";
 
         if (request.getSession().getAttribute("userEmail") != null) {
 
@@ -77,7 +77,7 @@ public class PortsResource {
                 System.err.println("Could not retrieve all unapproved ports" + e);
             }
         }
-
+        Tables.shutDown();
         return result;
 
     }
@@ -94,6 +94,7 @@ public class PortsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Port getPort(@PathParam("portId") int portId,
                         @Context HttpServletRequest request) {
+        Tables.start();
         Port port = new Port();
         String query = "SELECT * FROM port WHERE pid = ?";
         if (!Tables.testRequest(request).equals("")) {
@@ -112,7 +113,7 @@ public class PortsResource {
                 e.printStackTrace();
             }
         }
-
+        Tables.shutDown();
         return port;
     }
 
@@ -161,6 +162,7 @@ public class PortsResource {
             Tables.addHistoryEntry("CON", doer, ownID + " "
                     + input.toString() + " con with " + con, myName, false);
         }
+        Tables.shutDown();
     }
 
 
@@ -173,6 +175,7 @@ public class PortsResource {
      */
     private int addEntry(Port entry, boolean app) {
         String query = "SELECT addport(?,?,?)";
+        Tables.start();
         int rez = 0;
         //gets here if the request is from API
         //add to conflicts table
@@ -193,6 +196,7 @@ public class PortsResource {
             System.err.println(e.getSQLState());
             e.printStackTrace();
         }
+        Tables.shutDown();
         return rez;
     }
 
@@ -206,12 +210,12 @@ public class PortsResource {
     @Path("/{portId}")
     public void deletePort(@PathParam("portId") int portId,
                            @Context HttpServletRequest request) {
-        Tables.start();
 
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
 
             Port aux = getPort(portId, request);
+            Tables.start();
             String query = "SELECT deleteport(?)";
             try {
                 PreparedStatement statement =
@@ -226,63 +230,69 @@ public class PortsResource {
             Tables.addHistoryEntry("DELETE", doer,
                     aux.toString(), myName, true);
         }
+        Tables.shutDown();
     }
-    
+
     /**
-	 * this method deletes an entry from a table but doest not enter in in the database
-	 * this method is called for unapproved entries
-	 * this method does not add to the history table
-	 * @param portId the id of the entry which is deleted
-	 */
-	@DELETE
-	@Path("/unapproved/{portId}")
-	public void deletPortUN(@PathParam("portId") int portId,
-			@Context HttpServletRequest request) {
-		Tables.start();		
-		if(request.getSession().getAttribute("userEmail")!=null) {
-			String query ="SELECT deleteport(?)";
-			try {
-				PreparedStatement statement = 
-						Tables.getCon().prepareStatement(query);
-				statement.setInt(1, portId);
-				statement.executeQuery();
-			} catch (SQLException e) {
-				System.err.println("Was not able to delete unapproved Port");
-				System.err.println(e.getSQLState());
-				e.printStackTrace();
-			}
-		}
-	}
-    
-    
+     * this method deletes an entry from a table but doest not enter in in the database
+     * this method is called for unapproved entries
+     * this method does not add to the history table
+     *
+     * @param portId the id of the entry which is deleted
+     */
+    @DELETE
+    @Path("/unapproved/{portId}")
+    public void deletPortUN(@PathParam("portId") int portId,
+                            @Context HttpServletRequest request) {
+        Tables.start();
+        if (request.getSession().getAttribute("userEmail") != null) {
+            String query = "SELECT deleteport(?)";
+            try {
+                PreparedStatement statement =
+                        Tables.getCon().prepareStatement(query);
+                statement.setInt(1, portId);
+                statement.executeQuery();
+            } catch (SQLException e) {
+                System.err.println("Was not able to delete unapproved Port");
+                System.err.println(e.getSQLState());
+                e.printStackTrace();
+            }
+        }
+        Tables.shutDown();
+    }
+
+
     /**
-	 * this method approves an entry in the database
-	 * @param portid the id of the port which is approved
-	 */
-	@PUT
-	@Path("/approve/{portid}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void approvePort(@PathParam("portid") int portid,
-			@Context HttpServletRequest request) {
-		
-		if(request.getSession().getAttribute("userEmail")!=null) {
-			Port aux = getPort(portid, request);
-			String query = "SELECT approveport(?)";
-			try {
-				PreparedStatement statement = 
-						Tables.getCon().prepareStatement(query);
-				statement.setInt(1, portid);
-				statement.executeQuery();
-	
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			
-			Tables.addHistoryEntry("APPROVE", 
-					request.getSession().getAttribute("userEmail").toString(),
-					aux.toString() , myName, true);
-		}
-	}
+     * this method approves an entry in the database
+     *
+     * @param portid the id of the port which is approved
+     */
+    @PUT
+    @Path("/approve/{portid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void approvePort(@PathParam("portid") int portid,
+                            @Context HttpServletRequest request) {
+
+        if (request.getSession().getAttribute("userEmail") != null) {
+            Port aux = getPort(portid, request);
+            Tables.start();
+            String query = "SELECT approveport(?)";
+            try {
+                PreparedStatement statement =
+                        Tables.getCon().prepareStatement(query);
+                statement.setInt(1, portid);
+                statement.executeQuery();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            Tables.addHistoryEntry("APPROVE",
+                    request.getSession().getAttribute("userEmail").toString(),
+                    aux.toString(), myName, true);
+        }
+        Tables.shutDown();
+    }
 
 
     /**
@@ -300,6 +310,7 @@ public class PortsResource {
         String doer = Tables.testRequest(request);
         if (!doer.equals("")) {
             Port aux = getPort(portId, request);
+            Tables.start();
             String query = "SELECT editports(?,?,?)";
             try {
                 PreparedStatement statement =
@@ -317,30 +328,31 @@ public class PortsResource {
             Tables.addHistoryEntry("UPDATE", doer,
                     aux.toString() + "-->" + port.toString(), myName, false);
         }
+        Tables.shutDown();
 
     }
 
 
     /**
-	 * Extracted method to construct a port.
-	 *
-	 * @param result    the result being constructed
-	 * @param resultSet the Set with elements to be added to result
-	 * @throws SQLException if an exception occurs
-	 */
-	private void constructPort(ArrayList<Port> result, ResultSet resultSet) throws SQLException {
-	    while (resultSet.next()) {
-	        Port port = new Port();
-	        port.setId(resultSet.getInt("pid"));
-	        port.setName(resultSet.getString("name"));
-	        port.setUnlo(resultSet.getString("unlo"));
-	
-	
-	        result.add(port);
-	    }
-	}
+     * Extracted method to construct a port.
+     *
+     * @param result    the result being constructed
+     * @param resultSet the Set with elements to be added to result
+     * @throws SQLException if an exception occurs
+     */
+    private void constructPort(ArrayList<Port> result, ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
+            Port port = new Port();
+            port.setId(resultSet.getInt("pid"));
+            port.setName(resultSet.getString("name"));
+            port.setUnlo(resultSet.getString("unlo"));
 
-	/**
+
+            result.add(port);
+        }
+    }
+
+    /**
      * this tests if there a new Port creates a conflict in the DB if it is added.
      * it creates a conflict if the name or unlo is the same as another entry in the DB
      *
@@ -348,10 +360,11 @@ public class PortsResource {
      * @return the id of the port it is on conflict with
      * or 0 if there is no conflict
      */
-	
+
     private int testConflict(Port test) {
         int result = -1;
         String query = "SELECT * FROM portconflict(?,?)";
+        Tables.start();
 
         try {
             PreparedStatement statement =
@@ -370,6 +383,7 @@ public class PortsResource {
         } catch (SQLException e) {
             System.err.println("Could not test conflict IN port " + e);
         }
+        Tables.shutDown();
         return result;
     }
 

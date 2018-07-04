@@ -73,9 +73,9 @@
 
                 var deletingRow;
                 $(document).on('click', '.btn-delete', function () {
-                    $('#delete-name').text($(this).data('delete-name'))
-                    $('#delete-confirm').data('delete-url', "${base}/api/ports/" + $(this).data('delete-id'))
-                    $('#deleteModal').modal('show')
+                    $('#delete-name').text($(this).data('delete-name'));
+                    $('#delete-confirm').data('delete-url', "${base}/api/ports/" + $(this).data('delete-id'));
+                    $('#deleteModal').modal('show');
                     deletingRow = $(this).parents('tr');
                 });
 
@@ -87,7 +87,7 @@
                             $("#delete-error").hide();
                         },
                         success: function(data) {
-                            $('#deleteModal').modal('hide')
+                            $('#deleteModal').modal('hide');
                             table
                                 .row( deletingRow )
                                 .remove()
@@ -115,7 +115,7 @@
         <table class="table table-striped table-sm datatables" style="width:100%">
             <thead>
             <tr>
-                <th data-priority="1">#</th>
+                <th data-priority="1" style="min-width:90px; max-width: 90px">#</th>
                 <th data-priority="1">Name</th>
                 <th>Unlo</th>
             </tr>

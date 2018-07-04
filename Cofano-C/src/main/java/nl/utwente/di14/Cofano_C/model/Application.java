@@ -33,6 +33,11 @@ public class Application {
         this.id = id;
     }
 
+    public Application(String name, String key) {
+        this.name = name;
+        this.apiKey = key;
+    }
+
     /**
      * Returns the applications data as a string.
      *
@@ -41,15 +46,6 @@ public class Application {
     @Override
     public String toString() {
         return "  Application:  Name: " + name + "; APIKey: " + apiKey;
-    }
-
-    /**
-     * Sets the id of an application.
-     *
-     * @param id of the application
-     */
-    public void setId(int id) {
-        this.id = id;
     }
 
     /**
@@ -62,12 +58,12 @@ public class Application {
     }
 
     /**
-     * Sets the name of an application.
+     * Sets the id of an application.
      *
-     * @param name of an application
+     * @param id of the application
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setId(int id) {
+        this.id = id;
     }
 
     /**
@@ -80,12 +76,12 @@ public class Application {
     }
 
     /**
-     * Sets the API Key of an application.
+     * Sets the name of an application.
      *
-     * @param key the API Key of of an application
+     * @param name of an application
      */
-    public void setAPIKey(String key) {
-        this.apiKey = key;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -95,5 +91,14 @@ public class Application {
      */
     public String getAPIKey() {
         return this.apiKey;
+    }
+
+    /**
+     * Sets the API Key of an application.
+     *
+     * @param key the API Key of of an application
+     */
+    public void setAPIKey(String key) {
+        this.apiKey = key;
     }
 }

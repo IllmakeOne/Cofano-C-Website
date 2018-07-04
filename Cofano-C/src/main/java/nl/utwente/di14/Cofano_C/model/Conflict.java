@@ -118,6 +118,14 @@ class Conflict {
         return this.id;
     }
 
+    /**
+     * Gets the table type of the conflict.
+     *
+     * @return the table type of the conflict
+     */
+    public String getTableType() {
+        return this.tableType;
+    }
 
     /**
      * Sets the table type of the conflict.
@@ -129,14 +137,13 @@ class Conflict {
     }
 
     /**
-     * Gets the table type of the conflict.
+     * Gets the table attribute of the conflict.
      *
-     * @return the table type of the conflict
+     * @return the table attribute of the conflict
      */
-    public String getTableType() {
-        return this.tableType;
+    public String getTableAtt() {
+        return this.columnName;
     }
-
 
     /**
      * Sets the table attribute of the conflict.
@@ -148,14 +155,13 @@ class Conflict {
     }
 
     /**
-     * Gets the table attribute of the conflict.
+     * Gets the created by user or application of the conflict.
      *
-     * @return the table attribute of the conflict
+     * @return the created by user or application of the conflict
      */
-    public String getTableAtt() {
-        return this.columnName;
+    public int getCreatedBy() {
+        return this.createdBy;
     }
-
 
     /**
      * Sets the created by user or application of the conflict.
@@ -167,14 +173,13 @@ class Conflict {
     }
 
     /**
-     * Gets the created by user or application of the conflict.
+     * Gets the solved by user or application of the conflict.
      *
-     * @return the created by user or application of the conflict
+     * @return the solved by user or application of the conflict
      */
-    public int getCreatedBy() {
-        return this.createdBy;
+    public int getSolvedBy() {
+        return this.solvedBy;
     }
-
 
     /**
      * Sets the solved by user or application of the conflict.
@@ -183,14 +188,5 @@ class Conflict {
      */
     public void setSolvedBy(int solve) {
         this.solvedBy = solve;
-    }
-
-    /**
-     * Gets the solved by user or application of the conflict.
-     *
-     * @return the solved by user or application of the conflict
-     */
-    public int getSolvedBy() {
-        return this.solvedBy;
     }
 }

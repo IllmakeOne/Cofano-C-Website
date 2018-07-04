@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * This class is the XMP Root Element for exception descriptions.
  */
 @XmlRootElement
-public class ExceptionInfo {
+class ExceptionInfo {
     private final int status;
     private final String msg, desc;
 

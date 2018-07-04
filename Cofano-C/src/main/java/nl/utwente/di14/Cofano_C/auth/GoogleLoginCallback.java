@@ -1,27 +1,34 @@
 package nl.utwente.di14.Cofano_C.auth;
 
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.auth.oauth2.TokenResponse;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import nl.utwente.di14.Cofano_C.dao.Tables;
+import nl.utwente.di14.Cofano_C.model.User;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.auth.oauth2.*;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.http.*;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * Handles the data returned by the Google API.
@@ -95,8 +102,9 @@ public class GoogleLoginCallback extends HttpServlet {
         // From this map, extract the relevant profile info and store it in the session.
         // See also: https://developers.google.com/+/web/api/rest/openidconnect/getOpenIdConnect
 
-        if (userIdResult != null && userIdResult.get("hd").equals(getServletContext()
-                .getInitParameter("google.hostdomain"))) { //TODO check
+        if (userIdResult != null && ((String) userIdResult.get("hd")).equals((getServletContext()
+                .getInitParameter("google.hostdomain"))) || ((String) userIdResult.get("hd")).endsWith(
+                        "." + getServletContext().getInitParameter("google.hostdomain"))) {
             req.getSession().setAttribute("userEmail", userIdResult.get("email"));
             req.getSession().setAttribute("userId", userIdResult.get("sub"));
             req.getSession().setAttribute("userImageUrl", userIdResult.get("picture"));
@@ -105,6 +113,28 @@ public class GoogleLoginCallback extends HttpServlet {
             req.getSession().setAttribute("userFullName", userIdResult.get("name"));
             resp.sendRedirect(getServletContext().getInitParameter("cofano.url") +
                     req.getSession().getAttribute("loginDestination"));
+
+            try {
+                Tables.start();
+                PreparedStatement statement = Tables.getCon().prepareStatement("SELECT * from addorselectuser(?, ?)");
+                statement.setString(1, (String) userIdResult.get("family_name"));
+                statement.setString(2, (String) userIdResult.get("email"));
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    User user = new User();
+                    user.setEmail(resultSet.getString("email"));
+                    user.setName(resultSet.getString("name"));
+                    user.setDarkMode(resultSet.getBoolean("darkmode"));
+                    user.setId(resultSet.getInt("uid"));
+                    req.getSession().setAttribute("user", user);
+                }
+                Tables.shutDown();
+
+            } catch (SQLException e) {
+                Tables.shutDown();
+                e.printStackTrace();
+            }
+
         } else {
             HttpSession session = req.getSession(false);
             if (session != null) {

@@ -73,66 +73,118 @@
         </div>
 
         <form <c:if test="${not empty app}">data-id="${fn:escapeXml(app)}"</c:if>action="${formUrl}" method="${method}">
-            <div class="col-sm-10">
-                <div class="table-responsive" style="margin: 35px">
-                    <table class="table table-striped table-sm">
-                        <thead>
-                        <tr>
-                            <th><h5>Field</h5></th>
-                            <th><h5>Data</h5></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>IMO</td>
-                            <td>
-                                <input type="text" placeholder="12345AB" id="imo" name="imo" autocomplete="off" required>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Name</td>
-                            <td>
-                                <input type="text" placeholder="McBoatFace" id="name" name="name" autocomplete="off">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Callsign</td>
-                            <td>
-                                <input type="text" placeholder="BF45" id="callSign" name="callSign" autocomplete="off">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>MMSI</td>
-                            <td>
-                                <input type="text" placeholder="456465ABC" id="mmsi" name="mmsi" autocomplete="off">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Depth</td>
-                            <td>
-                                <input type="number" step="0.01" min="1" max="999" placeholder="5.5" id="depth" name="depth" autocomplete="off">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <button type="submit" class="btn btn-sm btn-outline">
-                                    <c:choose>
-                                        <c:when test="${method eq 'put'}">
-                                            Edit
-                                        </c:when>
-                                        <c:otherwise>
-                                            Add
-                                        </c:otherwise>
-                                    </c:choose>
-                                    ship
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <fieldset>
+                <legend>Ship data</legend>
+                <div class="form-group row">
+                    <label for="imo" class="col-sm-3 col-form-label">IMO:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="12345AB" id="imo" name="imo" autocomplete="off" required>
+                    </div>
                 </div>
-            </div>
+                <div class="form-group row">
+                    <label for="imo" class="col-sm-3 col-form-label">Name:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="McBoatFace" id="name" name="name" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="imo" class="col-sm-3 col-form-label">Callsign:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="BF45" id="callSign" name="callSign" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="imo" class="col-sm-3 col-form-label">MMSI:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="456465ABC" id="mmsi" name="mmsi" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="imo" class="col-sm-3 col-form-label">Depth:</label>
+                    <div class="col-sm-5">
+                        <input type="number" class="form-control" step="0.01" min="1" max="999" placeholder="5.5" id="depth" name="depth" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <button type="submit" class="btn btn-primary">
+                            <c:choose>
+                                <c:when test="${method eq 'put'}">
+                                    Save
+                                </c:when>
+                                <c:otherwise>
+                                    Add
+                                </c:otherwise>
+                            </c:choose>
+                            Ship
+                        </button>
+                    </div>
+                </div>
+
+
+
+            </fieldset>
+            <%--<div class="col-sm-10">--%>
+                <%--<div class="table-responsive" style="margin: 35px">--%>
+                    <%--<table class="table table-striped table-sm">--%>
+                        <%--<thead>--%>
+                        <%--<tr>--%>
+                            <%--<th><h5>Field</h5></th>--%>
+                            <%--<th><h5>Data</h5></th>--%>
+                        <%--</tr>--%>
+                        <%--</thead>--%>
+                        <%--<tbody>--%>
+                        <%--<tr>--%>
+                            <%--<td>IMO</td>--%>
+                            <%--<td>--%>
+                                <%--&lt;%&ndash;<input type="text" placeholder="12345AB" id="imo" name="imo" autocomplete="off" required>&ndash;%&gt;--%>
+                            <%--</td>--%>
+                        <%--</tr>--%>
+                        <%--<tr>--%>
+                            <%--<td>Name</td>--%>
+                            <%--<td>--%>
+                                <%--&lt;%&ndash;<input type="text" placeholder="McBoatFace" id="name" name="name" autocomplete="off">&ndash;%&gt;--%>
+                            <%--</td>--%>
+                        <%--</tr>--%>
+                        <%--<tr>--%>
+                            <%--<td>Callsign</td>--%>
+                            <%--<td>--%>
+                                <%--&lt;%&ndash;<input type="text" placeholder="BF45" id="callSign" name="callSign" autocomplete="off">&ndash;%&gt;--%>
+                            <%--</td>--%>
+                        <%--</tr>--%>
+                        <%--<tr>--%>
+                            <%--<td>MMSI</td>--%>
+                            <%--<td>--%>
+                                <%--&lt;%&ndash;<input type="text" placeholder="456465ABC" id="mmsi" name="mmsi" autocomplete="off">&ndash;%&gt;--%>
+                            <%--</td>--%>
+                        <%--</tr>--%>
+                        <%--<tr>--%>
+                            <%--<td>Depth</td>--%>
+                            <%--<td>--%>
+                                <%--&lt;%&ndash;<input type="number" step="0.01" min="1" max="999" placeholder="5.5" id="depth" name="depth" autocomplete="off">&ndash;%&gt;--%>
+                            <%--</td>--%>
+                        <%--</tr>--%>
+                        <%--<tr>--%>
+                            <%--<td></td>--%>
+                            <%--<td>--%>
+                                <%--<button type="submit" class="btn btn-sm btn-outline">--%>
+                                    <%--<c:choose>--%>
+                                        <%--<c:when test="${method eq 'put'}">--%>
+                                            <%--Edit--%>
+                                        <%--</c:when>--%>
+                                        <%--<c:otherwise>--%>
+                                            <%--Add--%>
+                                        <%--</c:otherwise>--%>
+                                    <%--</c:choose>--%>
+                                    <%--ship--%>
+                                <%--</button>--%>
+                            <%--</td>--%>
+                        <%--</tr>--%>
+                        <%--</tbody>--%>
+                    <%--</table>--%>
+                <%--</div>--%>
+            <%--</div>--%>
         </form>
 
 

@@ -16,6 +16,10 @@
 
 	<servlet>
 		<servlet-name>javax.ws.rs.core.Application</servlet-name>
+		<init-param>
+		<param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+		<param-value>com.sun.jersey.api.container.filter.CsrfProtectionFilter</param-value>
+	</init-param>
 	</servlet>
 
 	<servlet-mapping>
@@ -40,6 +44,6 @@
 
 	<context-param>
 		<param-name>google.hostdomain</param-name>
-		<param-value>student.utwente.nl</param-value>
+		<param-value>utwente.nl</param-value>
 	</context-param>
 </web-app>

@@ -11,6 +11,7 @@ public class Terminal {
     private String type;
     private String unlo;
     private int portId;
+    private String portName;
 
 
     /**
@@ -39,6 +40,7 @@ public class Terminal {
         this.type = type;
         this.unlo = unlo;
         this.portId = portId;
+        this.portName = portName;
     }
 
     /**
@@ -158,5 +160,13 @@ public class Terminal {
      */
     public void setPortId(int portID) {
         this.portId = portID;
+    }
+
+    public String getPortName() {
+        return portName;
+    }
+
+    public void setPortName(String portName) {
+        this.portName = portName;
     }
 }
