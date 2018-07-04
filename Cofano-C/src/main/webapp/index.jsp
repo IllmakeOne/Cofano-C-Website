@@ -187,6 +187,104 @@
                     },
                 });
                 
+                var undgstable = $('.undgstable').DataTable({
+                    ajax: {
+                        url: "${base}/api/undgs/full/unapproved",
+                        dataSrc: '',
+                    },
+                    columns: [
+                        {
+                            data: 'id',
+                            render: function (data, type, row, meta) {
+                                if (type == "sort" || type == 'type') {
+                                    return data;
+                                }
+                                return '<button type="button" class="btn btn-info btn-sm btn-approve" data-approve-id="' + data 
+            					+ '" data-approve-name="' + escapeHtml(row.displayName) + '" data-type="undgs" role="button">' + 
+              				     '<span data-feather="check-square"></span>' +
+               			    '</button>&nbsp;' +
+                       
+                       '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data 
+                       		+ '" data-delete-name="' + escapeHtml(row.displayName) + '" data-type="undgs" role="button">' + 
+                       '<span data-feather="trash-2"></span>' +
+                       '</button>' ;
+                            },
+                            "width": "90px"
+                        },
+                        { data: 'unNo', render: $.fn.dataTable.render.text(), width: "10px" },
+                        {
+                            data: 'descriptions',
+                            render: function (data, type, row, meta) {
+                                // if (type == "sort" || type == 'type') {
+                                //     return data;
+                                // }
+                                filteredData = data.filter(
+                                    function(desc){
+                                        if (desc.language == 'en') {
+                                            return desc.description;
+                                        }
+                                    }
+                                );
+                                if (filteredData[0] !== undefined) {
+                                    return escapeHtml(filteredData[0].description);
+                                } else {
+                                    return "<i>Not set</i>";
+                                }
+                            },
+                            width: "20%"
+                        },
+                        { data: 'transportForbidden', render: $.fn.dataTable.render.text() },
+                        { data: 'collective', render: $.fn.dataTable.render.text() },
+                        { data: 'notApplicable', render: $.fn.dataTable.render.text() },
+                        { data: 'classificationCode', render: $.fn.dataTable.render.text() },
+                        { data: 'classification', render: $.fn.dataTable.render.text() },
+                        { data: 'packingGroup', render: $.fn.dataTable.render.text() },
+                        { data: 'hazardNo', render: $.fn.dataTable.render.text() },
+                        { data: 'station', render: $.fn.dataTable.render.text() },
+                        { data: 'transportCategory', render: $.fn.dataTable.render.text() },
+                        { data: 'tunnelCode', render: $.fn.dataTable.render.text() },
+                        { data: 'vehicleTankCarriage', render: $.fn.dataTable.render.text() },
+                        {
+                            data: 'labels',
+                            render: function (data, type, row, meta) {
+                                if (data !== undefined) {
+                                    if (type == "sort" || type == 'type') {
+                                        return data;
+                                    }
+                                    return escapeHtml(data.sort().join(", "));
+                                }
+                            },
+                        },
+                        {
+                            data: 'tankSpecialProvisions',
+                            render: function (data, type, row, meta) {
+                                if (data !== undefined) {
+                                    if (type == "sort" || type == 'type') {
+                                        return data;
+                                    }
+                                    return escapeHtml(data.sort().join(", "));
+                                }
+                            },
+                        },
+                        {
+                            data: 'tankCode',
+                            render: function (data, type, row, meta) {
+                                if (data !== undefined) {
+                                    if (type == "sort" || type == 'type') {
+                                        return data;
+                                    }
+                                    return escapeHtml(data.sort().join(", "));
+                                }
+                            },
+                        },
+                    ],
+                    order: [[ 1, "asc" ]],
+                    responsive: true,
+                    drawCallback: function( settings ) {
+                        feather.replace();
+                    },
+                });
+                
                 var approvingRow;
                 $(document).on('click', '.btn-approve', function () {
                 	approvingRow = $(this).parents('tr');
@@ -250,28 +348,15 @@
         </jsp:attribute>
     <jsp:body>
     
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h2 id="pageHeader" class="h2">Dashboard</h2>
-    <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group mr-2">
-         <div class="col-sm-6">
-         		 <div class="dropdown">
-	  				<button class="btn btn-primary dropdown-toggle btn" type="button" data-toggle="dropdown">+
-					  <span class="caret"></span></button>
-				<ul class="dropdown-menu">
-				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ships/add">Ship</a></li>
-			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/applications/add">Application</a></li>
-				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/containers/add">Container Type</a></li>
-			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/terminals/add">Terminal</a></li>
-				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}">UNDG</a></li>
-			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ports/add">Port</a></li>
-				 </ul>
-				</div>
-				</div>
+   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">UNDG's</h1>
+            <div class="btn-group mr-2">
+                <div class="col-sm-4">
+                   <c:import url="/WEB-INF/jsp/addButton.jsp"/>
+                </div>
+            </div>
         </div>
-         
-    </div>
-</div>
+
 
 
 
@@ -347,6 +432,35 @@
             </tr>
             </thead>
             <tbody>
+            </tbody>
+        </table>
+        
+         <table class="table table-striped table-sm datatables" style="width:100%; id="undgstable"">
+            <thead>
+            <h3 id = "undgsname" >UNDGs</h3>
+            <tr>
+                <th data-priority="1" style="min-width:90px">#</th>
+                <th data-priority="1">uNo</th>
+                <th data-priority="1" style="min-width:160px">English Description</th>
+                <th>Transport Forbidden</th>
+                <th>Collective</th>
+                <th>Not Applicable</th>
+                <th>Classification Code</th>
+                <th>Classification</th>
+                <th>Packing Group</th>
+                <th>Hazard No.</th>
+                <th>Station</th>
+                <th>Transport Category</th>
+                <th>Tunnel Code</th>
+                <th>Vehicle Tank Carriage</th>
+                <th>Labels</th>
+                <th>Tank Special Provisions</th>
+                <th>Tank Codes</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
             </tbody>
         </table>
         

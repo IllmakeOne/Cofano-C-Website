@@ -179,6 +179,115 @@ public class UndgsResource {
 
     }
 
+    
+    @GET
+    @Path("/full/unapproved")
+    @Produces({MediaType.APPLICATION_JSON})
+    public ArrayList<Undg> getFullUndgsUN(@Context HttpServletRequest request) {
+        Tables.start();
+        ArrayList<Undg> result = new ArrayList<>();
+        String query = "SELECT" +
+                "  undgs.*," +
+                "  ul.name   AS label," +
+                "  ut.name   AS tankcode," +
+                "  utsp.name AS tank_special_provision," +
+                "  ud.language," +
+                "  ud.description" +
+                "  FROM undgs" +
+                "  FULL OUTER JOIN undgs_has_label uhl on undgs.uid = uhl.uid" +
+                "  FULL OUTER JOIN undgs_labels ul ON ul.ulid = uhl.ulid" +
+                "  FULL OUTER JOIN undgs_has_tank_special_provision u on undgs.uid = u.uid" +
+                "  FULL OUTER JOIN undgs_tank_special_provisions utsp on u.utsid = utsp.utsid" +
+                "  FULL OUTER JOIN undgs_has_tankcode tankcode on undgs.uid = tankcode.uid" +
+                "  FULL OUTER JOIN undgs_tankcodes ut on tankcode.utid = ut.utid" +
+                "  FULL OUTER JOIN undgs_descriptions ud on undgs.uid = ud.undgs_id" +
+                "  WHERE approved = false " +
+                "  GROUP BY undgs.uid, label, tankcode, tank_special_provision, ud.language, ud.description" +
+                "  ORDER BY undgs.uid;";
+        
+      //  System.out.println(query);
+
+        String name = Tables.testRequest(request);
+        if (!name.equals("")) {
+
+            try {
+                PreparedStatement statement = Tables.getCon().prepareStatement(query);
+
+                ResultSet resultSet = statement.executeQuery();
+
+                Undg lastUndg = null;
+
+                List<String> undgLabels = new ArrayList<>();
+                List<String> tankSpecialProvisions = new ArrayList<>();
+                List<String> tankcodes = new ArrayList<>();
+                Map<String, UndgDescription> descriptions = new HashMap<>();
+
+
+                while (resultSet.next()) {
+                    if (lastUndg != null && lastUndg.getId() == resultSet.getInt("uid")) {
+                        if (!undgLabels.contains(resultSet.getString("label"))) {
+                            undgLabels.add(resultSet.getString("label"));
+                        }
+                        if (!tankSpecialProvisions.contains(resultSet.getString("tank_special_provision"))) {
+                            tankSpecialProvisions.add(resultSet.getString("tank_special_provision"));
+                        }
+                        if (!tankcodes.contains(resultSet.getString("tankcode"))) {
+                            tankcodes.add(resultSet.getString("tankcode"));
+                        }
+                        if (!descriptions.containsKey(resultSet.getString("language"))) {
+                            descriptions.put(resultSet.getString("language"),
+                                    new UndgDescription(resultSet.getString("language"),
+                                            resultSet.getString("description")));
+                        }
+                    } else {
+                        if (lastUndg != null) {
+                            lastUndg.setLabels(undgLabels);
+                            lastUndg.setTankSpecialProvisions(tankSpecialProvisions);
+                            lastUndg.setTankCode(tankcodes);
+                            lastUndg.setDescriptions(new ArrayList<>(descriptions.values()));
+
+                            result.add(lastUndg);
+
+                            undgLabels = new ArrayList<>();
+                            tankSpecialProvisions = new ArrayList<>();
+                            tankcodes = new ArrayList<>();
+                            descriptions = new HashMap<>();
+                        }
+                        Undg undg = new Undg();
+                        undg.setId(resultSet.getInt("uid"));
+                        undg.setClassification(resultSet.getString("classification"));
+                        undg.setClassificationCode(resultSet.getString("classification_code"));
+                        undg.setCollective(resultSet.getBoolean("collective"));
+                        undg.setHazardNo(resultSet.getString("hazard_no"));
+                        undg.setNotApplicable(resultSet.getBoolean("not_applicable"));
+                        undg.setPackingGroup(resultSet.getInt("packing_group"));
+                        undg.setStation(resultSet.getString("station"));
+                        undg.setTransportCategory(resultSet.getString("transport_category"));
+                        undg.setTransportForbidden(resultSet.getBoolean("transport_forbidden"));
+                        undg.setTunnelCode(resultSet.getString("tunnel_code"));
+                        undg.setUnNo(resultSet.getInt("un_no"));
+                        undg.setVehicleTankCarriage(resultSet.getString("vehicletank_carriage"));
+
+                        undgLabels.add(resultSet.getString("label"));
+                        tankSpecialProvisions.add(resultSet.getString("tank_special_provision"));
+                        tankcodes.add(resultSet.getString("tankcode"));
+                        descriptions.put(resultSet.getString("language"),
+                                new UndgDescription(resultSet.getString("language"),
+                                        resultSet.getString("description")));
+                        lastUndg = undg;
+
+                    }
+                }
+            } catch (SQLException e) {
+                System.err.println("Could not retrieve all undgs" + e);
+            }
+        }
+        Tables.shutDown();
+        //System.out.println(result.get(1));
+        return result;
+
+    }
+
 
     @GET
     @Path("/{undgsId}")
