@@ -30,7 +30,7 @@
                                 if (type == "sort" || type == 'type') {
                                     return data;
                                 }
-                                return new Date(data).toLocaleString();
+                                return new Date(data).toLocaleString('en-GB', { timeZone: 'UTC' });
                             }
                         },
                     ],
