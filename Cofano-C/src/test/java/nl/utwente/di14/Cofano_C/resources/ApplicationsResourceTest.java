@@ -17,9 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 
 public class ApplicationsResourceTest {
@@ -130,9 +128,5 @@ public class ApplicationsResourceTest {
         getResults(result, queryRetrieval);
 
         assertEquals("[]", result.toString());
-    }
-
-    @Test
-    public void updateApp() {
     }
 }
