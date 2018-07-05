@@ -117,7 +117,7 @@ public class GoogleLoginCallback extends HttpServlet {
 
             String sql = "SELECT * from addorselectuser(?, ?)";
 
-            try (Connection connection = Tables.getCon(); PreparedStatement statement = Tables.getCon().prepareStatement(sql)) {
+            try (Connection connection = Tables.getCon(); PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, (String) userIdResult.get("name"));
                 statement.setString(2, (String) userIdResult.get("email"));
                 ResultSet resultSet = statement.executeQuery();
