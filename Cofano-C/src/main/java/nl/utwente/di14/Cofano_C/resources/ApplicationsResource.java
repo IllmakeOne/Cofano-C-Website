@@ -1,6 +1,7 @@
 package nl.utwente.di14.Cofano_C.resources;
 
 
+import nl.utwente.di14.Cofano_C.auth.Secured;
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.Application;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ public class ApplicationsResource extends ServletContainer {
      * @return a JSON array of all approved Application
      */
     @GET
+    @Secured
     @Produces({MediaType.APPLICATION_JSON})
     public List<Application> getAllApps(@Context HttpServletRequest request) {
 
@@ -60,9 +63,10 @@ public class ApplicationsResource extends ServletContainer {
 
 
     @GET
+    @Secured
     @Path("/generate")
     @Produces({MediaType.APPLICATION_JSON})
-    public Application generateAPI(@Context HttpServletRequest request) {
+    public Application generateAPI(@Context HttpServletRequest request, @Context SecurityContext securityContext) {
 
         SecureRandom random = new SecureRandom();
         byte bytes[] = new byte[42];
@@ -72,40 +76,38 @@ public class ApplicationsResource extends ServletContainer {
 
         Application newApp = new Application("New Application", token);
 
-        //tests if the person is allowed to make any modifications
-        if (request.getSession().getAttribute("userEmail") != null) {
-            String title = "ADD";
+        String title = "ADD";
 
-            //if there is no conflict
-            String query = "SELECT * FROM addapplications(?,?)";
-            try (Connection connection = Tables.getCon(); PreparedStatement statement =
-                    connection.prepareStatement(query)) {
-                connection.setAutoCommit(false);
+        //if there is no conflict
+        String query = "SELECT * FROM addapplications(?,?)";
+        try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                connection.prepareStatement(query)) {
+            connection.setAutoCommit(false);
 
-                String doer = Tables.testRequest(request, connection);
+            String doer = securityContext.getUserPrincipal().getName();
 
-                Tables.addHistoryEntry(connection, title, doer, newApp.toString(),
-                        new Timestamp(System.currentTimeMillis()), myName);
+            HistoryResource.addHistoryEntry(connection, title, doer, newApp.toString(),
+                    new Timestamp(System.currentTimeMillis()), myName);
 
-                statement.setString(1, newApp.getName());
-                statement.setString(2, newApp.getAPIKey());
-                statement.executeQuery();
+            statement.setString(1, newApp.getName());
+            statement.setString(2, newApp.getAPIKey());
+            statement.executeQuery();
 
-                try (ResultSet resultSet = statement.getResultSet()) {
-                    while (resultSet.next()) {
-                        System.out.println("Retrieved id:" + resultSet.getInt(1));
-                        newApp.setId(resultSet.getInt(1));
-                    }
+            try (ResultSet resultSet = statement.getResultSet()) {
+                while (resultSet.next()) {
+                    System.out.println("Retrieved id:" + resultSet.getInt(1));
+                    newApp.setId(resultSet.getInt(1));
                 }
-
-                connection.commit();
-
-            } catch (SQLException e) {
-                System.err.println("Could not add application");
-                System.err.println(e.getSQLState());
-                throw new InternalServerErrorException();
             }
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            System.err.println("Could not add application");
+            System.err.println(e.getSQLState());
+            throw new InternalServerErrorException();
         }
+
         return newApp;
     }
 
@@ -117,22 +119,22 @@ public class ApplicationsResource extends ServletContainer {
      * @return return the entry as an Application object
      */
     @GET
+    @Secured
     @Path("/{appid}")
     @Produces(MediaType.APPLICATION_JSON)
     public Application retrieveApp(@PathParam("appid") int appId, @Context HttpServletRequest request) {
         Application app = null;
-        if (request.getSession().getAttribute("userEmail") != null) {
-            try (Connection connection = Tables.getCon()) {
-                app = getApp(connection, appId);
-            } catch (SQLException e) {
-                System.out.println("Something went wrong while getting app with id: " + appId + " because: " + e.getSQLState());
-                throw new InternalServerErrorException();
-            }
+        try (Connection connection = Tables.getCon()) {
+            app = getApp(connection, appId);
+        } catch (SQLException e) {
+            System.out.println("Something went wrong while getting app with id: " + appId + " because: " + e.getSQLState());
+            throw new InternalServerErrorException();
         }
         return app;
     }
 
-    public Application getApp(Connection connection, int appId) throws SQLException{
+    // Internal only
+    private Application getApp(Connection connection, int appId) throws SQLException{
         Application app = new Application();
         String query = "SELECT * FROM application WHERE aid = ?";
 
@@ -156,32 +158,31 @@ public class ApplicationsResource extends ServletContainer {
      * @param appid the ID of the entry which is deleted
      */
     @DELETE
+    @Secured
     @Path("/{appid}")
-    public void deleteApp(@PathParam("appid") int appid, @Context HttpServletRequest request) {
+    public void deleteApp(@PathParam("appid") int appid, @Context HttpServletRequest request, @Context SecurityContext securityContext) {
         //retrieve the App about to be deleted
-        if (request.getSession().getAttribute("userEmail") != null) {
 
-            //add the deletion to the history table
+        //add the deletion to the history table
 
-            String query = "SELECT deleteapplications(?)";
-            try (Connection connection = Tables.getCon(); PreparedStatement statement = connection.prepareStatement(query)) {
-                connection.setAutoCommit(false);
+        String query = "SELECT deleteapplications(?)";
+        try (Connection connection = Tables.getCon(); PreparedStatement statement = connection.prepareStatement(query)) {
+            connection.setAutoCommit(false);
 
-                Application add = getApp(connection, appid);
-                String doer = Tables.testRequest(request, connection);
+            Application add = getApp(connection, appid);
+            String doer = securityContext.getUserPrincipal().getName();
 
-                String title = "DELETE";
+            String title = "DELETE";
 
-                Tables.addHistoryEntry(connection, title, doer, add.toString(), myName, true);
+            HistoryResource.addHistoryEntry(connection, title, doer, add.toString(), myName, true);
 
-                statement.setInt(1, appid);
-                statement.executeQuery();
-                connection.commit();
-            } catch (SQLException e) {
-                System.err.println("Was not able to delete APP with ID: " + appid);
-                System.err.println(e.getSQLState());
-                throw new InternalServerErrorException();
-            }
+            statement.setInt(1, appid);
+            statement.executeQuery();
+            connection.commit();
+        } catch (SQLException e) {
+            System.err.println("Was not able to delete APP with ID: " + appid);
+            System.err.println(e.getSQLState());
+            throw new InternalServerErrorException();
         }
     }
 
@@ -193,31 +194,30 @@ public class ApplicationsResource extends ServletContainer {
      * @param app   the new information for the entry
      */
     @PUT
+    @Secured
     @Path("/{appid}")
     @Consumes(MediaType.APPLICATION_JSON)
     public void updateApp(@PathParam("appid") int appid,
-                          Application app, @Context HttpServletRequest request) {
+                          Application app, @Context HttpServletRequest request, @Context SecurityContext securityContext) {
 
-        if (request.getSession().getAttribute("userEmail") != null) {
-            String query = "SELECT editapplications(?,?)";
-            try (Connection connection = Tables.getCon(); PreparedStatement statement =
-                    connection.prepareStatement(query)) {
+        String query = "SELECT editapplications(?,?)";
+        try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                connection.prepareStatement(query)) {
 
-                connection.setAutoCommit(false);
+            connection.setAutoCommit(false);
 
-                Application aux = getApp(connection, appid);
+            Application aux = getApp(connection, appid);
 
 
-                statement.setString(2, app.getName());
-                statement.setInt(1, appid);
-                statement.executeQuery();
-                Tables.addHistoryEntry(connection, "UPDATE", Tables.testRequest(request, connection),
-                        aux.toString() + " -->" + app.toString(), myName, false);
-                connection.commit();
+            statement.setString(2, app.getName());
+            statement.setInt(1, appid);
+            statement.executeQuery();
+            HistoryResource.addHistoryEntry(connection, "UPDATE", securityContext.getUserPrincipal().getName(),
+                    aux.toString() + " -->" + app.toString(), myName, false);
+            connection.commit();
 
-            } catch (SQLException e) {
-                throw new InternalServerErrorException();
-            }
+        } catch (SQLException e) {
+            throw new InternalServerErrorException();
         }
 
     }

@@ -1,5 +1,6 @@
 package nl.utwente.di14.Cofano_C.resources;
 
+import nl.utwente.di14.Cofano_C.auth.Secured;
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.User;
 
@@ -27,35 +28,34 @@ public class UsersResources {
      * this can only be accessed by users of our website
      */
     @GET
+    @Secured
     @Produces({MediaType.APPLICATION_JSON})
     public List<User> getAllUsers(@Context HttpServletRequest request) {
 
         ArrayList<User> end = new ArrayList<>();
 
-        if (request.getSession().getAttribute("userEmail") != null) {
-            String query = "SELECT * " +
-                    "FROM public.user";
-            try (Connection connection = Tables.getCon(); PreparedStatement statement = connection.
-                    prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
+        String query = "SELECT * " +
+                "FROM public.user";
+        try (Connection connection = Tables.getCon(); PreparedStatement statement = connection.
+                prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
 
-                User add;
+            User add;
 
-                while (resultSet.next()) {
-                    add = new User();
-                    add.setEmail(resultSet.getString("email"));
-                    add.setId(resultSet.getInt("uid"));
-                    add.setName(resultSet.getString("name"));
-                    add.setLastLoggedIn(resultSet.getTimestamp("last_login"));
+            while (resultSet.next()) {
+                add = new User();
+                add.setEmail(resultSet.getString("email"));
+                add.setId(resultSet.getInt("uid"));
+                add.setName(resultSet.getString("name"));
+                add.setLastLoggedIn(resultSet.getTimestamp("last_login"));
 
-                    end.add(add);
-                }
-
-
-            } catch (SQLException e) {
-                System.err.println("Something went wrong while retrieving all users because: " + e.getSQLState());
-                e.printStackTrace();
-                throw new InternalServerErrorException();
+                end.add(add);
             }
+
+
+        } catch (SQLException e) {
+            System.err.println("Something went wrong while retrieving all users because: " + e.getSQLState());
+            e.printStackTrace();
+            throw new InternalServerErrorException();
         }
 
         return end;

@@ -1,5 +1,6 @@
 package nl.utwente.di14.Cofano_C.resources;
 
+import nl.utwente.di14.Cofano_C.auth.Secured;
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.ContainerType;
 
@@ -7,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,23 +27,21 @@ public class ContainerTypesResource {
      * @return a JSON array of all approved ContainerTypes
      */
     @GET
+    @Secured
     @Produces({MediaType.APPLICATION_JSON})
     public ArrayList<ContainerType> getAllContainerTypes(
             @Context HttpServletRequest request) {
 
         ArrayList<ContainerType> result = new ArrayList<>();
 
-        try (Connection connection = Tables.getCon()) {
-            String name = Tables.testRequest(request, connection);
-            if (!name.equals("")) {
-                String query = "SELECT * " +
-                        "FROM container_type " +
-                        "WHERE approved = true";
-                try (PreparedStatement statement = connection.prepareStatement(query);
-                     ResultSet resultSet = statement.executeQuery()) {
-                    constructContainerType(result, resultSet);
-                }
-            }
+        String query = "SELECT * " +
+                "FROM container_type " +
+                "WHERE approved = true";
+        try (Connection connection = Tables.getCon(); PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            constructContainerType(result, resultSet);
+
 
         } catch (SQLException e) {
 
@@ -59,6 +59,7 @@ public class ContainerTypesResource {
      * @return an JSON array of unapproved ContainerType entries
      */
     @GET
+    @Secured
     @Path("unapproved")
     @Produces({MediaType.APPLICATION_JSON})
     public ArrayList<ContainerType> getAllContainerTypesUN(
@@ -66,25 +67,23 @@ public class ContainerTypesResource {
 
         ArrayList<ContainerType> result = new ArrayList<>();
         //select all unapproved entries which are not in the conflict table
-		if (request.getSession().getAttribute("userEmail") != null) {
-            String query = "select container_type.* "
-                    + "from container_type"
-                    + " where container_type.approved = false "
-                    + "AND container_type.cid not in (select conflict.entry "
-                    + "from conflict "
-                    + "where conflict.\"table\"= 'container_type' )\r\n";
+        String query = "select container_type.* "
+                + "from container_type"
+                + " where container_type.approved = false "
+                + "AND container_type.cid not in (select conflict.entry "
+                + "from conflict "
+                + "where conflict.\"table\"= 'container_type' )\r\n";
 
-		    try (Connection connection = Tables.getCon();
-                 PreparedStatement statement = connection.prepareStatement(query);
-                 ResultSet resultSet = statement.executeQuery()) {
-                 constructContainerType(result, resultSet);
+        try (Connection connection = Tables.getCon();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+             constructContainerType(result, resultSet);
 
-            } catch (SQLException e) {
-                System.err.println("Could not retrieve all unapproved containers because: " + e);
-                e.printStackTrace();
-                throw new InternalServerErrorException();
-            }
-		}
+        } catch (SQLException e) {
+            System.err.println("Could not retrieve all unapproved containers because: " + e);
+            e.printStackTrace();
+            throw new InternalServerErrorException();
+        }
 
         return result;
     }
@@ -96,6 +95,7 @@ public class ContainerTypesResource {
      * @return return the entry as an ContainerType object
      */
     @GET
+    @Secured
     @Path("/{containerId}")
     @Produces(MediaType.APPLICATION_JSON)
     public ContainerType retrieveContainer(@PathParam("containerId") int containerId,
@@ -113,7 +113,8 @@ public class ContainerTypesResource {
         return container;
     }
 
-    public ContainerType getContainer(int containerId, Connection connection) throws SQLException {
+    // Internal only
+    private ContainerType getContainer(int containerId, Connection connection) throws SQLException {
 
         ContainerType container = new ContainerType();
         String query = "SELECT * FROM container_type WHERE cid = ?";
@@ -151,36 +152,40 @@ public class ContainerTypesResource {
      */
     @SuppressWarnings("Duplicates")
     @POST
+    @Secured
     @Path("add")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addContainer(ContainerType input, @Context HttpServletRequest request) {
+    public void addContainer(ContainerType input, @Context HttpServletRequest request,
+                             @Context SecurityContext securityContext) {
 
         try (Connection connection = Tables.getCon()) {
+            connection.setAutoCommit(false);
+
             int ownID = 0;
             String title = "ADD";
-            String doer = Tables.testRequest(request, connection);
+            String doer = securityContext.getUserPrincipal().getName();
 
             int con = testConflict(connection, input);
             if (request.getSession().getAttribute("userEmail") != null && con == 0) {
                 //if its from a cofano employee and it doesn't create conflict, add straight to db
                 ownID = addEntry(connection, input, true);
-                Tables.addHistoryEntry(connection, title, doer, input.toString(), myName, true);
+                HistoryResource.addHistoryEntry(connection, title, doer, input.toString(), myName, true);
             } else if (request.getSession().getAttribute("userEmail") != null && con != 0) {
                 //if its from a cofano employee and it creates conflict, add but unapproved
                 ownID = addEntry(connection, input, false);
 
-                Tables.addHistoryEntry(connection, title, doer, input.toString(), myName, false);
+                HistoryResource.addHistoryEntry(connection, title, doer, input.toString(), myName, false);
             } else if (!doer.equals("")) {
                 //if its from an api add to unapproved
                 ownID = addEntry(connection, input, false);
-                Tables.addHistoryEntry(connection, title, doer, input.toString(), myName, false);
+                HistoryResource.addHistoryEntry(connection, title, doer, input.toString(), myName, false);
             }
 
             if (con != 0) {
                 //if it creates a conflict, add it to conflict table
                 Tables.addtoConflicts(connection, myName, doer, ownID, con);
                 //add to history
-                Tables.addHistoryEntry(connection, "CON", doer,
+                HistoryResource.addHistoryEntry(connection, "CON", doer,
                         ownID + " " + input.toString() + " con with " + con, myName, false);
             }
 
@@ -188,6 +193,7 @@ public class ContainerTypesResource {
 
         } catch (SQLException e) {
             System.err.println("Error while adding new container because: " + e.getSQLState());
+            e.printStackTrace();
             throw new InternalServerErrorException();
         }
     }
@@ -209,7 +215,7 @@ public class ContainerTypesResource {
         //add to conflicts table
 
 
-        try (PreparedStatement statement = connection.prepareStatement(query); ResultSet res = statement.executeQuery()) {
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             //add the data to the statement's query
             statement.setString(1, entry.getDisplayName());
             statement.setString(2, entry.getIsoCode());
@@ -218,6 +224,11 @@ public class ContainerTypesResource {
             statement.setInt(5, entry.getHeight());
             statement.setBoolean(6, entry.getReefer());
             statement.setBoolean(7, app);
+
+            try (ResultSet res = statement.executeQuery()) {
+                res.next();
+                rez = res.getInt(1);
+            }
 
         }
 
@@ -230,27 +241,27 @@ public class ContainerTypesResource {
      * @param containerId the id of the entry which is deleted
      */
     @DELETE
+    @Secured
     @Path("/{containerId}")
     public void deleteContainer(@PathParam("containerId") int containerId,
-                                @Context HttpServletRequest request) {
+                                @Context HttpServletRequest request, @Context SecurityContext securityContext) {
 
 
+        String query = "SELECT deletecontainer_types(?)";
 
-        try (Connection connection = Tables.getCon()) {
-            String doer = Tables.testRequest(request, connection);
-            if (!doer.equals("")) {
-                String query = "SELECT deletecontainer_types(?)";
+        try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                Tables.getCon().prepareStatement(query)) {
 
-                PreparedStatement statement =
-                        Tables.getCon().prepareStatement(query);
-                statement.setInt(1, containerId);
-                statement.executeQuery();
+            connection.setAutoCommit(false);
+            String doer = securityContext.getUserPrincipal().getName();
 
-                ContainerType aux = getContainer(containerId, connection);
-                Tables.addHistoryEntry(connection, "DELETE", doer, aux.toString(), myName, true);
+            statement.setInt(1, containerId);
+            statement.executeQuery();
 
-                connection.commit();
-            }
+            ContainerType aux = getContainer(containerId, connection);
+            HistoryResource.addHistoryEntry(connection, "DELETE", doer, aux.toString(), myName, true);
+
+            connection.commit();
         } catch (SQLException e) {
             System.err.println("Was not able to delete Container");
             System.err.println(e.getSQLState());
@@ -267,25 +278,23 @@ public class ContainerTypesResource {
      * @param containerId the id of the entry which is deleted
      */
     @DELETE
+    @Secured
     @Path("/unapproved/{containerId}")
     public void deleteContainerUN(@PathParam("containerId") int containerId,
                                   @Context HttpServletRequest request) {
 
-        if (request.getSession().getAttribute("userEmail") != null) {
-            String query = "SELECT  deletecontainer_types(?)";
-            try (Connection connection = Tables.getCon();
-                 PreparedStatement statement =
-                    Tables.getCon().prepareStatement(query)) {
+        String query = "SELECT  deletecontainer_types(?)";
 
-                statement.setInt(1, containerId);
-                statement.executeQuery();
-                connection.commit();
+        try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                connection.prepareStatement(query)) {
 
-            } catch (SQLException e) {
-                System.err.println("Was not able to delete unapproved Container");
-                System.err.println(e.getSQLState());
-                throw new InternalServerErrorException();
-            }
+            statement.setInt(1, containerId);
+            statement.executeQuery();
+
+        } catch (SQLException e) {
+            System.err.println("Was not able to delete unapproved Container");
+            System.err.println(e.getSQLState());
+            throw new InternalServerErrorException();
         }
 
 
@@ -298,22 +307,24 @@ public class ContainerTypesResource {
      * @param containerId the id of the contaier which is approved
      */
     @PUT
+    @Secured
     @Path("/approve/{containerId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public void approveContainer(@PathParam("containerId") int containerId,
-                                 @Context HttpServletRequest request) {
+                                 @Context HttpServletRequest request, @Context SecurityContext securityContext) {
 
         String query = "SELECT approvecontainer(?)";
 
         try (Connection connection = Tables.getCon(); PreparedStatement statement =
-                Tables.getCon().prepareStatement(query)) {
+                connection.prepareStatement(query)) {
+            connection.setAutoCommit(false);
 
             statement.setInt(1, containerId);
             statement.executeQuery();
 
             ContainerType aux = getContainer(containerId, connection);
-            Tables.addHistoryEntry(connection, "APPROVE",
-                    request.getSession().getAttribute("userEmail").toString(),
+            HistoryResource.addHistoryEntry(connection, "APPROVE",
+                    securityContext.getUserPrincipal().getName(),
                     aux.toString(), myName, true);
 
             connection.commit();
@@ -332,38 +343,35 @@ public class ContainerTypesResource {
      * @param container   the new information for the entry
      */
     @PUT
+    @Secured
     @Path("/{containerId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public void updateContainer(@PathParam("containerId") int containerId,
-                                ContainerType container, @Context HttpServletRequest request) {
+                                ContainerType container, @Context HttpServletRequest request,
+                                @Context SecurityContext securityContext) {
 
-        try (Connection connection = Tables.getCon()) {
-            String doer = Tables.testRequest(request, connection);
-            if (!doer.equals("")) {
+        String query = "SELECT editcontainer_types(?,?,?,?,?,?,?)";
 
-                String query = "SELECT editcontainer_types(?,?,?,?,?,?,?)";
+        try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                          connection.prepareStatement(query)) {
 
-                try ( PreparedStatement statement =
-                              Tables.getCon().prepareStatement(query)) {
+            connection.setAutoCommit(false);
 
-                    connection.setAutoCommit(false);
+            statement.setString(2, container.getDisplayName());
+            statement.setString(3, container.getIsoCode());
+            statement.setString(4, container.getDescription());
+            statement.setInt(5, container.getLength());
+            statement.setInt(6, container.getHeight());
+            statement.setBoolean(7, container.getReefer());
+            statement.setInt(1, containerId);
 
-                    statement.setString(2, container.getDisplayName());
-                    statement.setString(3, container.getIsoCode());
-                    statement.setString(4, container.getDescription());
-                    statement.setInt(5, container.getLength());
-                    statement.setInt(6, container.getHeight());
-                    statement.setBoolean(7, container.getReefer());
-                    statement.setInt(1, containerId);
+            statement.executeQuery();
 
-                    statement.executeQuery();
+            ContainerType aux = getContainer(containerId, connection);
+            HistoryResource.addHistoryEntry(connection, "UPDATE", securityContext.getUserPrincipal().getName(),
+                    aux.toString() + "-->" + container.toString(), myName, false);
+            connection.commit();
 
-                    ContainerType aux = getContainer(containerId, connection);
-                    Tables.addHistoryEntry(connection, "UPDATE", doer,
-                            aux.toString() + "-->" + container.toString(), myName, false);
-                    connection.commit();
-                }
-            }
 
         } catch (SQLException e) {
             throw new InternalServerErrorException();
@@ -384,11 +392,17 @@ public class ContainerTypesResource {
 
         String query = "SELECT * FROM containerconflict(?,?)";
         try (PreparedStatement statement =
-                Tables.getCon().prepareStatement(query)) {
+                connection.prepareStatement(query)) {
             statement.setString(1, test.getDisplayName());
             statement.setString(2, test.getIsoCode());
 
-            ResultSet resultSet = statement.executeQuery();
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    result = 0;
+                } else {
+                    result = resultSet.getInt("cid");
+                }
+            }
 
         }
 

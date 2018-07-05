@@ -1,5 +1,6 @@
 package nl.utwente.di14.Cofano_C.resources;
 
+import nl.utwente.di14.Cofano_C.auth.Secured;
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.model.Port;
 
@@ -7,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,24 +26,20 @@ public class PortsResource {
      * @return a JSON array of all approved ports
      */
     @GET
+    @Secured
     @Produces({MediaType.APPLICATION_JSON})
     public ArrayList<Port> getAllPorts(@Context HttpServletRequest request) {
         ArrayList<Port> result = new ArrayList<>();
 
 
+        String query = "SELECT * " +
+                "FROM port " +
+                "WHERE approved = true";
 
-        try (Connection connection = Tables.getCon()) {
+        try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
+            constructPort(result, resultSet);
 
-            String name = Tables.testRequest(request, connection);
-            if (!name.equals("")) {
-                String query = "SELECT * " +
-                        "FROM port " +
-                        "WHERE approved = true";
-                try (PreparedStatement statement =
-                        connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
-                    constructPort(result, resultSet);
-                }
-            }
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Something went wrong while getting all approved ports, because: " + e.getSQLState());
@@ -58,32 +56,30 @@ public class PortsResource {
      * @return an JSON array of unapproved entries
      */
     @GET
+    @Secured
     @Path("unapproved")
     @Produces({MediaType.APPLICATION_JSON})
     public ArrayList<Port> getAllPortUN(@Context HttpServletRequest request) {
         ArrayList<Port> result = new ArrayList<>();
 
+        String query = "select port.* from port "
+                + "where port.approved = false "
+                + "AND port.pid not in (select conflict.entry"
+                + " from conflict "
+                + "where conflict.\"table\"= 'port' ) ";
 
-        if (request.getSession().getAttribute("userEmail") != null) {
 
-            String query = "select port.* from port "
-                    + "where port.approved = false "
-                    + "AND port.pid not in (select conflict.entry"
-                    + " from conflict "
-                    + "where conflict.\"table\"= 'port' ) ";
-
-            try (Connection connection = Tables.getCon(); PreparedStatement statement =
-                    connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
-                //select all unapproved entries which are not in the conflict table
+        try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
+            //select all unapproved entries which are not in the conflict table
 
 //                connection.commit();
-                constructPort(result, resultSet);
+            constructPort(result, resultSet);
 
-            } catch(SQLException e){
-                e.printStackTrace();
-                System.err.println("Could not retrieve all unapproved ports" + e);
-                throw new InternalServerErrorException();
-            }
+        } catch(SQLException e){
+            e.printStackTrace();
+            System.err.println("Could not retrieve all unapproved ports" + e);
+            throw new InternalServerErrorException();
         }
 
         return result;
@@ -98,6 +94,7 @@ public class PortsResource {
      * @return return the entry as an Port object
      */
     @GET
+    @Secured
     @Path("/{portId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Port retrievePort(@PathParam("portId") int portId,
@@ -115,7 +112,7 @@ public class PortsResource {
         return port;
     }
 
-    public Port getPort(int portId, Connection connection) throws SQLException {
+    private Port getPort(int portId, Connection connection) throws SQLException {
         Port port = new Port();
         String query = "SELECT * FROM port WHERE pid = ?";
 
@@ -145,37 +142,39 @@ public class PortsResource {
      */
     @SuppressWarnings("Duplicates")
     @POST
+    @Secured
     @Path("add")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addPort(Port input, @Context HttpServletRequest request) {
+    public void addPort(Port input, @Context HttpServletRequest request, @Context SecurityContext securityContext) {
 
         try (Connection connection = Tables.getCon()) {
+            connection.setAutoCommit(false);
             int ownID = 0;
             String title = "ADD";
-            String doer = Tables.testRequest(request, connection);
+            String doer = securityContext.getUserPrincipal().getName();
 
-            int con = testConflict(input);
+            int con = testConflict(connection, input);
 
             if (request.getSession().getAttribute("userEmail") != null && con == 0) {
                 //if its from a cofano employee and it doesn't create conflict, add straight to db
                 ownID = addEntry(connection, input, true);
-                Tables.addHistoryEntry(connection, title, doer, input.toString(), myName, true);
+                HistoryResource.addHistoryEntry(connection, title, doer, input.toString(), myName, true);
             } else if (request.getSession().getAttribute("userEmail") != null && con != 0) {
                 //if its from a cofano employee and it creates conflict, add but unapproved
                 ownID = addEntry(connection, input, false);
                 //INFOM CLIENT THEY CREATED CONFLICT
-                Tables.addHistoryEntry(connection, title, doer, input.toString(), myName, false);
+                HistoryResource.addHistoryEntry(connection, title, doer, input.toString(), myName, false);
             } else if (!doer.equals("")) {
                 //if its from an api add to unapproved
                 ownID = addEntry(connection, input, false);
-                Tables.addHistoryEntry(connection, title, doer, input.toString(), myName, false);
+                HistoryResource.addHistoryEntry(connection, title, doer, input.toString(), myName, false);
             }
 
             if (con != 0) {
                 //if it creates a conflict, add it to conflict table
                 Tables.addtoConflicts(connection, myName, doer, ownID, con);
                 //add to history
-                Tables.addHistoryEntry(connection, "CON", doer, ownID + " "
+                HistoryResource.addHistoryEntry(connection, "CON", doer, ownID + " "
                         + input.toString() + " con with " + con, myName, false);
             }
 
@@ -233,28 +232,28 @@ public class PortsResource {
      * @param portId the id of the entry which is deleted
      */
     @DELETE
+    @Secured
     @Path("/{portId}")
     public void deletePort(@PathParam("portId") int portId,
-                           @Context HttpServletRequest request) {
-        try (Connection connection = Tables.getCon()) {
-            String doer = Tables.testRequest(request, connection);
-            if (!doer.equals("")) {
+                           @Context HttpServletRequest request, @Context SecurityContext securityContext) {
 
-                Port aux = getPort(portId, connection);
-                String query = "SELECT deleteport(?)";
+        String query = "SELECT deleteport(?)";
 
-                try (PreparedStatement statement =
-                             Tables.getCon().prepareStatement(query)) {
-                    statement.setInt(1, portId);
-                    statement.executeQuery();
+        try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                connection.prepareStatement(query)) {
 
-                }
+            connection.setAutoCommit(false);
 
+            Port aux = getPort(portId, connection);
 
-                Tables.addHistoryEntry(connection, "DELETE", doer,
-                        aux.toString(), myName, true);
-                connection.commit();
-            }
+            HistoryResource.addHistoryEntry(connection, "DELETE", securityContext.getUserPrincipal().getName(),
+                    aux.toString(), myName, true);
+
+            statement.setInt(1, portId);
+            statement.executeQuery();
+
+            connection.commit();
+
         } catch (SQLException e) {
             System.err.println("Was not able to delete Port");
             System.err.println(e.getSQLState());
@@ -272,23 +271,21 @@ public class PortsResource {
      * @param portId the id of the entry which is deleted
      */
     @DELETE
+    @Secured
     @Path("/unapproved/{portId}")
     public void deletPortUN(@PathParam("portId") int portId,
                             @Context HttpServletRequest request) {
 
-        if (request.getSession().getAttribute("userEmail") != null) {
-            String query = "SELECT deleteport(?)";
-            try (Connection connection = Tables.getCon(); PreparedStatement statement =
-                    connection.prepareStatement(query)) {
-                statement.setInt(1, portId);
-                statement.executeQuery();
-                connection.commit();
-            } catch (SQLException e) {
-                System.err.println("Was not able to delete unapproved Port");
-                System.err.println(e.getSQLState());
-                e.printStackTrace();
-                throw new InternalServerErrorException();
-            }
+        String query = "SELECT deleteport(?)";
+        try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                connection.prepareStatement(query)) {
+            statement.setInt(1, portId);
+            statement.executeQuery();
+        } catch (SQLException e) {
+            System.err.println("Was not able to delete unapproved Port");
+            System.err.println(e.getSQLState());
+            e.printStackTrace();
+            throw new InternalServerErrorException();
         }
     }
 
@@ -299,34 +296,32 @@ public class PortsResource {
      * @param portid the id of the port which is approved
      */
     @PUT
+    @Secured
     @Path("/approve/{portid}")
     @Consumes(MediaType.APPLICATION_JSON)
     public void approvePort(@PathParam("portid") int portid,
-                            @Context HttpServletRequest request) {
+                            @Context HttpServletRequest request, @Context SecurityContext securityContext) {
 
-        if (request.getSession().getAttribute("userEmail") != null) {
+        String query = "SELECT approveport(?)";
+        try (Connection connection = Tables.getCon();  PreparedStatement statement =
+                connection.prepareStatement(query)) {
+            connection.setAutoCommit(false);
+            Port aux = getPort(portid, connection);
 
-            String query = "SELECT approveport(?)";
-            try (Connection connection = Tables.getCon();  PreparedStatement statement =
-                    connection.prepareStatement(query)) {
-                connection.setAutoCommit(false);
-                Port aux = getPort(portid, connection);
+            statement.setInt(1, portid);
+            statement.executeQuery();
 
-                statement.setInt(1, portid);
-                statement.executeQuery();
+            HistoryResource.addHistoryEntry(connection, "APPROVE",
+                    securityContext.getUserPrincipal().getName(),
+                    aux.toString(), myName, true);
 
-                Tables.addHistoryEntry(connection, "APPROVE",
-                        request.getSession().getAttribute("userEmail").toString(),
-                        aux.toString(), myName, true);
+            connection.commit();
 
-                connection.commit();
+        } catch (SQLException e) {
+            System.err.println("Something went wrong while approving a port, because: " + e.getSQLState());
+            e.printStackTrace();
+            throw new InternalServerErrorException();
 
-            } catch (SQLException e) {
-                System.err.println("Something went wrong while approving a port, because: " + e.getSQLState());
-                e.printStackTrace();
-                throw new InternalServerErrorException();
-
-            }
         }
 
     }
@@ -339,32 +334,28 @@ public class PortsResource {
      * @param port   the new information for the entry
      */
     @PUT
+    @Secured
     @Path("/{portId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public void updateContainer(@PathParam("portId") int portId,
-                                Port port, @Context HttpServletRequest request) {
+                                Port port, @Context HttpServletRequest request, @Context SecurityContext securityContext) {
+        String query = "SELECT editports(?,?,?)";
 
-        try (Connection connection = Tables.getCon()) {
-            String doer = Tables.testRequest(request, connection);
-            String query = "SELECT editports(?,?,?)";
-            if (!doer.equals("")) {
-                connection.setAutoCommit(false);
-                Port aux = getPort(portId, connection);
+        try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                connection.prepareStatement(query)) {
+            connection.setAutoCommit(false);
+            Port aux = getPort(portId, connection);
 
-                try (PreparedStatement statement =
-                        connection.prepareStatement(query)) {
-                    statement.setString(2, port.getName());
-                    statement.setString(3, port.getUnlo());
-                    statement.setInt(1, portId);
+            statement.setString(2, port.getName());
+            statement.setString(3, port.getUnlo());
+            statement.setInt(1, portId);
 
-                    statement.executeQuery();
-                }
+            statement.executeQuery();
 
-                Tables.addHistoryEntry(connection, "UPDATE", doer,
-                        aux.toString() + "-->" + port.toString(), myName, false);
+            HistoryResource.addHistoryEntry(connection, "UPDATE", securityContext.getUserPrincipal().getName(),
+                    aux.toString() + "-->" + port.toString(), myName, false);
 
-                connection.commit();
-            }
+            connection.commit();
 
         } catch (SQLException e) {
             System.err.println("could not update entry IN port");
@@ -401,13 +392,13 @@ public class PortsResource {
      * or 0 if there is no conflict
      */
 
-    private int testConflict(Port test) throws SQLException {
+    private int testConflict(Connection connection, Port test) throws SQLException {
         int result = -1;
 
         String query = "SELECT * FROM portconflict(?,?)";
 
         try (PreparedStatement statement =
-                Tables.getCon().prepareStatement(query)) {
+                connection.prepareStatement(query)) {
             statement.setString(1, test.getName());
             statement.setString(2, test.getUnlo());
 

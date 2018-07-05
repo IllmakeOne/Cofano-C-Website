@@ -114,47 +114,7 @@ public class Tables {
 //    }
 
 
-    /**
-     * Method for adding an entry to the history table.
-     *
-     * @param title     Contains the type of change (ADD, DELETE etc.)
-     * @param who       user or application that made the change
-     * @param message   The information that was changed
-     * @param timestamp The time of change
-     * @param type      The name of the table where a change was made
-     */
 
-    public static void addHistoryEntry(Connection connection, String title, String who, String message, Timestamp timestamp, String type) throws SQLException {
-
-        String query = "SELECT addhistory(?,?,?,?)";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, title);
-            statement.setString(2, who + " " + title + " " + message);
-            statement.setTimestamp(3, timestamp);
-            statement.setString(4, type);
-            statement.executeQuery();
-        }
-    }
-
-    /**
-     * Method for adding an entry to the history table without providing a timestamp.
-     *
-     * @param title    Contains the type of change (ADD, DELETE etc.)
-     * @param who      user or application that made the change
-     * @param message  The information that was changed
-     * @param type     The name of the table where a change was made
-     * @param approved If the data added is approved or not
-     */
-    public static void addHistoryEntry(Connection connection, String title, String who, String message, String type, boolean approved) throws SQLException {
-        String query = "SELECT addhistory(?,?,?,?)";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, title);
-            statement.setString(2, who + " " + title + " " + message);
-            statement.setString(3, type);
-            statement.setBoolean(4, approved);
-            statement.executeQuery();
-        }
-    }
 
 
 //    /**
@@ -171,39 +131,39 @@ public class Tables {
 //
 //    }
 
-    /**
-     * Check if the request is valid. I.e. check if it's either a valid Google user or a valid API.
-     *
-     * @param request the <code>HttpServletRequest</code> to be checked
-     * @return the name of the API of the request was from an API
-     */
-    public static String testRequest(HttpServletRequest request, Connection connection) throws SQLException, ForbiddenException {
-
-        String result = "";
-        String user;
-        if (request.getSession().getAttribute("userEmail") != null) {
-            return (String) request.getSession().getAttribute("userEmail");
-        } else if (request.getHeader("Authorization") != null) {
-            user = request.getHeader("Authorization");
-        } else {
-            //returns false if the request isnt from a google user or from an application with an Authorization header
-            System.out.println("nono in the first if");
-            throw new ForbiddenException();
-        }
-        //System.out.println(user);
-
-        String query = "SELECT testrequest(?)";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, user);
-            try (ResultSet rez = statement.executeQuery()) {
-                if (rez.next()) {
-                    result = tidyup(rez.getString(1));
-                }
-            }
-        }
-
-        return result;
-    }
+//    /**
+//     * Check if the request is valid. I.e. check if it's either a valid Google user or a valid API.
+//     *
+//     * @param request the <code>HttpServletRequest</code> to be checked
+//     * @return the name of the API of the request was from an API
+//     */
+//    public static String testRequest(HttpServletRequest request, Connection connection) throws SQLException, ForbiddenException {
+//
+//        String result = "";
+//        String user;
+//        if (request.getSession().getAttribute("userEmail") != null) {
+//            return (String) request.getSession().getAttribute("userEmail");
+//        } else if (request.getHeader("Authorization") != null) {
+//            user = request.getHeader("Authorization");
+//        } else {
+//            //returns false if the request isnt from a google user or from an application with an Authorization header
+//            System.out.println("nono in the first if");
+//            throw new ForbiddenException();
+//        }
+//        //System.out.println(user);
+//
+//        String query = "SELECT testrequest(?)";
+//        try (PreparedStatement statement = connection.prepareStatement(query)) {
+//            statement.setString(1, user);
+//            try (ResultSet rez = statement.executeQuery()) {
+//                if (rez.next()) {
+//                    result = tidyup(rez.getString(1));
+//                }
+//            }
+//        }
+//
+//        return result;
+//    }
 
 
 //    	public static String decideName(HttpServletRequest request) {
@@ -217,18 +177,7 @@ public class Tables {
 //    		return stringy;
 //    	}
 
-    /**
-     * this methods takes a strig and reformats it
-     * the method is called to reformat string comming from the database
-     *
-     * @param str the string to be inputed
-     * @return the formatted string
-     */
 
-    private static String tidyup(String str) {
-        String[] aux = str.split(",");
-        return aux[0].substring(1) + " " + aux[1].substring(0, aux[1].length() - 1);
-    }
 
 
     public static void addtoConflicts(Connection connection, String table, String doer, int ownid, int con) throws SQLException{
