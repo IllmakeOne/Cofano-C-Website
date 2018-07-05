@@ -36,13 +36,13 @@
 	}
 	
 	h8 
-	{
- 	color:#ffbf00; 
+	{ 
+ 	color:#00ff99;
 	}
 	
 	h9 
 	{
- 	color:#00ff99; 
+ 	color:#ffbf00; 
 	}
 	h10 
 	{
@@ -75,12 +75,12 @@
   		<div class="row">
   			<div class="col-sm-6">
   				<h5>Ships</h5>
-  				<h10>Adding, deleting and editing has no special requirement.</h10>
+  				<h10> IMO and name must be not null when editing or adding</h10>
   				<h10><p>IMO,MMSI and Callsign are taken into account when testing for conflicts.</p></h10>		
   			</div>
  			 <div class="col-sm-6">
 				<h5>Ports</h5>
-				<h10>Adding, deleting and editing has no special requirement.</h10>
+  				<h10> Name must be not null when editing or adding</h10>
   				<h10><p>Name and Unlo are taken into account when testing for conflicts.  </p></h10>	
 			</div>
 		</div>
@@ -88,13 +88,14 @@
 		<div class="row">
   			<div class="col-sm-6">
   				<h5>Terminals</h5>
+  				<h10> Name, terminal_code and port_id must be not null when editing or adding</h10>
 				<h10>When adding or editing an terminal, please take into accout it has a foreign key to Ports. <br> </h10>
 				<h10>A <h12>GET</h12> request came be made to ./terminals/portids to receive all available ports</h10>
   				<h10><p>Name and Terminal code are taken into account when testing for conflicts.  </p></h10>
   			</div>
  			 <div class="col-sm-6">
 				<h5>Container Types</h5>
-				<h10>Adding, deleting and editing has no special requirement.</h10>
+  				<h10> Display name, length and height must be not null when editing or adding</h10>
   				<h10><p>Display name and ISO-code are taken into account when testing for conflicts.  </p></h10>	
 			</div>
 		</div>
@@ -110,7 +111,7 @@
 		</h5><h10>These API keys must be stored in the database in the Applications table.</h10></p>	
 		<p><h10> <h12>GET</h12>, <h7>DELETE</h7>, <h8>POST</h8>, <h9>PUT</h9> are the types of HTTP request.</h10></p>
 	  
-	<h5> The "." in "./" stands for <h12> "http://farm05.ewi.utwente.nl:7027/Cofano-C/api/"</h12></h5>
+	<h5> The "<h12>.</h12>" in "<h12>./</h12>" stands for <h12>" http://farm05.ewi.utwente.nl:7027/Cofano-C/<h7>api/</h7>"</h12></h5>
 <div>	  
 	    <table class="table table-striped table " style="width:100%">
             <thead>
