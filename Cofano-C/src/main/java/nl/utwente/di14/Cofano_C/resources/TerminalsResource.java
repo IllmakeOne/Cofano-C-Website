@@ -161,7 +161,7 @@ public class TerminalsResource {
             if (request.getSession().getAttribute("userEmail") != null && con == 0) {
                 //if its from a cofano employee and it doesn't create conflict, add straight to db
                 ownID = addEntry(connection, input, true);
-                HistoryResource.addHistoryEntry(connection, title, doer, input.toString(), myName, true);
+                HistoryResource.addHistoryEntry(connection, title +"&APPROVE", doer, input.toString(), myName, true);
             } else if (request.getSession().getAttribute("userEmail") != null && con != 0) {
                 //if its from a cofano employee and it creates conflict, add but unapproved
                 ownID = addEntry(connection, input, false);
@@ -277,7 +277,7 @@ public class TerminalsResource {
     @DELETE
     @Secured
     @Path("/unapproved/{terminalId}")
-    public void deletTerminalUN(@PathParam("terminalId") int terminalId,
+    public void deleteTerminalUN(@PathParam("terminalId") int terminalId,
                                 @Context HttpServletRequest request) {
 
         String query = "SELECT deleteterminal(?)";
