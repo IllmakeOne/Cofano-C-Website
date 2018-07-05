@@ -1,3 +1,4 @@
+/*
 package nl.utwente.di14.Cofano_C.resources;
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
@@ -82,4 +83,4 @@ public class ContainerTypesResourceTest {
     @Test
     public void updateContainer() {
     }
-}
+}*/
