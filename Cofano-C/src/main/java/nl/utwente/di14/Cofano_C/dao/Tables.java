@@ -77,6 +77,9 @@ public class Tables {
     }
 
 
+    //Code below this point is legacy and just used for
+    //reference during the development process
+
     /*
 	public static Tables getInstance() throws IOException, SQLException, PropertyVetoException {
 		if (datasource == null) {
