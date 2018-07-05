@@ -176,7 +176,9 @@ public class ShipsResource {
                 HistoryResource.addHistoryEntry(connection, "CON", doer, ownID + " " + input.toString() +
                         " con with " + con, myName, false);
                 //throw conflict execption
-                throw new ConflictException(myName, "IMO, MMSI or Callsign are the same as another entry in the table");
+                throw new ConflictException(myName, "IMO (" + input.getImo() + "), "
+                		+ "MMSI (" + input.getMMSI() + ") or "
+                				+ "Callsign (" + input.getCallSign() + ") are the same as another entry in the table");
             }
             connection.commit();
         } catch (SQLException e) {
