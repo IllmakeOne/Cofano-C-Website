@@ -447,10 +447,10 @@ public class UndgsResource {
     @Secured
     @Path("add")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addUndg(Undg undg, @Context HttpServletRequest request) {
+    public void addUndg(Undg undg, @Context HttpServletRequest request,@Context SecurityContext securityContext) {
 
         String query = "INSERT INTO undgs(classification, classification_code, collective, hazard_no, not_applicable, " +
-                "packing_group, station, transport_category, transport_forbidden, tunnel_code, un_no, vehicletank_carriage)" +
+                "packing_group, station, transport_category, transport_forbidden, tunnel_code, un_no, vehicletank_carriage,approved)" +
                 " VALUES(?," +
                 "  ?," +
                 "  ?,  " +
@@ -462,7 +462,7 @@ public class UndgsResource {
                 "  ?," +
                 "  ?," +
                 "  ?," +
-                "  ?);";
+                "  ?,?);";
 
         try (Connection connection = Tables.getCon(); PreparedStatement statement =
                 connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -480,6 +480,12 @@ public class UndgsResource {
             statement.setString(10, undg.getTunnelCode());
             statement.setInt(11, undg.getUnNo());
             statement.setString(12, undg.getVehicleTankCarriage());
+            
+            if(request.getSession().getAttribute("userEmail") != null) {
+            	statement.setBoolean(13, true);
+            }else {
+            	statement.setBoolean(13, false);
+            }
             statement.executeUpdate();
 
             int undgsId = 0;
@@ -663,7 +669,8 @@ public class UndgsResource {
     }
 
     private void tankCodeBuilder(Connection connection, int undgsId, Undg undg) throws SQLException {
-        if (undg.getTankCode().size() > 0) {
+        if (undg.getTankCode()!=null 
+        		&& undg.getTankCode().size() > 0) {
 
             try (PreparedStatement deleteTankCodesStatement = connection.prepareStatement(
                     "DELETE FROM undgs_has_tankcode" +
@@ -726,7 +733,8 @@ public class UndgsResource {
     }
 
     private void tankSpecialProvisionsBuilder(Connection connection, int undgsId, Undg undg) throws SQLException {
-        if (undg.getTankSpecialProvisions().size() > 0) {
+        if (undg.getTankSpecialProvisions() != null
+        		&& undg.getTankSpecialProvisions().size() > 0) {
 
             try (PreparedStatement deleteTankSpecialProvisionsStatement = connection.prepareStatement(
                     "DELETE FROM undgs_has_tank_special_provision" +
@@ -787,7 +795,7 @@ public class UndgsResource {
     }
 
     private void labelBuilder(Connection connection, int undgsId, Undg undg) throws SQLException {
-        if (undg.getLabels().size() > 0) {
+        if (undg.getLabels()!=null && undg.getLabels().size() > 0) {
 
             try (PreparedStatement deleteLabelsStatement = connection.prepareStatement(
                     "DELETE FROM undgs_has_label" +

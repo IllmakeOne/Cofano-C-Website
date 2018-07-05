@@ -277,7 +277,7 @@ public class TerminalsResource {
     @DELETE
     @Secured
     @Path("/unapproved/{terminalId}")
-    public void deletTerminalUN(@PathParam("terminalId") int terminalId,
+    public void deleteTerminalUN(@PathParam("terminalId") int terminalId,
                                 @Context HttpServletRequest request) {
 
         String query = "SELECT deleteterminal(?)";
