@@ -20,7 +20,7 @@ public class ConflictException extends WebApplicationException {
      *
      * @param msg the String that is the entity of the 409 response.
      */
-    private ConflictException(String msg, String desc) {
+    public ConflictException(String msg, String desc) {
         super(Response.status(Status.CONFLICT).entity(
                 new ExceptionInfo(Status.CONFLICT.getStatusCode(),
                         msg,
