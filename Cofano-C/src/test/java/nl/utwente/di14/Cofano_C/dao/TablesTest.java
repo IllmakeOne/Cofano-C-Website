@@ -5,11 +5,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import static nl.utwente.di14.Cofano_C.dao.Tables.getInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class TablesTest {
 
@@ -47,13 +49,28 @@ public class TablesTest {
     }
 
     @Test
-    public void addtoConflicts() {
+    public void addtoConflicts() throws SQLException {
+        Connection con = Tables.getCon();
+        int id = -1;
         try {
             Tables.addtoConflicts(Tables.getCon(), "ship", "JUnit", 909090, 808080);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        String query = "SELECT * FROM  conflict WHERE culprit = "JUnit"";
+        String query = "SELECT cid FROM  conflict WHERE culprit = 'JUnit'";
+        try {
+            System.out.println("Reached this point");
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                id = rs.getInt("cid");
+                System.out.println("Found this id: " + id);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        assertTrue(id > 0);
+        con.close();
     }
 
 
@@ -62,6 +79,15 @@ public class TablesTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
+        Connection con = tables.getCon();
+        String query = "DELETE  FROM conflict WHERE entry = 909090";
+        try {
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        con.close();
     }
 }
