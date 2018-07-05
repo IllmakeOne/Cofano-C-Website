@@ -179,6 +179,8 @@ public class TerminalsResource {
                 //add to history
                 HistoryResource.addHistoryEntry(connection, "CON", doer,
                         ownID + " " + input.toString() + " con with " + con, myName, false);
+                //throw conflict execption
+                throw new ConflictException(myName,"Name or Terminal code are the same as another entry in the table");
             }
 
             connection.commit();

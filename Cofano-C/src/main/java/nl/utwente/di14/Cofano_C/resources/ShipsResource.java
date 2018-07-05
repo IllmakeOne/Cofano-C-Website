@@ -2,6 +2,7 @@ package nl.utwente.di14.Cofano_C.resources;
 
 import nl.utwente.di14.Cofano_C.auth.Secured;
 import nl.utwente.di14.Cofano_C.dao.Tables;
+import nl.utwente.di14.Cofano_C.exceptions.ConflictException;
 import nl.utwente.di14.Cofano_C.model.Ship;
 import okhttp3.internal.Internal;
 
@@ -174,6 +175,8 @@ public class ShipsResource {
                 //add to history
                 HistoryResource.addHistoryEntry(connection, "CON", doer, ownID + " " + input.toString() +
                         " con with " + con, myName, false);
+                //throw conflict execption
+                throw new ConflictException(myName, "IMO, MMSI or Callsign are the same as another entry in the table");
             }
             connection.commit();
         } catch (SQLException e) {

@@ -70,6 +70,7 @@
   			<h5>Conflicts</h5>
   			<p><h10> When testing for conflicts, the attribute specifed is tested to not be the exact same as another entry in the table.
   			</h10></p>
+  			<p><h10> If there is a conflict, the api requester will receive back a JSON object with a title and a description of why the conflict occurred.</h10></p>
   			
   		<div class="row">
   			<div class="col-sm-6">
