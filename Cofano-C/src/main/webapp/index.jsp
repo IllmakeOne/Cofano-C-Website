@@ -212,14 +212,13 @@
                         	document.getElementById("conname").outerHTML = "";
                         	empties+=1;
                         	calll();
-                        	console.log(empties);
                     	}
                     }
                 });
                 
                 undgstable = $('.undgstable').DataTable({
-                    ajax: {
-                        url: "${base}/api/undgs/full/unapproved",
+                	ajax: {
+                        url: "${(empty base) ? '.' : base}/api/undgs/full/unapproved",
                         dataSrc: '',
                     },
                     columns: [
@@ -313,13 +312,14 @@
                     drawCallback: function( settings ) {
                         feather.replace();
                     },
-                    
                     initComplete: function(settings, json) {
                     	if(!undgstable.data().any()){
                     		undgstable.destroy();
                         	document.getElementById("undgstable").outerHTML = "";
                         	document.getElementById("undgsname").outerHTML = "";
                         	empties+=1;
+                        	calll();
+                        	console.log(empties);
                     	}
                     }
                 });
@@ -382,7 +382,7 @@
          function calll() {
         	 console.log("in calll/" + empties);
         	 //console.log(empties === 4)
-        	 if(empties === 4){
+        	 if(empties === 5){
              	document.getElementById("title").outerHTML = "<h2>Nothing to be approved</h2>";
              } 
          }
