@@ -26,7 +26,7 @@ public class Tables {
     /**
      * This method starts a connections to the database using PostgreSQL drivers.
      */
-    private Tables() {
+    public Tables() {
 
         //Set database driver name
         bds.setDriverClassName("org.postgresql.Driver");
