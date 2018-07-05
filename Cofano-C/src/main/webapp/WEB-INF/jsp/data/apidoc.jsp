@@ -91,6 +91,7 @@
   				<h10> Name, terminal_code and port_id must be not null when editing or adding</h10>
 				<h10>When adding or editing an terminal, please take into accout it has a foreign key to Ports. <br> </h10>
 				<h10>A <h12>GET</h12> request came be made to ./terminals/portids to receive all available ports</h10>
+				<h10> When a port is deleted it also deletes all terminals connected to it</h10>
   				<h10><p>Name and Terminal code are taken into account when testing for conflicts.  </p></h10>
   			</div>
  			 <div class="col-sm-6">
