@@ -152,7 +152,7 @@
             </div>
         </div>
 
-        <table class="table table-striped table-sm datatables" style="width:100%;">
+        <table class="table table-striped table-sm datatables" style="width:50%;">
             <thead>
             <tr>
                 <th data-priority="1" style="min-width:90px">#</th>
