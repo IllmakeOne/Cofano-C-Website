@@ -232,7 +232,7 @@ public class ApplicationsResource extends ServletContainer {
         boolean result = true;
         String query = "SELECT * FROM appsconflict(?,?)";
 
-        try (PreparedStatement statement = Tables.getCon().prepareStatement(query)) {
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, test.getName());
             statement.setString(2, test.getAPIKey());
             try (ResultSet resultSet = statement.executeQuery()) {

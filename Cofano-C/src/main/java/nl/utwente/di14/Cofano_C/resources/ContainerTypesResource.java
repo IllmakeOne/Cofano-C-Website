@@ -261,7 +261,7 @@ public class ContainerTypesResource {
         String query = "SELECT deletecontainer_types(?)";
 
         try (Connection connection = Tables.getCon(); PreparedStatement statement =
-                Tables.getCon().prepareStatement(query)) {
+                connection.prepareStatement(query)) {
 
             connection.setAutoCommit(false);
             String doer = securityContext.getUserPrincipal().getName();
