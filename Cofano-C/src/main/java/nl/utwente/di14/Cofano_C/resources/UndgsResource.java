@@ -227,9 +227,9 @@ public class UndgsResource {
                 while (resultSet.next()) {
                 	System.out.println("ive got one");
                     if (lastUndg != null && lastUndg.getId() == resultSet.getInt("uid")) {
+                    	System.out.println("After first if");
                         if (!undgLabels.contains(resultSet.getString("label"))) {
                             undgLabels.add(resultSet.getString("label"));
-                            System.out.println("in first if if");
                         }
                         if (!tankSpecialProvisions.contains(resultSet.getString("tank_special_provision"))) {
                             tankSpecialProvisions.add(resultSet.getString("tank_special_provision"));
@@ -243,6 +243,7 @@ public class UndgsResource {
                                             resultSet.getString("description")));
                         }
                     } else {
+                    	System.out.println("big else");
                         if (lastUndg != null) {
                             lastUndg.setLabels(undgLabels);
                             lastUndg.setTankSpecialProvisions(tankSpecialProvisions);
@@ -278,7 +279,7 @@ public class UndgsResource {
                                 new UndgDescription(resultSet.getString("language"),
                                         resultSet.getString("description")));
                         lastUndg = undg;
-                   //	     System.out.println(lastUndg);
+                   	     System.out.println(undg);
 
                     }
                 }

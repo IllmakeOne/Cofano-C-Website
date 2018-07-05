@@ -1,6 +1,7 @@
 package nl.utwente.di14.Cofano_C.resources;
 
 import nl.utwente.di14.Cofano_C.dao.Tables;
+import nl.utwente.di14.Cofano_C.exceptions.ConflictException;
 import nl.utwente.di14.Cofano_C.model.ContainerType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -162,6 +163,8 @@ public class ContainerTypesResource {
             //add to history
             Tables.addHistoryEntry("CON", doer,
                     ownID + " " + input.toString() + " con with " + con, myName, false);
+            //throw conflict execption
+            throw new ConflictException(myName,"Display name or ISO code are the same as another entry in the table");
         }
         Tables.shutDown();
     }
