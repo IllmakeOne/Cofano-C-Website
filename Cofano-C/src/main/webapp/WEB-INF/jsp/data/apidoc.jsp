@@ -69,7 +69,7 @@
   			
   			<h5>Conflicts</h5>
   			<p><h10> When testing for conflicts, the attribute specifed is tested to not be the exact same as another entry in the table.
-  			</h10></p>
+  			</h10></p><h10>Null values do not create conflicts</h10>
   			<p><h10> If there is a conflict, the api requester will receive back a JSON object with a title and a description of why the conflict occurred.</h10></p>
   			
   		<div class="row">
@@ -107,7 +107,8 @@
 		</div>
         
    
-		<p>  <h5>All API request are required to have an "Authorization" header which has as value an API key assiged by cofano. 
+		<p>  <h5>All API request are required to have an "Authorization" header which has as value "Bearer" + " " + "APIkey", the api key
+		is assiged by cofano. 
 		</h5><h10>These API keys must be stored in the database in the Applications table.</h10></p>	
 		<p><h10> <h12>GET</h12>, <h7>DELETE</h7>, <h8>POST</h8>, <h9>PUT</h9> are the types of HTTP request.</h10></p>
 	  
