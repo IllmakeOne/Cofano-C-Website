@@ -2,26 +2,19 @@ package nl.utwente.di14.Cofano_C.dao;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 import static nl.utwente.di14.Cofano_C.dao.Tables.getInstance;
 import static org.junit.Assert.*;
 
 public class TablesTest {
 
-    Tables tables = new Tables();
+    private final Tables tables = new Tables();
 
-    BasicDataSource basicDataSource = new BasicDataSource();
+    private final BasicDataSource basicDataSource = new BasicDataSource();
 
-    @Before
-    public void setup() {
-    }
 
     @Test
     public void getInstanceTest() {
@@ -50,37 +43,36 @@ public class TablesTest {
 
     @Test
     public void addtoConflicts() throws SQLException {
-        Connection con = Tables.getCon();
-        int id = -1;
-        try {
-            Tables.addtoConflicts(Tables.getCon(), "ship", "JUnit", 909090, 808080);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        String query = "SELECT addconflict(?,?,?,?)";
+        try (PreparedStatement statement = Tables.getCon().prepareStatement(query)) {
+            //add the data to the statement's query
+            statement.setString(1, "JUnit");
+            statement.setString(2, "ship");
+            statement.setObject(3, 909090);
+            statement.setInt(4, 808080);
+
+            statement.executeQuery();
         }
-        String query = "SELECT cid FROM  conflict WHERE culprit = 'JUnit'";
-        try {
-            System.out.println("Reached this point");
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-            while (rs.next()) {
-                id = rs.getInt("cid");
-                System.out.println("Found this id: " + id);
+
+
+        String querySelect = "SELECT cid FROM conflict WHERE culprit = ?";
+        int id = -1;
+        try (Connection con = Tables.getCon(); PreparedStatement stmt = con.prepareStatement(querySelect)) {
+            stmt.setString(1, "JUnit");
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                while (resultSet.next()) {
+                    id = resultSet.getInt(1);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         assertTrue(id > 0);
-        con.close();
-    }
-
-
-    @Test
-    public void objToPGobj() {
     }
 
     @After
     public void tearDown() throws SQLException {
-        Connection con = tables.getCon();
+        Connection con = Tables.getCon();
         String query = "DELETE  FROM conflict WHERE entry = 909090";
         try {
             Statement stmt = con.createStatement();
