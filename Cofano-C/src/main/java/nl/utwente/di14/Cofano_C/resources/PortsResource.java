@@ -179,7 +179,8 @@ public class PortsResource {
                         + input.toString() + " con with " + con, myName, false);
 
                 //throw conflict execption
-                throw new ConflictException(myName, "Name or Unlo are the same as another entry in the table");
+                throw new ConflictException(myName, "Name ( " + input.getName() +
+                			" ) or Unlo ( " + input.getUnlo() + " ) are the same as another entry in the table");
             }
 
             connection.commit();

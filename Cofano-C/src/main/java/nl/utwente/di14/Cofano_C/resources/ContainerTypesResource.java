@@ -197,7 +197,8 @@ public class ContainerTypesResource {
                 HistoryResource.addHistoryEntry(connection, "CON", doer,
                         ownID + " " + input.toString() + " con with " + con, myName, false);
                 //throw conflict execption
-                throw new ConflictException(myName,"Display name or ISO code are the same as another entry in the table");
+                throw new ConflictException(myName,"Display name(" + input.getDisplayName() + ") or "
+                		+ "ISO code (" + input.getIsoCode() + ") are the same as another entry in the table");
             }
 
             connection.commit();
@@ -261,7 +262,7 @@ public class ContainerTypesResource {
         String query = "SELECT deletecontainer_types(?)";
 
         try (Connection connection = Tables.getCon(); PreparedStatement statement =
-                Tables.getCon().prepareStatement(query)) {
+                connection.prepareStatement(query)) {
 
             connection.setAutoCommit(false);
             String doer = securityContext.getUserPrincipal().getName();
