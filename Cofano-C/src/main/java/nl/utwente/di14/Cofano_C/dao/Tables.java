@@ -1,10 +1,7 @@
 package nl.utwente.di14.Cofano_C.dao;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.postgresql.util.PGobject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -79,29 +76,6 @@ public class Tables {
 
     }
 
-
-    public static PGobject objToPGobj(Object obj) {
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        String workplis = "";
-        try {
-            workplis = mapper.writeValueAsString(obj);
-        } catch (JsonProcessingException e1) {
-            System.out.println("could not make from obj to json IN tables objtopgobj");
-        }
-
-        PGobject jsonObject = new PGobject();
-
-        jsonObject.setType("json");
-        try {
-            jsonObject.setValue(workplis);
-        } catch (SQLException e) {
-            System.out.println("coul not make from json to PGobject IN tables objtopgobj");
-        }
-
-        return jsonObject;
-    }
 
     /*
 	public static Tables getInstance() throws IOException, SQLException, PropertyVetoException {
