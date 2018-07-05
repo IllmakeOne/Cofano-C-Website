@@ -216,7 +216,7 @@
                     }
                 });
                 
-                undgstable = $('.undgstable').DataTable({
+                undgstable = $('#undgstable').DataTable({
                 	ajax: {
                         url: "${(empty base) ? '.' : base}/api/undgs/full/unapproved",
                         dataSrc: '',
@@ -287,6 +287,8 @@
                         {
                             data: 'tankSpecialProvisions',
                             render: function (data, type, row, meta) {
+
+                            	console.log("im actually here");
                                 if (data !== undefined) {
                                     if (type == "sort" || type == 'type') {
                                         return data;
@@ -380,7 +382,7 @@
         
          
          function calll() {
-        	 console.log("in calll/" + empties);
+        	 console.log("in calll " + empties);
         	 //console.log(empties === 4)
         	 if(empties === 5){
              	document.getElementById("title").outerHTML = "<h2>Nothing to be approved</h2>";
@@ -478,7 +480,7 @@
             </tbody>
         </table>
         
-         <table class="table table-striped table-sm datatables" style="width:100%; id="undgstable"">
+         <table class="table table-striped table-sm datatables" style="width:100%;" id="undgstable">
             <thead>
             <h3 id = "undgsname" >UNDGs</h3>
             <tr>

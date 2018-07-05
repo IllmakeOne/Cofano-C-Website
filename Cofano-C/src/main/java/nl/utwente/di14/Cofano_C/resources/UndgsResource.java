@@ -2,6 +2,8 @@ package nl.utwente.di14.Cofano_C.resources;
 
 import nl.utwente.di14.Cofano_C.auth.Secured;
 import nl.utwente.di14.Cofano_C.dao.Tables;
+import nl.utwente.di14.Cofano_C.exceptions.InternalServerErrorException;
+import nl.utwente.di14.Cofano_C.model.Terminal;
 import nl.utwente.di14.Cofano_C.model.Undg;
 import nl.utwente.di14.Cofano_C.model.UndgDescription;
 
@@ -9,12 +11,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
+
 import java.sql.*;
 import java.util.*;
 
 @Path("/undgs")
 public class UndgsResource {
 
+	private String myName = "undgs";
 
 //	WE CAN USE THIS:
 //	SELECT ud.description, undgs.*
@@ -546,6 +551,70 @@ public class UndgsResource {
         }
     }
 
+    
+    /**
+     * this method approves an entry in the database.
+     *
+     * @param undgsid the id of the terminal which is approved
+     */
+    @PUT
+    @Secured
+    @Path("/approve/{undgsid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void approveContainer(@PathParam("undgsid") int undgsid,
+                                 @Context HttpServletRequest request, @Context SecurityContext securityContext) {
+
+
+        String query = "SELECT approveundgs(?)";
+
+        try (Connection connection = Tables.getCon();PreparedStatement statement =
+                connection.prepareStatement(query) ) {
+            connection.setAutoCommit(false);
+            Undg aux = getUndg(connection, undgsid);
+
+            statement.setInt(1, undgsid);
+            statement.executeQuery();
+
+            HistoryResource.addHistoryEntry(connection, "APPROVE",
+                    securityContext.getUserPrincipal().getName(),
+                    aux.toString(), myName, true);
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            System.out.println("Something went wrong while approving terminal " + undgsid + ", because: " + e.getSQLState());
+            e.printStackTrace();
+            throw new InternalServerErrorException();
+        }
+
+    }
+    
+    @DELETE
+    @Secured
+    @Path("/unapproved/{undgsId}")
+    public void deleteUndgUN(@PathParam("undgsId") int undgsId, @Context HttpServletRequest request) {
+
+        String sql = "DELETE FROM undgs WHERE uid = ?";
+        try (Connection connection = Tables.getCon(); PreparedStatement DELETEStatement = connection.prepareStatement(sql)) {
+            connection.setAutoCommit(false);
+
+            // Everything cascades!
+            DELETEStatement.setInt(1, undgsId);
+            DELETEStatement.executeUpdate();
+
+            // Now cleanup:
+            cleanup(connection);
+
+            connection.commit();
+
+
+        } catch (SQLException e) {
+            System.err.println("Was not able to delete Undgs: ");
+            System.err.println(e.getSQLState());
+            e.printStackTrace();
+            throw new InternalServerErrorException();
+        }
+    }
 
     private void descriptionBuilder(Connection connection, int undgsId, Undg undg) throws SQLException {
 

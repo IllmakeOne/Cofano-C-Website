@@ -103,6 +103,12 @@
 		<div class="row">
   			<div class="col-sm-12">
   				<h5>UNDGs</h5>
+  				<h10> UNDGs have lables, tankcodes and tanks special provisions. 
+  				<p> All of them can be retrived by making a <h12>GET</h12> request at:
+  				<p> ./ungs/labels for available lables</p>
+  				<p> ./ungs/tankcodes for available tankcodes</p>
+  				<p> ./undgs/tankspecialprovisions for available special tank provisions</p>
+  				</p></h10>
   			</div>
 		</div>
         
@@ -130,7 +136,7 @@
 		        <th><h12>GET</h12> ./ports</th>
 		        <th><h12>GET</h12> ./terminals</th>
 		        <th><h12>GET</h12> ./containers</th>
-		        <th><h12>GET</h12> ./undgs</th>
+		        <th><h12>GET</h12> ./undgs/full</th>
 		    </tr>
 		    <tr>
 		        <th><h5>Get a certain entry</h5></th>

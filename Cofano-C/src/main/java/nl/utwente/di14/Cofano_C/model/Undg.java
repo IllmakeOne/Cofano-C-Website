@@ -63,7 +63,11 @@ public class Undg {
         String descr = "";
         for (UndgDescription description : descriptions) {
             if (description.getLanguage().equals("en")) {
-                descr = description.getDescription().substring(0, 15);
+            	if(description.getDescription().length()>10) {
+                descr = description.getDescription().substring(0, 10);
+            	} else {
+            	 descr = description.getDescription();
+            	}
             }
         }
         return "UNDG: ID: " + id + " Classification code: " + classificationCode + "English descr: " + descr;
