@@ -102,8 +102,8 @@ public class Tables {
         }
     }
 
-    *//**
-     * Shuts down the connection in a safe manner.
+    *//*
+      Shuts down the connection in a safe manner.
      *//*
     public static void shutDown() {
         try {
@@ -116,10 +116,10 @@ public class Tables {
     }
 
 
-    *//**
-     * Getter for the connection.
-     *
-     * @return the current<code>Connection</code>
+    *//*
+      Getter for the connection.
+
+      @return the current<code>Connection</code>
      *//*
     public static Connection getCon() throws SQLException {
         if (con == null || con.isClosed()) {
@@ -134,10 +134,10 @@ public class Tables {
 
 
 
-    *//**
-     * Updates the users last login timestamp.
-     *
-     * @param user The user who's last login should be updated
+    *//*
+      Updates the users last login timestamp.
+
+      @param user The user who's last login should be updated
      *//*
     private static void resetLastLogin(String user) throws SQLException {
 
@@ -148,10 +148,10 @@ public class Tables {
 
     }
 
-    *//**
-     * Check if the request is valid. I.e. check if it's either a valid Google user or a valid API.
-     *
-     * @param request the <code>HttpServletRequest</code> to be checked
+    *//*
+      Check if the request is valid. I.e. check if it's either a valid Google user or a valid API.
+
+      @param request the <code>HttpServletRequest</code> to be checked
      * @return the name of the API of the request was from an API
      *//*
     public static String testRequest(HttpServletRequest request, Connection connection)
@@ -164,8 +164,9 @@ public class Tables {
         } else if (request.getHeader("Authorization") != null) {
             user = request.getHeader("Authorization");
         } else {
-            //returns false if the request isnt from a google user or from an application with an Authorization header
-            System.out.println("nono in the first if");
+            //returns false if the request isn't from a google user or from an
+             //application with an Authorization header
+            System.out.println("Error in the first if");
             throw new ForbiddenException();
         }
         //System.out.println(user);
