@@ -19,7 +19,6 @@ import java.util.List;
 /**
  * This is the resource class for applications.
  */
-@SuppressWarnings("CheckStyle")
 @Path("/applications")
 public class ApplicationsResource extends ServletContainer {
 
@@ -65,7 +64,7 @@ public class ApplicationsResource extends ServletContainer {
     public Application generateAPI(@Context HttpServletRequest request) {
 
         SecureRandom random = new SecureRandom();
-        byte bytes[] = new byte[42];
+        byte[] bytes = new byte[42];
         random.nextBytes(bytes);
         Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
         String token = encoder.encodeToString(bytes);
