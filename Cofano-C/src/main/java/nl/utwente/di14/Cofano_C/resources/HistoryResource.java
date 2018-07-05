@@ -93,6 +93,7 @@ public class HistoryResource {
      */
     public static void addHistoryEntry(Connection connection, String title, String who, String message, String type, boolean approved) throws SQLException {
         String query = "SELECT addhistory(?,?,?,?)";
+        System.out.println(title+who+message+type);
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, title);
             statement.setString(2, who + " " + title + " " + message);
