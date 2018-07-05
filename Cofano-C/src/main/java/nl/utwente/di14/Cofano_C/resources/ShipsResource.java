@@ -4,7 +4,6 @@ import nl.utwente.di14.Cofano_C.auth.Secured;
 import nl.utwente.di14.Cofano_C.dao.Tables;
 import nl.utwente.di14.Cofano_C.exceptions.ConflictException;
 import nl.utwente.di14.Cofano_C.model.Ship;
-import okhttp3.internal.Internal;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -35,7 +34,7 @@ public class ShipsResource {
         String query = "SELECT * " +
                 "FROM ship " +
                 "WHERE approved = true;";
-        try (Connection connection = Tables.getCon()){
+        try (Connection connection = Tables.getCon()) {
             constructShip(connection, result, query);
         } catch (SQLException e) {
             System.out.println("Something went wrong while loading all ships! Because: " + e.getSQLState());
@@ -59,7 +58,7 @@ public class ShipsResource {
     @Produces({MediaType.APPLICATION_JSON})
     public ArrayList<Ship> getAllShipsUN(@Context HttpServletRequest request) {
         ArrayList<Ship> result = new ArrayList<>();
-        try (Connection connection = Tables.getCon()){
+        try (Connection connection = Tables.getCon()) {
 
             //select all unapproved entries which are not in the conflict table
             String query = "select ship.* "
@@ -91,9 +90,9 @@ public class ShipsResource {
     @Path("/{shipId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Ship retrieveShip(@PathParam("shipId") int shipId,
-                        @Context HttpServletRequest request) {
+                             @Context HttpServletRequest request) {
         Ship ship;
-        try (Connection connection = Tables.getCon()){
+        try (Connection connection = Tables.getCon()) {
             ship = getShip(connection, shipId);
         } catch (SQLException e) {
             System.err.println("Something went wrong while getting a ship with ID: " + shipId + ", because: " + e.getSQLState());
@@ -106,13 +105,13 @@ public class ShipsResource {
     }
 
     // Internal only
-    private Ship getShip(Connection connection, int shipId) throws SQLException{
+    private Ship getShip(Connection connection, int shipId) throws SQLException {
         Ship ship = new Ship();
         String query = "SELECT * FROM ship WHERE sid = ?";
 
 
         try (PreparedStatement statement =
-                connection.prepareStatement(query)) {
+                     connection.prepareStatement(query)) {
             statement.setInt(1, shipId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -202,7 +201,7 @@ public class ShipsResource {
         String query = "SELECT addships(?,?,?,?,?,?)";
         //Create prepared statement
         try (PreparedStatement statement =
-               connection.prepareStatement(query)) {
+                     connection.prepareStatement(query)) {
             //add the data to the statement's query
             statement.setString(2, entry.getName());
             statement.setString(1, entry.getImo());
@@ -241,7 +240,7 @@ public class ShipsResource {
 
 
         try (Connection connection = Tables.getCon(); PreparedStatement statement =
-            connection.prepareStatement(query)) {
+                connection.prepareStatement(query)) {
 
             connection.setAutoCommit(false);
             Ship aux = getShip(connection, shipId);
@@ -339,7 +338,7 @@ public class ShipsResource {
 
         String query = "SELECT editships(?,?,?,?,?,?)";
         try (Connection connection = Tables.getCon(); PreparedStatement statement =
-                connection.prepareStatement(query)){
+                connection.prepareStatement(query)) {
 
             connection.setAutoCommit(false);
 
@@ -402,8 +401,8 @@ public class ShipsResource {
 
     private void constructShip(Connection connection, ArrayList<Ship> result, String query) throws SQLException {
         Ship ship;
-        try ( PreparedStatement statement =
-                      connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
+        try (PreparedStatement statement =
+                     connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 ship = new Ship();
