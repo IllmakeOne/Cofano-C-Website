@@ -1,12 +1,11 @@
 package nl.utwente.di14.Cofano_C.dao;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.postgresql.util.PGobject;
+import org.apache.commons.dbcp2.BasicDataSource;
 
-import javax.servlet.http.HttpServletRequest;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * This class is the Data Access Object for all the database tables.
@@ -17,31 +16,101 @@ public class Tables {
 
     private static final String HOST = "farm05.ewi.utwente.nl";
     private static final String DB_NAME = "docker";
-    private static Connection con;
+
+    private BasicDataSource bds = new BasicDataSource();
 
 
     /**
      * This method starts a connections to the database using PostgreSQL drivers.
      */
-    public static void start() {
+    public Tables() {
 
+        //Set database driver name
+        bds.setDriverClassName("org.postgresql.Driver");
+        bds.setUrl("jdbc:postgresql://" + HOST + ":7028/" + DB_NAME);
+        bds.setUsername("docker");
+        //Set database password
+        bds.setPassword("YsLxCu0I1");
+        //Set the connection pool size
+        bds.setInitialSize(5);
+
+    }
+
+    private static class TablesHolder {
+        private static final Tables INSTANCE = new Tables();
+    }
+
+    public static Tables getInstance() {
+        return TablesHolder.INSTANCE;
+    }
+
+    public BasicDataSource getBds() {
+        return bds;
+    }
+
+    public void setBds(BasicDataSource bds) {
+        this.bds = bds;
+    }
+
+    public static Connection getCon() throws SQLException {
+        BasicDataSource bds = getInstance().getBds();
+        return bds.getConnection();
+    }
+
+
+    public static void addtoConflicts(Connection connection, String table,
+                                      String doer, int ownID, int con) throws SQLException {
+        String query = "SELECT addconflict(?,?,?,?)";
+        //gets here if the request is from API
+        //add to conflicts table
+        //Create prepared statement
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            //add the data to the statement's query
+            statement.setString(1, doer);
+            statement.setString(2, table);
+            statement.setObject(3, ownID);
+            statement.setInt(4, con);
+
+            statement.executeQuery();
+        }
+
+    }
+
+
+    //Code below this point is legacy and just used for
+    //reference during the development process
+
+    /*
+	public static Tables getInstance() throws IOException, SQLException, PropertyVetoException {
+		if (datasource == null) {
+			datasource = new Tables();
+			return datasource;
+		} else {
+			return datasource;
+		}
+	}
+
+	public Connection getConnection() throws SQLException {
+		return this.cpds.getConnection();
+	}
+
+    public static void forceStart() throws SQLException {
         try {
             Class.forName("org.postgresql.Driver");
             String url = "jdbc:postgresql://" + HOST + ":7028/" + DB_NAME;
             con = DriverManager.getConnection(url, "docker", "YsLxCu0I1");
+            con.setAutoCommit(false);
         } catch (ClassNotFoundException cnfe) {
             System.err.println("Error loading driver: " + cnfe);
-        } catch (SQLException e) {
-            System.err.println("error loading DB" + e);
         }
     }
 
-    /**
-     * Shuts down the connection in a safe manner.
-     */
+    *//*
+      Shuts down the connection in a safe manner.
+     *//*
     public static void shutDown() {
         try {
-            if (con != null) {
+            if (con != null && !con.isClosed()) {
                 con.close();
             }
         } catch (SQLException e) {
@@ -50,101 +119,47 @@ public class Tables {
     }
 
 
-    /**
-     * Getter for the connection.
-     *
-     * @return the current<code>Connection</code>
-     */
-    public static Connection getCon() {
+    *//*
+      Getter for the connection.
+
+      @return the current<code>Connection</code>
+     *//*
+    public static Connection getCon() throws SQLException {
+        if (con == null || con.isClosed()) {
+            System.out.println("Apparently someone wanted to have a connection while the connection
+            is null or closed!");
+            start();
+        }
         return con;
     }
 
 
-    /**
-     * Method for adding an entry to the history table.
-     *
-     * @param title     Contains the type of change (ADD, DELETE etc.)
-     * @param who       user or application that made the change
-     * @param message   The information that was changed
-     * @param timestamp The time of change
-     * @param type      The name of the table where a change was made
-     */
-
-    public static void addHistoryEntry(String title, String who, String message, Timestamp timestamp, String type) {
-
-        String query = "SELECT addhistory(?,?,?,?)";
-        try {
-            PreparedStatement statement = Tables.getCon().prepareStatement(query);
-            statement.setString(1, title);
-            statement.setString(2, who + " " + title + " " + message);
-            statement.setTimestamp(3, timestamp);
-            statement.setString(4, type);
-            statement.executeQuery();
-            //ResultSet result= statement.executeQuery();
-        } catch (SQLException e) {
-            System.err.println("Could not add hisotry IN Tables");
-            System.err.println(e.getSQLState());
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Method for adding an entry to the history table without providing a timestamp.
-     *
-     * @param title    Contains the type of change (ADD, DELETE etc.)
-     * @param who      user or application that made the change
-     * @param message  The information that was changed
-     * @param type     The name of the table where a change was made
-     * @param approved If the data added is approved or not
-     */
-    public static void addHistoryEntry(String title, String who, String message, String type, boolean approved) {
-        Tables.start();
-        String query = "SELECT addhistory(?,?,?,?)";
-        try {
-            PreparedStatement statement = Tables.getCon().prepareStatement(query);
-            statement.setString(1, title);
-            statement.setString(2, who + " " + title + " " + message);
-            statement.setString(3, type);
-            statement.setBoolean(4, approved);
-            statement.executeQuery();
-            //ResultSet result= statement.executeQuery();
-        } catch (SQLException e) {
-            System.err.println("Could not add hisotry IN Tables");
-            System.err.println(e.getSQLState());
-            e.printStackTrace();
-        }
-        Tables.shutDown();
-
-    }
 
 
-    /**
-     * Updates the users last login timestamp.
-     *
-     * @param user The user who's last login should be updated
-     */
-    private static void resetLastLogin(String user) {
+
+    *//*
+      Updates the users last login timestamp.
+
+      @param user The user who's last login should be updated
+     *//*
+    private static void resetLastLogin(String user) throws SQLException {
 
         String query = "SELECT updatelastlogin(?)";
-        try {
-            PreparedStatement statement = Tables.getCon().prepareStatement(query);
-            statement.setString(1, user);
-            statement.executeQuery();
-        } catch (SQLException e) {
-            System.err.println("Could not update last login IN Tables");
-            System.err.println(e.getSQLState());
-            e.printStackTrace();
-        }
+        PreparedStatement statement = Tables.getCon().prepareStatement(query);
+        statement.setString(1, user);
+        statement.executeQuery();
 
     }
 
-    /**
-     * Check if the request is valid. I.e. check if it's either a valid Google user or a valid API.
-     *
-     * @param request the <code>HttpServletRequest</code> to be checked
+    *//*
+      Check if the request is valid. I.e. check if it's either a valid Google user or a valid API.
+
+      @param request the <code>HttpServletRequest</code> to be checked
      * @return the name of the API of the request was from an API
-     */
-    public static String testRequest(HttpServletRequest request) {
+     *//*
+    public static String testRequest(HttpServletRequest request, Connection connection)
+     throws SQLException, ForbiddenException {
+
         String result = "";
         String user;
         if (request.getSession().getAttribute("userEmail") != null) {
@@ -152,102 +167,37 @@ public class Tables {
         } else if (request.getHeader("Authorization") != null) {
             user = request.getHeader("Authorization");
         } else {
-            //returns false if the request isnt from a google user or from an application with an Authorization header
-            System.out.println("nono in the first if");
-            return result;
+            //returns false if the request isn't from a google user or from an
+             //application with an Authorization header
+            System.out.println("Error in the first if");
+            throw new ForbiddenException();
         }
         //System.out.println(user);
-        String query = "SELECT testrequest(?)";
-        try {
-            PreparedStatement statement = Tables.getCon().prepareStatement(query);
-            statement.setString(1, user);
-            ResultSet rez = statement.executeQuery();
-            if (rez.next()) {
 
-                result = tidyup(rez.getString(1));
+        String query = "SELECT testrequest(?)";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, user);
+            try (ResultSet rez = statement.executeQuery()) {
+                if (rez.next()) {
+                    result = tidyup(rez.getString(1));
+                }
             }
-        } catch (SQLException e) {
-            System.err.println("Could test request IN Tables");
-            System.err.println(e.getSQLState());
-            e.printStackTrace();
         }
-        //System.out.println("at the end "+ result);
+
         return result;
     }
 
 
-//    	public static String decideName(HttpServletRequest request) {
-//    		String stringy ="";
-//    		if(request.getSession().getAttribute("userEmail")!=null) {
-//    			stringy = (String)request.getSession().getAttribute("userEmail") ;
-//    		} else if(request.getHeader("Authorization")!= null) {
-//    			stringy = request.getHeader("Authorization");
-//    		}
-//    		
-//    		return stringy;
-//    	}
+    	public static String decideName(HttpServletRequest request) {
+    		String stringy ="";
+    		if(request.getSession().getAttribute("userEmail")!=null) {
+    			stringy = (String)request.getSession().getAttribute("userEmail") ;
+    		} else if(request.getHeader("Authorization")!= null) {
+    			stringy = request.getHeader("Authorization");
+    		}
 
-    /**
-     * this methods takes a strig and reformats it
-     * the method is called to reformat string comming from the database
-     *
-     * @param str the string to be inputed
-     * @return the formatted string
-     */
-
-    private static String tidyup(String str) {
-        String[] aux = str.split(",");
-        return aux[0].substring(1) + " " + aux[1].substring(0, aux[1].length() - 1);
-    }
-
-
-    public static void addtoConflicts(String table, String doer, int ownid, int con) {
-        String query = "SELECT addconflict(?,?,?,?)";
-        //gets here if the request is from API
-        //add to conflicts table
-        try {
-            //Create prepared statement
-            PreparedStatement statement = Tables.getCon().prepareStatement(query);
-            //add the data to the statement's query
-            statement.setString(1, doer);
-            statement.setString(2, table);
-            statement.setObject(3, ownid);
-            statement.setInt(4, con);
-
-            statement.executeQuery();
-
-
-        } catch (SQLException e) {
-            System.err.println("Could not add conflict in tables");
-            System.err.println(e.getSQLState());
-            e.printStackTrace();
-        }
-    }
-
-
-    public static PGobject objToPGobj(Object obj) {
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        String workplis = "";
-        try {
-            workplis = mapper.writeValueAsString(obj);
-        } catch (JsonProcessingException e1) {
-            System.out.println("coulnt not make from obj to json IN tables objtopgobj");
-        }
-
-        PGobject jsonObject = new PGobject();
-
-        jsonObject.setType("json");
-        try {
-            jsonObject.setValue(workplis);
-        } catch (SQLException e) {
-            System.out.println("coulnt not make from json to PGobject IN tables objtopgobj");
-        }
-
-        return jsonObject;
-    }
-
+    		return stringy;
+    	}*/
 
 }
 

@@ -5,24 +5,24 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 /**
- * Create 409 Conflict exception.
+ * Create 403 Forbidden exception.
  */
 @SuppressWarnings("SameParameterValue")
-public class ConflictException extends WebApplicationException {
+public class ForbiddenException extends WebApplicationException {
     private static final long serialVersionUID = 1L;
 
-    public ConflictException() {
-        this("There is a conflict!", null);
+    public ForbiddenException() {
+        this("Unauthorized request!", null);
     }
 
     /**
-     * Create a HTTP 409 (Conflict) exception.
+     * Create a HTTP 403 (Forbidden) exception.
      *
      * @param msg the String that is the entity of the 409 response.
      */
-    public ConflictException(String msg, String desc) {
-        super(Response.status(Status.CONFLICT).entity(
-                new ExceptionInfo(Status.CONFLICT.getStatusCode(),
+    private ForbiddenException(String msg, String desc) {
+        super(Response.status(Status.FORBIDDEN).entity(
+                new ExceptionInfo(Status.FORBIDDEN.getStatusCode(),
                         msg,
                         desc)
         ).type("application/json").build());

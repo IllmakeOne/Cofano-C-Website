@@ -143,7 +143,7 @@
     </jsp:attribute>
 
     <jsp:body>
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
             <h1 class="h2">UNDG's</h1>
             <div class="btn-group mr-2">
                 <div class="col-sm-4">
@@ -152,7 +152,7 @@
             </div>
         </div>
 
-        <table class="table table-striped table-sm datatables" style="width:100%;">
+        <table class="table table-striped table-sm datatables" style="width:50%;">
             <thead>
             <tr>
                 <th data-priority="1" style="min-width:90px">#</th>
@@ -185,7 +185,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm deletion</h5>
+                        <h5 class="modal-title delete-h5">Confirm deletion</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

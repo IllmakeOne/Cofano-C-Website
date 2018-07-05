@@ -1,7 +1,10 @@
 package nl.utwente.di14.Cofano_C.resources;
 
+import nl.utwente.di14.Cofano_C.auth.Secured;
 import nl.utwente.di14.Cofano_C.dao.Tables;
+import nl.utwente.di14.Cofano_C.data.History;
 import nl.utwente.di14.Cofano_C.exceptions.ConflictException;
+import nl.utwente.di14.Cofano_C.exceptions.InternalServerErrorException;
 import nl.utwente.di14.Cofano_C.model.Port;
 import nl.utwente.di14.Cofano_C.model.Terminal;
 
@@ -9,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,28 +31,26 @@ public class TerminalsResource {
      * @return a JSON array of all approved Terminals
      */
     @GET
+    @Secured
     @Produces({MediaType.APPLICATION_JSON})
     public ArrayList<Terminal> getAllTerminals(@Context HttpServletRequest request) {
-        Tables.start();
         ArrayList<Terminal> result = new ArrayList<>();
+
         String query =
                 "SELECT terminal.*, port.name AS port_name" +
-                " FROM terminal" +
-                " JOIN port on terminal.port_id = port.pid" +
-                " WHERE terminal.approved = true";
-        String name = Tables.testRequest(request);
-        if (!name.equals("")) {
+                        " FROM terminal" +
+                        " JOIN port on terminal.port_id = port.pid" +
+                        " WHERE terminal.approved = true";
 
-            try {
-                PreparedStatement statement =
-                        Tables.getCon().prepareStatement(query);
-                ResultSet resultSet = statement.executeQuery();
-                constructTerminal(result, resultSet);
-            } catch (SQLException e) {
-                System.err.println("Could not retrieve all terminals" + e);
-            }
+        try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
+
+            constructTerminal(result, resultSet);
+
+        } catch (SQLException e) {
+            System.err.println("Could not retrieve all terminals" + e);
+            throw new InternalServerErrorException();
         }
-        Tables.shutDown();
         return result;
     }
 
@@ -58,12 +61,12 @@ public class TerminalsResource {
      * @return an JSON array of unapproved entries
      */
     @GET
+    @Secured
     @Path("unapproved")
     @Produces({MediaType.APPLICATION_JSON})
     public ArrayList<Terminal> getAllTerminalsUN(@Context HttpServletRequest request) {
-        Tables.start();
         ArrayList<Terminal> result = new ArrayList<>();
-        //select all unapproved entries which are not in the conflict table
+
         String query = "SELECT terminal.*, port.name AS port_name" +
                 " FROM terminal" +
                 " JOIN port on terminal.port_id = port.pid" +
@@ -73,21 +76,16 @@ public class TerminalsResource {
                 "  FROM conflict" +
                 "  WHERE conflict.\"table\" = 'terminal'" +
                 ")";
+        try (Connection connection = Tables.getCon(); PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery()) {
+            constructTerminal(result, resultSet);
 
-        if (request.getSession().getAttribute("userEmail") != null) {
-
-            try {
-                PreparedStatement statement =
-                        Tables.getCon().prepareStatement(query);
-
-                ResultSet resultSet = statement.executeQuery();
-
-                constructTerminal(result, resultSet);
-            } catch (SQLException e) {
-                System.err.println("Could not retrieve all unapproved terminals" + e);
-            }
+        } catch (SQLException e) {
+            System.err.println("Could not retrieve all unapproved terminals" + e);
+            e.printStackTrace();
+            throw new InternalServerErrorException();
         }
-        Tables.shutDown();
+
         return result;
     }
 
@@ -98,18 +96,32 @@ public class TerminalsResource {
      * @return return the entry as an Terminal object
      */
     @GET
+    @Secured
     @Path("/{terminalId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Terminal getTerminal(@PathParam("terminalId") int terminalId,
+    public Terminal retrieveTerminal(@PathParam("terminalId") int terminalId,
                                 @Context HttpServletRequest request) {
-        Tables.start();
+        Terminal terminal;
+
+        try (Connection connection = Tables.getCon()) {
+                terminal = getTerminal(connection, terminalId);
+        } catch (SQLException e) {
+            System.err.println("Something went wrong while loading terminal: " + terminalId + ", because: " + e.getSQLState());
+            e.printStackTrace();
+            throw new InternalServerErrorException();
+        }
+
+        return terminal;
+    }
+
+    // Internal only
+    private Terminal getTerminal(Connection connection, int terminalId) throws SQLException{
         Terminal terminal = new Terminal();
-        if (!Tables.testRequest(request).equals("")) {
-            String query = "SELECT * FROM terminal WHERE tid = ?";
-            try {
-                PreparedStatement statement = Tables.getCon().prepareStatement(query);
-                statement.setInt(1, terminalId);
-                ResultSet resultSet = statement.executeQuery();
+        String query = "SELECT * FROM terminal WHERE tid = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, terminalId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     terminal.setName(resultSet.getString("name"));
                     terminal.setTerminalCode(resultSet.getString("terminal_code"));
@@ -117,12 +129,11 @@ public class TerminalsResource {
                     terminal.setUnlo(resultSet.getString("unlo"));
                     terminal.setPortId(resultSet.getInt("port_id"));
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         }
-        Tables.shutDown();
+
         return terminal;
+
     }
 
 
@@ -136,39 +147,51 @@ public class TerminalsResource {
      */
     @SuppressWarnings("Duplicates")
     @POST
+    @Secured
     @Path("add")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addTerminal(Terminal input, @Context HttpServletRequest request) {
-        int ownID = 0;
-        String title = "ADD";
-        String doer = Tables.testRequest(request);
-        int con = testConflict(input);
-        Tables.start();
+    public void addTerminal(Terminal input, @Context HttpServletRequest request, @Context SecurityContext securityContext) {
+        try (Connection connection = Tables.getCon()) {
+            connection.setAutoCommit(false);
 
+            int ownID = 0;
+            String title = "ADD";
+            String doer = securityContext.getUserPrincipal().getName();
+            int con = testConflict(connection, input);
+            if (request.getSession().getAttribute("userEmail") != null && con == 0) {
+                //if its from a cofano employee and it doesn't create conflict, add straight to db
+                ownID = addEntry(connection, input, true);
+                HistoryResource.addHistoryEntry(connection, title +"&APPROVE", doer, input.toString(), myName, true);
+            } else if (request.getSession().getAttribute("userEmail") != null && con != 0) {
+                //if its from a cofano employee and it creates conflict, add but unapproved
+                ownID = addEntry(connection, input, false);
 
-        if (request.getSession().getAttribute("userEmail") != null && con == 0) {
-            //if its from a cofano employee and it doesn't create conflict, add straight to db
-            ownID = addEntry(input, true);
-            Tables.addHistoryEntry(title, doer, input.toString(), myName, true);
-        } else if (request.getSession().getAttribute("userEmail") != null && con != 0) {
-            //if its from a cofano employee and it creates conflict, add but unapproved
-            ownID = addEntry(input, false);
+                HistoryResource.addHistoryEntry(connection, title, doer, input.toString(), myName, false);
+            } else if (!doer.equals("")) {
+                //if its from an api add to unapproved
+                ownID = addEntry(connection, input, false);
+                HistoryResource.addHistoryEntry(connection, title, doer, input.toString(), myName, false);
+            }
 
-            Tables.addHistoryEntry(title, doer, input.toString(), myName, false);
-        } else if (!doer.equals("")) {
-            //if its from an api add to unapproved
-            ownID = addEntry(input, false);
-            Tables.addHistoryEntry(title, doer, input.toString(), myName, false);
+            if (con != 0) {
+                //if it creates a conflict, add it to conflict table
+                Tables.addtoConflicts(connection, myName, doer, ownID, con);
+                //add to history
+                HistoryResource.addHistoryEntry(connection, "CON", doer,
+                        ownID + " " + input.toString() + " con with " + con, myName, false);
+                //throw conflict execption
+                throw new ConflictException(myName,"Name(" + input.getName() + ") or"
+                		+ " Terminal code (" + input.getTerminalCode() + ") are the same as another entry in the table");
+            }
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            System.err.println("Something went wrong while adding a terminal, because: " + e.getSQLState());
+            e.printStackTrace();
+            throw new InternalServerErrorException();
         }
 
-        if (con != 0) {
-            //if it creates a conflict, add it to conflict table
-            Tables.addtoConflicts(myName, doer, ownID, con);
-            //add to history
-            Tables.addHistoryEntry("CON", doer,
-                    ownID + " " + input.toString() + " con with " + con, myName, false);
-        }
-        Tables.shutDown();
     }
 
     /**
@@ -178,15 +201,14 @@ public class TerminalsResource {
      * @param app   if the terminal is approved or not
      * @return the ID which is assigned to this port by the database
      */
-    private int addEntry(Terminal entry, boolean app) {
+    private int addEntry(Connection connection, Terminal entry, boolean app) {
         int rez;
         //gets here if the request is from API
         //add to conflicts table
         String query = "SELECT addterminal(?,?,?,?,?,?)";
-        try {
+        try (PreparedStatement statement =
+                     connection.prepareStatement(query)) {
             //Create prepared statement
-            PreparedStatement statement =
-                    Tables.getCon().prepareStatement(query);
             //add the data to the statement's query
             statement.setString(1, entry.getName());
             statement.setString(2, entry.getTerminalCode());
@@ -194,9 +216,11 @@ public class TerminalsResource {
             statement.setString(4, entry.getUnlo());
             statement.setInt(5, entry.getPortId());
             statement.setBoolean(6, app);
-            ResultSet res = statement.executeQuery();
-            res.next();
-            rez = res.getInt(1);
+            try (ResultSet res = statement.executeQuery()) {
+                res.next();
+                rez = res.getInt(1);
+                connection.commit();
+            }
 
         } catch (SQLException e) {
             System.err.println("Could not add terminal");
@@ -204,6 +228,7 @@ public class TerminalsResource {
             e.printStackTrace();
             throw new ConflictException();
         }
+
         return rez;
     }
 
@@ -214,28 +239,32 @@ public class TerminalsResource {
      * @param terminalId the id of the entry which is deleted
      */
     @DELETE
+    @Secured
     @Path("/{terminalId}")
     public void deleteTerminal(@PathParam("terminalId") int terminalId,
-                               @Context HttpServletRequest request) {
-        String doer = Tables.testRequest(request);
-        if (!doer.equals("")) {
-            Terminal aux = getTerminal(terminalId, request);
-            Tables.start();
+                               @Context HttpServletRequest request, @Context SecurityContext securityContext) {
+
+        try (Connection connection = Tables.getCon()) {
+            connection.setAutoCommit(false);
+
+            Terminal aux = getTerminal(connection, terminalId);
 
             String query = "SELECT deleteterminal(?)";
-            try {
-                PreparedStatement statement =
-                        Tables.getCon().prepareStatement(query);
+            try (PreparedStatement statement =
+                    connection.prepareStatement(query)) {
                 statement.setInt(1, terminalId);
                 statement.executeQuery();
-            } catch (SQLException e) {
-                System.err.println("Was not able to delete Terminal");
-                System.err.println(e.getSQLState());
-                e.printStackTrace();
+                HistoryResource.addHistoryEntry(connection, "DELETE", securityContext.getUserPrincipal().getName(), aux.toString(), myName, true);
+                connection.commit();
             }
-            Tables.addHistoryEntry("DELETE", doer, aux.toString(), myName, true);
+
+        } catch (SQLException e) {
+            System.err.println("Was not able to delete Terminal");
+            System.err.println(e.getSQLState());
+            e.printStackTrace();
+            throw new InternalServerErrorException();
         }
-        Tables.shutDown();
+
     }
 
     /**
@@ -246,24 +275,24 @@ public class TerminalsResource {
      * @param terminalId the id of the entry which is deleted
      */
     @DELETE
+    @Secured
     @Path("/unapproved/{terminalId}")
-    public void deletTerminalUN(@PathParam("terminalId") int terminalId,
+    public void deleteTerminalUN(@PathParam("terminalId") int terminalId,
                                 @Context HttpServletRequest request) {
-        Tables.start();
-        if (request.getSession().getAttribute("userEmail") != null) {
-            String query = "SELECT deleteterminal(?)";
-            try {
-                PreparedStatement statement =
-                        Tables.getCon().prepareStatement(query);
-                statement.setInt(1, terminalId);
-                statement.executeQuery();
-            } catch (SQLException e) {
-                System.err.println("Was not able to delete unapproved Terminal");
-                System.err.println(e.getSQLState());
-                e.printStackTrace();
-            }
+
+        String query = "SELECT deleteterminal(?)";
+        try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                connection.prepareStatement(query)) {
+
+            statement.setInt(1, terminalId);
+            statement.executeQuery();
+
+        } catch (SQLException e) {
+            System.err.println("Was not able to delete unapproved Terminal");
+            System.err.println(e.getSQLState());
+            e.printStackTrace();
+            throw new InternalServerErrorException();
         }
-        Tables.shutDown();
     }
 
 
@@ -273,31 +302,36 @@ public class TerminalsResource {
      * @param terminalId the id of the terminal which is approved
      */
     @PUT
+    @Secured
     @Path("/approve/{terminalId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public void approveContainer(@PathParam("terminalId") int terminalId,
-                                 @Context HttpServletRequest request) {
+                                 @Context HttpServletRequest request, @Context SecurityContext securityContext) {
 
-        if (request.getSession().getAttribute("userEmail") != null) {
-            Terminal aux = getTerminal(terminalId, request);
-            Tables.start();
 
-            String query = "SELECT approveterminal(?)";
-            try {
-                PreparedStatement statement =
-                        Tables.getCon().prepareStatement(query);
-                statement.setInt(1, terminalId);
-                statement.executeQuery();
+        String query = "SELECT approveterminal(?)";
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        try (Connection connection = Tables.getCon();PreparedStatement statement =
+                connection.prepareStatement(query) ) {
+            connection.setAutoCommit(false);
+            Terminal aux = getTerminal(connection, terminalId);
 
-            Tables.addHistoryEntry("APPROVE",
-                    request.getSession().getAttribute("userEmail").toString(),
+            statement.setInt(1, terminalId);
+            statement.executeQuery();
+
+            HistoryResource.addHistoryEntry(connection, "APPROVE",
+                    securityContext.getUserPrincipal().getName(),
                     aux.toString(), myName, true);
+
+            connection.commit();
+
+
+        } catch (SQLException e) {
+            System.out.println("Something went wrong while approving terminal " + terminalId + ", because: " + e.getSQLState());
+            e.printStackTrace();
+            throw new InternalServerErrorException();
         }
-        Tables.shutDown();
+
     }
 
 
@@ -308,33 +342,38 @@ public class TerminalsResource {
      * @param terminal   the new information for the entry
      */
     @PUT
+    @Secured
     @Path("/{terminalId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public void updateTerminal(@PathParam("terminalId") int terminalId,
-                               Terminal terminal, @Context HttpServletRequest request) {
+                               Terminal terminal, @Context HttpServletRequest request,
+                               @Context SecurityContext securityContext) {
 
-        String doer = Tables.testRequest(request);
-        if (!doer.equals("")) {
-            Terminal aux = getTerminal(terminalId, request);
-            Tables.start();
+        String query = "SELECT editterminals(?,?,?,?,?)";
+        try (Connection connection = Tables.getCon(); PreparedStatement statement =
+                connection.prepareStatement(query)){
+            connection.setAutoCommit(false);
 
-            String query = "SELECT editterminals(?,?,?,?,?)";
-            try {
-                PreparedStatement statement =
-                        Tables.getCon().prepareStatement(query);
-                statement.setString(2, terminal.getName());
-                statement.setString(3, terminal.getTerminalCode());
-                statement.setString(4, terminal.getType());
-                statement.setString(5, terminal.getUnlo());
-                statement.setInt(1, terminalId);
-                statement.executeQuery();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            Tables.addHistoryEntry("UPDATE", doer,
+            Terminal aux = getTerminal(connection, terminalId);
+
+
+            statement.setString(2, terminal.getName());
+            statement.setString(3, terminal.getTerminalCode());
+            statement.setString(4, terminal.getType());
+            statement.setString(5, terminal.getUnlo());
+            statement.setInt(1, terminalId);
+            statement.executeQuery();
+            HistoryResource.addHistoryEntry(connection, "UPDATE", securityContext.getUserPrincipal().getName(),
                     aux.toString() + "-->" + terminal.toString(), myName, false);
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            System.out.println("Something went wrong while editing temrinal " + terminalId + ", becuase: " + e.getSQLState());
+            e.printStackTrace();
+            throw new InternalServerErrorException();
         }
-        Tables.shutDown();
+
     }
 
 
@@ -345,25 +384,24 @@ public class TerminalsResource {
      * @param test the Port which is tested
      * @return the id of the port it is on conflict with , or 0 if there is no conflict
      */
-    private int testConflict(Terminal test) {
-        Tables.start();
+    private int testConflict(Connection connection, Terminal test) throws SQLException {
         int result = -1;
         String query = "SELECT * FROM terminalconflict(?,?)";
-        try {
-            PreparedStatement statement =
-                    Tables.getCon().prepareStatement(query);
+        try (PreparedStatement statement =
+                connection.prepareStatement(query)) {
             statement.setString(1, test.getName());
             statement.setString(2, test.getTerminalCode());
             ResultSet resultSet = statement.executeQuery();
+
             if (!resultSet.next()) {
                 result = 0;
             } else {
                 result = resultSet.getInt("tid");
             }
-        } catch (SQLException e) {
-            System.err.println("Could not test conflict IN apps" + e);
         }
-        Tables.shutDown();
+
+
+
         return result;
     }
 
@@ -389,35 +427,31 @@ public class TerminalsResource {
      * @return the PKs and name of all ports
      */
     @GET
+    @Secured
     @Path("portids")
     @Produces({MediaType.APPLICATION_JSON})
     public ArrayList<Port> getAvailableIDs(@Context HttpServletRequest request) {
         ArrayList<Port> result = new ArrayList<>();
+
         String query = "SELECT pid, name FROM port WHERE approved = true";
 
-        String name = Tables.testRequest(request);
-        Tables.start();
+        try (Connection connection = Tables.getCon(); PreparedStatement statement = connection.prepareStatement(query)) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
 
-        if (!name.equals("")) {
+                Port terminal = new Port();
+                terminal.setId(resultSet.getInt("pid"));
+                terminal.setName(resultSet.getString("name"));
 
-            try {
-                PreparedStatement statement = Tables.getCon().prepareStatement(query);
-
-                ResultSet resultSet = statement.executeQuery();
-
-                while (resultSet.next()) {
-
-                    Port terminal = new Port();
-                    terminal.setId(resultSet.getInt("pid"));
-                    terminal.setName(resultSet.getString("name"));
-
-                    result.add(terminal);
-                }
-            } catch (SQLException e) {
-                System.err.println("Could not retrieve all ports" + e);
+                result.add(terminal);
             }
+
+        } catch (SQLException e) {
+            System.out.println("Something went wrong retrieving all ports because: " + e.getSQLState());
+            e.printStackTrace();
+            throw new InternalServerErrorException();
         }
-        Tables.shutDown();
+
         return result;
     }
 

@@ -21,7 +21,7 @@
                         window.location.replace("${base}/terminals");
                     },
                     error: function(data) {
-                        $("#error").show().text("Something went wrong: " + data)
+                        $("#error").show().text("Something went wrong: " + data.responseJSON.description)
                     },
                     contentType: "application/json",
                     dataType: 'json'
@@ -96,7 +96,7 @@
                 <div class="form-group row">
                     <label for="pid" class="col-sm-3 col-form-label">Port:</label>
                     <div class="col-sm-5">
-                        <select id="pid" name="pid"></select>
+                        <select class="custom-select custom-select-sm form-control form-control-sm" id="pid" name="pid"></select>
                     </div>
                 </div>
                 <div class="form-group row">

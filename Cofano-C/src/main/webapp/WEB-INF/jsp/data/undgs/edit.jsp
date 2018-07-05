@@ -31,11 +31,11 @@
             })[0].selectize;
 
             function loadLanguages() {
-                var languages=[
-                    { code:"nl", name:"Nederlands"},
-                    { code:"de", name:"Deutsch"},
-                    { code:"fr", name:"Français"},
-                    { code:"en", name:"English"},
+                var languages = [
+                    {code: "nl", name: "Nederlands"},
+                    {code: "de", name: "Deutsch"},
+                    {code: "fr", name: "Français"},
+                    {code: "en", name: "English"},
                 ];
 
 
@@ -48,12 +48,12 @@
                     preload: true,
                     persist: false,
                     render: {
-                        item: function(item, escape) {
-                            var language = item.code == "en"? "gb" : item.code;
-                            return "<div><span class='flag-icon flag-icon-" + escapeHtml(language) +"' />&nbsp;" + escapeHtml(item.name) + "</div>";
+                        item: function (item, escape) {
+                            var language = item.code == "en" ? "gb" : item.code;
+                            return "<div><span class='flag-icon flag-icon-" + escapeHtml(language) + "' />&nbsp;" + escapeHtml(item.name) + "</div>";
                         },
-                        option: function(item, escape) {
-                            var language = item.code == "en"? "gb" : item.code;
+                        option: function (item, escape) {
+                            var language = item.code == "en" ? "gb" : item.code;
                             return "<div><span class='flag-icon flag-icon-" + escapeHtml(language) + "' />&nbsp;" + escapeHtml(item.name) + "</div>";
                         }
                     },
@@ -63,7 +63,7 @@
             }
 
 
-            $("form").submit(function(event){
+            $("form").submit(function (event) {
                 event.preventDefault();
 
                 console.log(labelSelect.getValue());
@@ -91,7 +91,7 @@
                 });
 
                 var descriptions = [];
-                $('select[name^="language-selectize"]').each(function(index) {
+                $('select[name^="language-selectize"]').each(function (index) {
                     console.log($('input[name^="description"]').eq(index).val());
                     descriptions.push({
                         "description": $('input[name^="description"]').eq(index).val(),
@@ -120,11 +120,11 @@
                         "tankCode": selectedTankcodes,
                         "descriptions": descriptions
                     }),
-                    success: function(data) {
+                    success: function (data) {
                         window.location.replace("${base}/undgs");
                     },
-                    error: function(data) {
-                        $("#error").show().text("Something went wrong: " + data)
+                    error: function (data) {
+                        $("#error").show().text("Something went wrong: " + data.responseJSON.description)
                     },
                     contentType: "application/json",
                     dataType: 'json'
@@ -140,7 +140,7 @@
 
                 if ($('form').attr('method') === "put" && id !== "undefined") {
                     $("#loading").show();
-                    $.getJSON( "${base}/api/undgs/" + id, function(undgs) {
+                    $.getJSON("${base}/api/undgs/" + id, function (undgs) {
                         $("#unNo").val(undgs.unNo);
                         $("#transportForbidden").prop('checked', undgs.transportForbidden);
                         $("#collective").prop('checked', undgs.collective);
@@ -160,7 +160,7 @@
 
                         if (labelSelect.options !== "undefined" && labelSelect.options.length > 0) {
                             var selected = [];
-                            $.each(labels, function( index, value ) {
+                            $.each(labels, function (index, value) {
                                 selected.push(labelSelect.search(value).items[0].id)
                             });
                             labelSelect.setValue(selected, false)
@@ -168,7 +168,7 @@
 
                         if (tankSpecialProvisionsSelect.options !== "undefined" && tankSpecialProvisionsSelect.options.length > 0) {
                             var selected = [];
-                            $.each(tankSpecialProvisions, function( index, value ) {
+                            $.each(tankSpecialProvisions, function (index, value) {
                                 selected.push(tankSpecialProvisionsSelect.search(value).items[0].id)
                             });
                             tankSpecialProvisionsSelect.setValue(selected, false)
@@ -176,14 +176,14 @@
 
                         if (tankcodesSelect.options !== "undefined" && tankcodesSelect.options.length > 0) {
                             var selected = [];
-                            $.each(tankcodes, function( index, value ) {
+                            $.each(tankcodes, function (index, value) {
                                 selected.push(tankcodesSelect.search(value).items[0].id)
                             });
                             tankcodesSelect.setValue(selected, false)
                         }
 
                         if (descriptions !== "undefinded" && descriptions.length > 0) {
-                            $.each(descriptions, function( index, description ) {
+                            $.each(descriptions, function (index, description) {
                                 if (index > 0) {
                                     var descriptionTemplate = $('#description-template').html();
                                     descriptionTemplate = descriptionTemplate.replace(/{deleteLang}/g, description.language);
@@ -196,12 +196,12 @@
                         }
 
                     })
-                    .fail(function() {
-                        $("#error").show().text("Could not load information")
-                    })
-                    .always(function() {
-                        $("#loading").hide();
-                    });
+                        .fail(function () {
+                            $("#error").show().text("Could not load information")
+                        })
+                        .always(function () {
+                            $("#loading").hide();
+                        });
 
 
                     loadLanguages();
@@ -217,7 +217,7 @@
                     });
                     if (labels !== "undefined" && labels != "") {
                         var selected = [];
-                        $.each(labels, function( index, value ) {
+                        $.each(labels, function (index, value) {
                             selected.push(labelSelect.search(escapeHtml(value)).items[0].id)
                         });
                         labelSelect.setValue(selected, false)
@@ -234,7 +234,7 @@
                     });
                     if (tankSpecialProvisions !== "undefined" && tankSpecialProvisions != "") {
                         var selected = [];
-                        $.each(tankSpecialProvisions, function( index, value ) {
+                        $.each(tankSpecialProvisions, function (index, value) {
                             selected.push(tankSpecialProvisionsSelect.search(escapeHtml(value)).items[0].id)
                         });
                         tankSpecialProvisionsSelect.setValue(selected, false)
@@ -251,7 +251,7 @@
                     });
                     if (tankcodes !== "undefined" && tankcodes != "") {
                         var selected = [];
-                        $.each(tankcodes, function( index, value ) {
+                        $.each(tankcodes, function (index, value) {
                             selected.push(tankcodesSelect.search(escapeHtml(value)).items[0].id)
                         });
                         tankcodesSelect.setValue(selected, false)
@@ -286,14 +286,14 @@
                 $.ajax({
                     type: "delete",
                     url: $('#delete-confirm').data('delete-url'),
-                    beforeSend: function( xhr ) {
+                    beforeSend: function (xhr) {
                         $("#delete-error").hide();
                     },
-                    success: function(data) {
+                    success: function (data) {
                         $('#deleteModal').modal('hide');
                         deletingRow.remove();
                     },
-                    error: function(data) {
+                    error: function (data) {
                         $("#delete-error").show();
                     },
                 });
@@ -304,20 +304,22 @@
 
         <script type="text/template" id="description-template">
             <div class="form-group row language-description">
-                    <div class="col-sm-3">
-                        <select name="language-selectize[]" placeholder="Select a Language">
-                            <option value="">Select a language...</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-5">
-                        <input type="text" name="description[]" class="form-control" placeholder="Description" autocomplete="off">&nbsp;
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-sm-12" style="padding-top: 0.3rem;">
-                            <button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-lang="{deleteLang}"><span data-feather="trash-2"></span></button>
-                        </div>
+                <div class="col-sm-3">
+                    <select name="language-selectize[]" placeholder="Select a Language">
+                        <option value="">Select a language...</option>
+                    </select>
+                </div>
+                <div class="col-sm-5">
+                    <input type="text" name="description[]" class="form-control" placeholder="Description"
+                           autocomplete="off">&nbsp;
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-12" style="padding-top: 0.3rem;">
+                        <button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-lang="{deleteLang}">
+                            <span data-feather="trash-2"></span></button>
                     </div>
                 </div>
+            </div>
         </script>
         
     </jsp:attribute>
@@ -340,7 +342,8 @@
             Loading
         </div>
 
-        <form <c:if test="${not empty app}">data-id="${fn:escapeXml(app)}"</c:if>action="${formUrl}" method="${method}" class="container-fluid">
+        <form <c:if test="${not empty app}">data-id="${fn:escapeXml(app)}" </c:if>action="${formUrl}" method="${method}"
+              class="container-fluid">
             <fieldset>
                 <legend>UNDG descriptions</legend>
                 <div class="descriptions">
@@ -351,13 +354,16 @@
                             </select>
                         </div>
                         <div class="col-sm-5">
-                            <input type="text" name="description[]" class="form-control" placeholder="Description" autocomplete="off" required>
+                            <input type="text" name="description[]" class="form-control" placeholder="Description"
+                                   autocomplete="off" required>
                         </div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-10">
-                        <button type="button" id="add-description" class="btn btn-outline-primary btn-sm">Add new description</button>
+                        <button type="button" id="add-description" class="btn btn-outline-primary btn-sm">Add new
+                            description
+                        </button>
                     </div>
                 </div>
                     <%--<div class="form-group">--%>
@@ -376,7 +382,8 @@
                 <div class="form-group row">
                     <label for="unNo" class="col-sm-3 col-form-label">unNo</label>
                     <div class="col-sm-5">
-                        <input type="number" class="form-control" placeholder="0" id="unNo" name="unNo" autocomplete="off" required>
+                        <input type="number" class="form-control" placeholder="0" id="unNo" name="unNo"
+                               autocomplete="off" required>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -415,49 +422,57 @@
                 <div class="form-group row">
                     <label for="classificationCode" class="col-sm-3 col-form-label">Classification Code</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" placeholder="0" id="classificationCode" name="classificationCode" autocomplete="off">
+                        <input type="text" class="form-control" placeholder="0" id="classificationCode"
+                               name="classificationCode" autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="classification" class="col-sm-3 col-form-label">Classification</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" placeholder="0" id="classification" name="classification" autocomplete="off">
+                        <input type="text" class="form-control" placeholder="0" id="classification"
+                               name="classification" autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="packingGroup" class="col-sm-3 col-form-label">Packing Group</label>
                     <div class="col-sm-5">
-                        <input type="number" class="form-control" placeholder="0" id="packingGroup" name="packingGroup" autocomplete="off">
+                        <input type="number" class="form-control" placeholder="0" id="packingGroup" name="packingGroup"
+                               autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="hazardNo" class="col-sm-3 col-form-label">Hazard No.</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" placeholder="30" id="hazardNo" name="hazardNo" autocomplete="off">
+                        <input type="text" class="form-control" placeholder="30" id="hazardNo" name="hazardNo"
+                               autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="station" class="col-sm-3 col-form-label">Station</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" placeholder="S20" id="station" name="station" autocomplete="off">
+                        <input type="text" class="form-control" placeholder="S20" id="station" name="station"
+                               autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="transportCategory" class="col-sm-3 col-form-label">Transport Category</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" placeholder="0" id="transportCategory" name="transportCategory" autocomplete="off">
+                        <input type="text" class="form-control" placeholder="0" id="transportCategory"
+                               name="transportCategory" autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="tunnelCode" class="col-sm-3 col-form-label">Tunnel Code</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" placeholder="1" id="tunnelCode" name="tunnelCode" autocomplete="off">
+                        <input type="text" class="form-control" placeholder="1" id="tunnelCode" name="tunnelCode"
+                               autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="vehicleTankCarriage" class="col-sm-3 col-form-label">Vehicle Tank Carriage</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" placeholder="AT" id="vehicleTankCarriage" name="vehicleTankCarriage" autocomplete="off">
+                        <input type="text" class="form-control" placeholder="AT" id="vehicleTankCarriage"
+                               name="vehicleTankCarriage" autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -471,7 +486,8 @@
                 <div class="form-group row">
                     <label for="vehicleTankCarriage" class="col-sm-3 col-form-label">Tank Special Provisions</label>
                     <div class="col-sm-5">
-                        <select id="tankSpecialProvisions" name="tankSpecialProvisions[]" multiple class="select" placeholder="Select tank special provisions...">
+                        <select id="tankSpecialProvisions" name="tankSpecialProvisions[]" multiple class="select"
+                                placeholder="Select tank special provisions...">
                             <option value="">Select tank special provisions...</option>
                         </select>
                     </div>
@@ -479,137 +495,138 @@
                 <div class="form-group row">
                     <label for="vehicleTankCarriage" class="col-sm-3 col-form-label">Tank Codes</label>
                     <div class="col-sm-5">
-                        <select id="tankcodes" name="tankcodes[]" multiple class="select" placeholder="Select tank codes...">
+                        <select id="tankcodes" name="tankcodes[]" multiple class="select"
+                                placeholder="Select tank codes...">
                             <option value="">Select tank codes...</option>
                         </select>
                     </div>
                 </div>
             </fieldset>
-            <%--<div class="col-sm-10">--%>
+                <%--<div class="col-sm-10">--%>
                 <%--<div class="table-responsive" style="margin: 35px">--%>
-                    <%--<table class="table table-striped table-sm">--%>
-                        <%--<thead>--%>
-                        <%--<tr>--%>
-                            <%--<th><h5>Field</h5></th>--%>
-                            <%--<th><h5>Data</h5></th>--%>
-                        <%--</tr>--%>
-                        <%--</thead>--%>
-                        <%--<tbody>--%>
-                            <%--<tr>--%>
-                                <%--<td>unNo</td>--%>
-                                <%--<td>--%>
-                                    <%--&lt;%&ndash;<input type="number" class="form-control" placeholder="0" id="unNo" name="unNo" autocomplete="off" required>&ndash;%&gt;--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Transport forbidden</td>--%>
-                                <%--<td>--%>
-                                    <%--<div class="form-check">--%>
-                                        <%--&lt;%&ndash;<input class="form-check-input" type="checkbox" value="" id="transportForbidden">&ndash;%&gt;--%>
-                                        <%--<label class="form-check-label" for="transportForbidden">--%>
-                                            <%--Transport forbidden--%>
-                                        <%--</label>--%>
-                                    <%--</div>--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Collective</td>--%>
-                                <%--<td>--%>
-                                    <%--<div class="form-check">--%>
-                                        <%--&lt;%&ndash;<input class="form-check-input" type="checkbox" value="" id="collective">&ndash;%&gt;--%>
-                                        <%--<label class="form-check-label" for="collective">--%>
-                                            <%--Collective--%>
-                                        <%--</label>--%>
-                                    <%--</div>--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Not applicable</td>--%>
-                                <%--<td>--%>
-                                    <%--<div class="form-check">--%>
-                                        <%--&lt;%&ndash;<input class="form-check-input" type="checkbox" value="" id="notApplicable">&ndash;%&gt;--%>
-                                        <%--<label class="form-check-label" for="notApplicable">--%>
-                                            <%--Not applicable--%>
-                                        <%--</label>--%>
-                                    <%--</div>--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Classification Code</td>--%>
-                                <%--<td>--%>
-                                    <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="1.1D" id="classificationCode" name="classificationCode" autocomplete="off">&ndash;%&gt;--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Classification</td>--%>
-                                <%--<td>--%>
-                                    <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="1" id="classification" name="classification" autocomplete="off">&ndash;%&gt;--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Packing Group</td>--%>
-                                <%--<td>--%>
-                                    <%--&lt;%&ndash;<input type="number" class="form-control" placeholder="0" id="packingGroup" name="packingGroup" autocomplete="off">&ndash;%&gt;--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Hazard No</td>--%>
-                                <%--<td>--%>
-                                    <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="30" id="hazardNo" name="hazardNo" autocomplete="off">&ndash;%&gt;--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Station</td>--%>
-                                <%--<td>--%>
-                                    <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="S20" id="station" name="station" autocomplete="off">&ndash;%&gt;--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Transport category</td>--%>
-                                <%--<td>--%>
-                                    <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="1" id="transportCategory" name="transportCategory" autocomplete="off">&ndash;%&gt;--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Tunnel code</td>--%>
-                                <%--<td>--%>
-                                    <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="B1000C" id="tunnelCode" name="tunnelCode" autocomplete="off">&ndash;%&gt;--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Vehicle Tank Carriage</td>--%>
-                                <%--<td>--%>
-                                    <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="AT" id="vehicleTankCarriage" name="tunnelCode" autocomplete="off">&ndash;%&gt;--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Labels</td>--%>
-                                <%--<td style="max-width:10px">--%>
-                                    <%--&lt;%&ndash;<select id="labels" name="labels[]" multiple class="select" placeholder="Select labels...">&ndash;%&gt;--%>
-                                        <%--&lt;%&ndash;<option value="">Select labels...</option>&ndash;%&gt;--%>
-                                    <%--&lt;%&ndash;</select>&ndash;%&gt;--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Tank Special Provisions</td>--%>
-                                <%--<td style="max-width:10px">--%>
-                                    <%--&lt;%&ndash;<select id="tankSpecialProvisions" name="tankSpecialProvisions[]" multiple class="select" placeholder="Select tank special provisions...">&ndash;%&gt;--%>
-                                        <%--&lt;%&ndash;<option value="">Select tank special provisions...</option>&ndash;%&gt;--%>
-                                    <%--&lt;%&ndash;</select>&ndash;%&gt;--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                            <%--<tr>--%>
-                                <%--<td>Tank Codes</td>--%>
-                                <%--<td style="max-width:10px">--%>
-                                    <%--&lt;%&ndash;<select id="tankcodes" name="tankcodes[]" multiple class="select" placeholder="Select tank codes...">&ndash;%&gt;--%>
-                                        <%--&lt;%&ndash;<option value="">Select tank codes...</option>&ndash;%&gt;--%>
-                                    <%--&lt;%&ndash;</select>&ndash;%&gt;--%>
-                                <%--</td>--%>
-                            <%--</tr>--%>
-                        <%--</tbody>--%>
-                    <%--</table>--%>
+                <%--<table class="table table-striped table-sm">--%>
+                <%--<thead>--%>
+                <%--<tr>--%>
+                <%--<th><h5>Field</h5></th>--%>
+                <%--<th><h5>Data</h5></th>--%>
+                <%--</tr>--%>
+                <%--</thead>--%>
+                <%--<tbody>--%>
+                <%--<tr>--%>
+                <%--<td>unNo</td>--%>
+                <%--<td>--%>
+                <%--&lt;%&ndash;<input type="number" class="form-control" placeholder="0" id="unNo" name="unNo" autocomplete="off" required>&ndash;%&gt;--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Transport forbidden</td>--%>
+                <%--<td>--%>
+                <%--<div class="form-check">--%>
+                <%--&lt;%&ndash;<input class="form-check-input" type="checkbox" value="" id="transportForbidden">&ndash;%&gt;--%>
+                <%--<label class="form-check-label" for="transportForbidden">--%>
+                <%--Transport forbidden--%>
+                <%--</label>--%>
                 <%--</div>--%>
-            <%--</div>--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Collective</td>--%>
+                <%--<td>--%>
+                <%--<div class="form-check">--%>
+                <%--&lt;%&ndash;<input class="form-check-input" type="checkbox" value="" id="collective">&ndash;%&gt;--%>
+                <%--<label class="form-check-label" for="collective">--%>
+                <%--Collective--%>
+                <%--</label>--%>
+                <%--</div>--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Not applicable</td>--%>
+                <%--<td>--%>
+                <%--<div class="form-check">--%>
+                <%--&lt;%&ndash;<input class="form-check-input" type="checkbox" value="" id="notApplicable">&ndash;%&gt;--%>
+                <%--<label class="form-check-label" for="notApplicable">--%>
+                <%--Not applicable--%>
+                <%--</label>--%>
+                <%--</div>--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Classification Code</td>--%>
+                <%--<td>--%>
+                <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="1.1D" id="classificationCode" name="classificationCode" autocomplete="off">&ndash;%&gt;--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Classification</td>--%>
+                <%--<td>--%>
+                <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="1" id="classification" name="classification" autocomplete="off">&ndash;%&gt;--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Packing Group</td>--%>
+                <%--<td>--%>
+                <%--&lt;%&ndash;<input type="number" class="form-control" placeholder="0" id="packingGroup" name="packingGroup" autocomplete="off">&ndash;%&gt;--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Hazard No</td>--%>
+                <%--<td>--%>
+                <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="30" id="hazardNo" name="hazardNo" autocomplete="off">&ndash;%&gt;--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Station</td>--%>
+                <%--<td>--%>
+                <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="S20" id="station" name="station" autocomplete="off">&ndash;%&gt;--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Transport category</td>--%>
+                <%--<td>--%>
+                <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="1" id="transportCategory" name="transportCategory" autocomplete="off">&ndash;%&gt;--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Tunnel code</td>--%>
+                <%--<td>--%>
+                <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="B1000C" id="tunnelCode" name="tunnelCode" autocomplete="off">&ndash;%&gt;--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Vehicle Tank Carriage</td>--%>
+                <%--<td>--%>
+                <%--&lt;%&ndash;<input type="text" class="form-control" placeholder="AT" id="vehicleTankCarriage" name="tunnelCode" autocomplete="off">&ndash;%&gt;--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Labels</td>--%>
+                <%--<td style="max-width:10px">--%>
+                <%--&lt;%&ndash;<select id="labels" name="labels[]" multiple class="select" placeholder="Select labels...">&ndash;%&gt;--%>
+                <%--&lt;%&ndash;<option value="">Select labels...</option>&ndash;%&gt;--%>
+                <%--&lt;%&ndash;</select>&ndash;%&gt;--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Tank Special Provisions</td>--%>
+                <%--<td style="max-width:10px">--%>
+                <%--&lt;%&ndash;<select id="tankSpecialProvisions" name="tankSpecialProvisions[]" multiple class="select" placeholder="Select tank special provisions...">&ndash;%&gt;--%>
+                <%--&lt;%&ndash;<option value="">Select tank special provisions...</option>&ndash;%&gt;--%>
+                <%--&lt;%&ndash;</select>&ndash;%&gt;--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                <%--<td>Tank Codes</td>--%>
+                <%--<td style="max-width:10px">--%>
+                <%--&lt;%&ndash;<select id="tankcodes" name="tankcodes[]" multiple class="select" placeholder="Select tank codes...">&ndash;%&gt;--%>
+                <%--&lt;%&ndash;<option value="">Select tank codes...</option>&ndash;%&gt;--%>
+                <%--&lt;%&ndash;</select>&ndash;%&gt;--%>
+                <%--</td>--%>
+                <%--</tr>--%>
+                <%--</tbody>--%>
+                <%--</table>--%>
+                <%--</div>--%>
+                <%--</div>--%>
 
             <fieldset>
                 <legend>Save</legend>
@@ -633,7 +650,8 @@
 
         </form>
 
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="delete modal" aria-hidden="true">
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="delete modal"
+             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -643,7 +661,8 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="delete-error" style="display:none">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="delete-error"
+                             style="display:none">
                             <strong>Holy guacamole!</strong> Something went wrong while deleting
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -652,7 +671,9 @@
                         <p>Are you really sure you want to delete the <code id="delete-name"></code> description?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-delete-url="" id="delete-confirm">Yes delete it</button>
+                        <button type="button" class="btn btn-primary" data-delete-url="" id="delete-confirm">Yes delete
+                            it
+                        </button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>

@@ -16,9 +16,19 @@
         <script type="text/javascript" src="${(empty base) ? '.' : base}/DataTables/datatables.min.js"></script>
         <script type="text/javascript" src="${(empty base) ? '.' : base}/js/dataTables.cellEdit.js"></script>
         <script type="text/javascript">
-        $(document).ready( function () {
-        	var empties = 0;
-            var portstable = $('#portstable').DataTable({
+        $(document).ready(Start());
+        		
+        var portstable;
+        var terminaltable;
+        var shipstable;
+        var containerstable;
+        var undgstable;
+        
+
+    	var empties = 0;
+        
+        function Start() {
+            portstable = $('#portstable').DataTable({
                 ajax: {
                     url: "${(empty base) ? '.' : base}/api/ports/unapproved",
                     dataSrc: '',
@@ -47,22 +57,23 @@
                 responsive: true,
                 drawCallback: function( settings ) {
                     feather.replace();
-                    /*
-                    console.log(this.data());
-                    if(!this.data().any()){
-                    	this.destroy();
-                    	document.getElementById("portstable").outerHTML = "";
-                    	document.getElementById("portname").outerHTML = "";
-                    	empties +=1;
-                    }
-                    */
+                    
                 },
+                initComplete: function(settings, json) {
+                	 if(!portstable.data().any()){
+                		portstable.destroy();
+                     	document.getElementById("portstable").outerHTML = "";
+                     	document.getElementById("portname").outerHTML = "";
+                     	empties +=1;
+                    	calll();
+                     }
+                }
             });	
           //  console.log(portstable.data());
             
             
             
-                var terminaltable = $(' #terminalstable').DataTable({
+                terminaltable = $(' #terminalstable').DataTable({
                     ajax: {
                         url: "${(empty base) ? '.' : base}/api/terminals/unapproved",
                         dataSrc: '',
@@ -93,17 +104,23 @@
                     ],
                     responsive: true,
                     drawCallback: function( settings ) {
-                        feather.replace();/*
-                        if(!this.data().any()){
-                        	this.destroy();
+                        feather.replace();
+                       // testone();
+                    },
+                    initComplete: function(settings, json) {
+                    	if(!terminaltable.data().any()){
+                    		terminaltable.destroy();
                         	document.getElementById("terminalstable").outerHTML = "";
                         	document.getElementById("termname").outerHTML = "";
                         	empties+=1;
-                        }*/
-                    },
+                        	calll();
+                        }
+                      }
                 });
                 
-                var shipstable = $('#shipstable').DataTable({
+              
+                
+                shipstable = $('#shipstable').DataTable({
                     ajax: {
                         url: "${(empty base) ? '.' : base}/api/ships/unapproved",
                         dataSrc: '',
@@ -142,9 +159,18 @@
                         	empties+=1;
                         }*/
                     },
+                    initComplete: function(settings, json) {
+                    	if(!shipstable.data().any()){
+                    		shipstable.destroy();
+                        	document.getElementById("shipstable").outerHTML = "";
+                        	document.getElementById("shipname").outerHTML = "";
+                        	empties+=1;
+                        	calll();
+                 	   }
+                    }
                 });
                 
-                var containerstable = $('#containerstable').DataTable({
+                containerstable = $('#containerstable').DataTable({
                     ajax: {
                         url: "${(empty base) ? '.' : base}/api/containers/unapproved",
                         dataSrc: '',
@@ -176,15 +202,128 @@
                     ],
                     responsive: true,
                     drawCallback: function( settings ) {
-                        feather.replace();        /*                
-                        if(!this.data().any()){
-                        	this.destroy();
+                        feather.replace();
+                    },
+                    
+                    initComplete: function(settings, json) {
+                    	if(!containerstable.data().any()){
+                    		containerstable.destroy();
                         	document.getElementById("containerstable").outerHTML = "";
                         	document.getElementById("conname").outerHTML = "";
                         	empties+=1;
-                        }*/
-                        
+                        	calll();
+                    	}
+                    }
+                });
+                
+                undgstable = $('#undgstable').DataTable({
+                	ajax: {
+                        url: "${(empty base) ? '.' : base}/api/undgs/full/unapproved",
+                        dataSrc: '',
                     },
+                    columns: [
+                        {
+                            data: 'id',
+                            render: function (data, type, row, meta) {
+                                if (type == "sort" || type == 'type') {
+                                    return data;
+                                }
+                                return '<button type="button" class="btn btn-info btn-sm btn-approve" data-approve-id="' + data 
+            					+ '" data-approve-name="' + escapeHtml(row.displayName) + '" data-type="undgs" role="button">' + 
+              				     '<span data-feather="check-square"></span>' +
+               			    '</button>&nbsp;' +
+                       
+                       '<button type="button" class="btn btn-danger btn-sm btn-delete" data-delete-id="' + data 
+                       		+ '" data-delete-name="' + escapeHtml(row.displayName) + '" data-type="undgs" role="button">' + 
+                       '<span data-feather="trash-2"></span>' +
+                       '</button>' ;
+                            },
+                            "width": "90px"
+                        },
+                        { data: 'unNo', render: $.fn.dataTable.render.text(), width: "10px" },
+                        {
+                            data: 'descriptions',
+                            render: function (data, type, row, meta) {
+                                // if (type == "sort" || type == 'type') {
+                                //     return data;
+                                // }
+                                filteredData = data.filter(
+                                    function(desc){
+                                        if (desc.language == 'en') {
+                                            return desc.description;
+                                        }
+                                    }
+                                );
+                                if (filteredData[0] !== undefined) {
+                                    return escapeHtml(filteredData[0].description);
+                                } else {
+                                    return "<i>Not set</i>";
+                                }
+                            },
+                            width: "20%"
+                        },
+                        { data: 'transportForbidden', render: $.fn.dataTable.render.text() },
+                        { data: 'collective', render: $.fn.dataTable.render.text() },
+                        { data: 'notApplicable', render: $.fn.dataTable.render.text() },
+                        { data: 'classificationCode', render: $.fn.dataTable.render.text() },
+                        { data: 'classification', render: $.fn.dataTable.render.text() },
+                        { data: 'packingGroup', render: $.fn.dataTable.render.text() },
+                        { data: 'hazardNo', render: $.fn.dataTable.render.text() },
+                        { data: 'station', render: $.fn.dataTable.render.text() },
+                        { data: 'transportCategory', render: $.fn.dataTable.render.text() },
+                        { data: 'tunnelCode', render: $.fn.dataTable.render.text() },
+                        { data: 'vehicleTankCarriage', render: $.fn.dataTable.render.text() },
+                        {
+                            data: 'labels',
+                            render: function (data, type, row, meta) {
+                                if (data !== undefined) {
+                                    if (type == "sort" || type == 'type') {
+                                        return data;
+                                    }
+                                    return escapeHtml(data.sort().join(", "));
+                                }
+                            },
+                        },
+                        {
+                            data: 'tankSpecialProvisions',
+                            render: function (data, type, row, meta) {
+
+                            	console.log("im actually here");
+                                if (data !== undefined) {
+                                    if (type == "sort" || type == 'type') {
+                                        return data;
+                                    }
+                                    return escapeHtml(data.sort().join(", "));
+                                }
+                            },
+                        },
+                        {
+                            data: 'tankCode',
+                            render: function (data, type, row, meta) {
+                                if (data !== undefined) {
+                                    if (type == "sort" || type == 'type') {
+                                        return data;
+                                    }
+                                    return escapeHtml(data.sort().join(", "));
+                                }
+                            },
+                        },
+                    ],
+                    order: [[ 1, "asc" ]],
+                    responsive: true,
+                    drawCallback: function( settings ) {
+                        feather.replace();
+                    },
+                    initComplete: function(settings, json) {
+                    	if(!undgstable.data().any()){
+                    		undgstable.destroy();
+                        	document.getElementById("undgstable").outerHTML = "";
+                        	document.getElementById("undgsname").outerHTML = "";
+                        	empties+=1;
+                        	calll();
+                        	console.log(empties);
+                    	}
+                    }
                 });
                 
                 var approvingRow;
@@ -231,47 +370,38 @@
                     });
                 });
                 
-             
-              
-                /*
                 
-                if(empties === 4){
-                	document.getElementById("title").outerHTML = "<h2>Nothing to be approved</h2>";
-                } else {
-                	document.getElementById("title").outerHTML = "<h3>These entries need approval</h3>";
-                }
-                */
+               //callback();
+          
+                
                 
 
 
-           });
+           }
+           
+        
+         
+         function calll() {
+        	 console.log("in calll " + empties);
+        	 //console.log(empties === 4)
+        	 if(empties === 5){
+             	document.getElementById("title").outerHTML = "<h2>Nothing to be approved</h2>";
+             } 
+         }
         </script>
         
         </jsp:attribute>
     <jsp:body>
     
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h2 id="pageHeader" class="h2">Dashboard</h2>
-    <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group mr-2">
-         <div class="col-sm-6">
-         		 <div class="dropdown">
-	  				<button class="btn btn-primary dropdown-toggle btn" type="button" data-toggle="dropdown">+
-					  <span class="caret"></span></button>
-				<ul class="dropdown-menu">
-				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ships/add">Ship</a></li>
-			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/applications/add">Application</a></li>
-				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}/containers/add">Container Type</a></li>
-			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/terminals/add">Terminal</a></li>
-				    <li class="dropdown-item"><a href="${(empty base) ? '.' : base}">UNDG</a></li>
-			    	<li class="dropdown-item"><a href="${(empty base) ? '.' : base}/ports/add">Port</a></li>
-				 </ul>
-				</div>
-				</div>
+   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+            <h1 class="h2">Dashboard</h1>
+            <div class="btn-group mr-2">
+                <div class="col-sm-4">
+                   <c:import url="/WEB-INF/jsp/addButton.jsp"/>
+                </div>
+            </div>
         </div>
-         
-    </div>
-</div>
+
 
 
 
@@ -347,6 +477,35 @@
             </tr>
             </thead>
             <tbody>
+            </tbody>
+        </table>
+        
+         <table class="table table-striped table-sm datatables" style="width:100%;" id="undgstable">
+            <thead>
+            <h3 id = "undgsname" >UNDGs</h3>
+            <tr>
+                <th data-priority="1" style="min-width:90px">#</th>
+                <th data-priority="1">uNo</th>
+                <th data-priority="1" style="min-width:160px">English Description</th>
+                <th>Transport Forbidden</th>
+                <th>Collective</th>
+                <th>Not Applicable</th>
+                <th>Classification Code</th>
+                <th>Classification</th>
+                <th>Packing Group</th>
+                <th>Hazard No.</th>
+                <th>Station</th>
+                <th>Transport Category</th>
+                <th>Tunnel Code</th>
+                <th>Vehicle Tank Carriage</th>
+                <th>Labels</th>
+                <th>Tank Special Provisions</th>
+                <th>Tank Codes</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
             </tbody>
         </table>
         

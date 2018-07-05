@@ -318,3 +318,7 @@ legend {
 .selectize-dropdown.col-sm-3 {
     width: 600px !important;
 }
+
+.custom-select-sm {
+    font-size: 1rem !important;
+}
