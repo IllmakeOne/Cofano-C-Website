@@ -121,13 +121,13 @@ public class GoogleLoginCallback extends HttpServlet {
                 statement.setString(1, (String) userIdResult.get("name"));
                 statement.setString(2, (String) userIdResult.get("email"));
                 ResultSet resultSet = statement.executeQuery();
-                connection.commit();
                 while (resultSet.next()) {
                     User user = new User();
                     user.setEmail(resultSet.getString("email"));
                     user.setName(resultSet.getString("name"));
                     user.setDarkMode(resultSet.getBoolean("darkmode"));
                     user.setId(resultSet.getInt("uid"));
+                    System.out.println("The user stuff!!");
                     req.getSession().setAttribute("user", user);
                 }
 

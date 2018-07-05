@@ -124,7 +124,7 @@
                         window.location.replace("${base}/undgs");
                     },
                     error: function (data) {
-                        $("#error").show().text("Something went wrong: " + data)
+                        $("#error").show().text("Something went wrong: " + data.responseJSON.description)
                     },
                     contentType: "application/json",
                     dataType: 'json'

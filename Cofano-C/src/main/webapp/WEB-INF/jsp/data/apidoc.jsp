@@ -91,6 +91,7 @@
   				<h10> Name, terminal_code and port_id must be not null when editing or adding</h10>
 				<h10>When adding or editing an terminal, please take into accout it has a foreign key to Ports. <br> </h10>
 				<h10>A <h12>GET</h12> request came be made to ./terminals/portids to receive all available ports</h10>
+				<h10> When a port is deleted it also deletes all terminals connected to it</h10>
   				<h10><p>Name and Terminal code are taken into account when testing for conflicts.  </p></h10>
   			</div>
  			 <div class="col-sm-6">
@@ -103,6 +104,12 @@
 		<div class="row">
   			<div class="col-sm-12">
   				<h5>UNDGs</h5>
+  				<h10> UNDGs have lables, tankcodes and tanks special provisions. 
+  				<p> All of them can be retrived by making a <h12>GET</h12> request at:
+  				<p> ./ungs/labels for available lables</p>
+  				<p> ./ungs/tankcodes for available tankcodes</p>
+  				<p> ./undgs/tankspecialprovisions for available special tank provisions</p>
+  				</p></h10>
   			</div>
 		</div>
         
@@ -130,7 +137,7 @@
 		        <th><h12>GET</h12> ./ports</th>
 		        <th><h12>GET</h12> ./terminals</th>
 		        <th><h12>GET</h12> ./containers</th>
-		        <th><h12>GET</h12> ./undgs</th>
+		        <th><h12>GET</h12> ./undgs/full</th>
 		    </tr>
 		    <tr>
 		        <th><h5>Get a certain entry</h5></th>
