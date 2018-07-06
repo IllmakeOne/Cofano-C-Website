@@ -4,7 +4,10 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.After;
 import org.junit.Test;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static nl.utwente.di14.Cofano_C.dao.Tables.getInstance;
 import static org.junit.Assert.*;
@@ -42,7 +45,7 @@ public class TablesTest {
     }
 
     @Test
-    public void addtoConflicts() throws SQLException {
+    public void addtoConflicts() {
         String query = "SELECT addconflict(?,?,?,?)";
         try (PreparedStatement statement = Tables.getCon().prepareStatement(query)) {
             //add the data to the statement's query
@@ -52,6 +55,8 @@ public class TablesTest {
             statement.setInt(4, 808080);
 
             statement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
 
@@ -71,15 +76,13 @@ public class TablesTest {
     }
 
     @After
-    public void tearDown() throws SQLException {
-        Connection con = Tables.getCon();
-        String query = "DELETE  FROM conflict WHERE entry = 909090";
-        try {
-            Statement stmt = con.createStatement();
-            stmt.executeUpdate(query);
+    public void tearDown() {
+        String queryDelete = "DELETE FROM conflict WHERE entry = ?";
+        try (Connection con = Tables.getCon(); PreparedStatement stmt = con.prepareStatement(queryDelete)) {
+            stmt.setInt(1, 909090);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        con.close();
     }
 }
